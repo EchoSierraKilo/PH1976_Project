@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Dataset | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording</title>
+  <meta name="description" content="2 Dataset | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Dataset | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Dataset | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  
+  
+  
+
+<meta name="author" content="Erin S. King et. al" />
+
+
+<meta name="date" content="2023-03-26" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#definition"><i class="fa fa-check"></i><b>1.1</b> Definition</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#study-design"><i class="fa fa-check"></i><b>1.3</b> Study Design</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#study-population"><i class="fa fa-check"></i><b>1.4</b> Study Population</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="dataset.html"><a href="dataset.html"><i class="fa fa-check"></i><b>2</b> Dataset</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="dataset.html"><a href="dataset.html#preprocessing-and-standardization"><i class="fa fa-check"></i><b>2.1</b> Preprocessing and Standardization</a></li>
+<li class="chapter" data-level="2.2" data-path="dataset.html"><a href="dataset.html#feature-selection"><i class="fa fa-check"></i><b>2.2</b> Feature Selection</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="dataset" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Dataset<a href="dataset.html#dataset" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="preprocessing-and-standardization" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Preprocessing and Standardization<a href="dataset.html#preprocessing-and-standardization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:</p>
+<ul>
+<li>Baseline Features</li>
+<li>Time Frequency Features
+<ul>
+<li>Intensity based</li>
+<li>Formant and Bandwidth based</li>
+</ul></li>
+<li>Vocal Fold Features</li>
+<li>Mel Frequency Cepstral Coefficients (MFCC)</li>
+<li>Wavelet Transform-based Features</li>
+<li>Tunable Q-Factor Wavelet Transform-based Features (TQWT)</li>
+</ul>
+<p>To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the <span class="citation">[@tidyverse]</span>, <span class="citation">[@broom]</span>, and <span class="citation">[@mosaic]</span> packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the <strong>Formant</strong> sub feature. This allows all data comparisons to be made equivalently.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:prestd-1"></span>
+<img src="PH1976_Project_files/figure-html/prestd-1.png" alt="\label{fig:prestd}Formant Sub-feature: Pre-standardization" width="672" />
+<p class="caption">
+Figure 2.1: Formant Sub-feature: Pre-standardization
+</p>
+</div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:prestd-2"></span>
+<img src="PH1976_Project_files/figure-html/prestd-2.png" alt="\label{fig:prestd}Formant Sub-feature: Pre-standardization" width="672" />
+<p class="caption">
+Figure 2.2: Formant Sub-feature: Pre-standardization
+</p>
+</div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:poststd-1"></span>
+<img src="PH1976_Project_files/figure-html/poststd-1.png" alt="\label{fig:poststd}Formant Sub-feature: Post-standardization" width="672" />
+<p class="caption">
+Figure 2.3: Formant Sub-feature: Post-standardization
+</p>
+</div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:poststd-2"></span>
+<img src="PH1976_Project_files/figure-html/poststd-2.png" alt="\label{fig:poststd}Formant Sub-feature: Post-standardization" width="672" />
+<p class="caption">
+Figure 2.4: Formant Sub-feature: Post-standardization
+</p>
+</div>
+</div>
+<div id="feature-selection" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Feature Selection<a href="dataset.html#feature-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Per the <strong>Sakar et al</strong> paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
+1. It reduces the high dimensionality of the data set.
+2. It maximizes the joint dependency of the data set.
+This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The <strong>Boruta</strong> package in RStudio will be used for this purpose.</p>
+<p>mRMR analysis yields the following results:
+* Baseline</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="dataset.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boruta.baseline)</span></code></pre></div>
+<pre><code>## Boruta performed 45 iterations in 2.815619 secs.
+##  20 attributes confirmed important: apq11Shimmer, apq3Shimmer,
+## apq5Shimmer, ddaShimmer, ddpJitter and 15 more;
+##  2 attributes confirmed unimportant: gender, PPE;</code></pre>
+<ul>
+<li>Formant</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="dataset.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boruta.formant)</span></code></pre></div>
+<pre><code>## Boruta performed 499 iterations in 20.84191 secs.
+##  7 attributes confirmed important: b1, b3, b4, f1, f2 and 2 more;
+##  1 attributes confirmed unimportant: b2;
+##  1 tentative attributes left: gender;</code></pre>
+<ul>
+<li>Intensity</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="dataset.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boruta.intensity)</span></code></pre></div>
+<pre><code>## Boruta performed 9 iterations in 0.3010411 secs.
+##  4 attributes confirmed important: gender, maxIntensity, meanIntensity,
+## minIntensity;
+##  No attributes deemed unimportant.</code></pre>
+<ul>
+<li>MFCC</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="dataset.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boruta.mfcc)</span></code></pre></div>
+<pre><code>## Boruta performed 499 iterations in 41.50399 secs.
+##  45 attributes confirmed important: mean_2nd_delta,
+## mean_delta_log_energy, mean_MFCC_0th_coef, mean_MFCC_1st_coef,
+## mean_MFCC_2nd_coef and 40 more;
+##  36 attributes confirmed unimportant: gender, mean_0th_delta,
+## mean_10th_delta, mean_10th_delta_delta, mean_11th_delta and 31 more;
+##  4 tentative attributes left: mean_5th_delta, mean_MFCC_8th_coef,
+## std_MFCC_11th_coef, std_MFCC_9th_coef;</code></pre>
+<ul>
+<li>TQWT</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="dataset.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boruta.tqwt)</span></code></pre></div>
+<pre><code>## Boruta performed 499 iterations in 1.15312 mins.
+##  106 attributes confirmed important: tqwt_energy_dec_1,
+## tqwt_energy_dec_11, tqwt_energy_dec_12, tqwt_energy_dec_18,
+## tqwt_energy_dec_2 and 101 more;
+##  291 attributes confirmed unimportant: gender, tqwt_energy_dec_10,
+## tqwt_energy_dec_13, tqwt_energy_dec_14, tqwt_energy_dec_15 and 286
+## more;
+##  36 tentative attributes left: tqwt_energy_dec_17, tqwt_energy_dec_3,
+## tqwt_energy_dec_32, tqwt_entropy_log_dec_13, tqwt_entropy_log_dec_16
+## and 31 more;</code></pre>
+<ul>
+<li>VFF</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="dataset.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boruta.vff)</span></code></pre></div>
+<pre><code>## Boruta performed 499 iterations in 32.99848 secs.
+##  17 attributes confirmed important: GNE_mean, GNE_NSR_SEO,
+## GNE_NSR_TKEO, GNE_SNR_SEO, GNE_SNR_TKEO and 12 more;
+##  2 attributes confirmed unimportant: GQ_prc5_95, IMF_SNR_TKEO;
+##  4 tentative attributes left: gender, GQ_std_cycle_closed,
+## IMF_NSR_entropy, VFER_std;</code></pre>
+<ul>
+<li>WT</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="dataset.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boruta.wt)</span></code></pre></div>
+<pre><code>## Boruta performed 499 iterations in 57.31901 secs.
+##  53 attributes confirmed important: app_det_TKEO_mean_10_coef,
+## app_det_TKEO_mean_4_coef, app_det_TKEO_mean_5_coef,
+## app_det_TKEO_mean_8_coef, app_det_TKEO_mean_9_coef and 48 more;
+##  109 attributes confirmed unimportant: app_det_TKEO_mean_1_coef,
+## app_det_TKEO_mean_2_coef, app_det_TKEO_mean_3_coef,
+## app_det_TKEO_mean_6_coef, app_det_TKEO_mean_7_coef and 104 more;
+##  21 tentative attributes left: app_entropy_log_1_coef,
+## app_entropy_log_4_coef, app_LT_entropy_log_10_coef,
+## app_LT_entropy_log_2_coef, app_LT_entropy_log_5_coef and 16 more;</code></pre>
+<p><img src="PH1976_Project_files/figure-html/boruta.baseline-1.png" width="672" />
+<img src="PH1976_Project_files/figure-html/boruta.formant-1.png" width="672" />
+<img src="PH1976_Project_files/figure-html/boruta.intensity-1.png" width="672" />
+<img src="PH1976_Project_files/figure-html/boruta.mfcc-1.png" width="672" />
+<img src="PH1976_Project_files/figure-html/boruta.tqwt-1.png" width="672" />
+<img src="PH1976_Project_files/figure-html/boruta.vff-1.png" width="672" />
+<img src="PH1976_Project_files/figure-html/boruta.wt-1.png" width="672" /></p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

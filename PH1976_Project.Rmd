@@ -1,0 +1,294 @@
+---
+title: "PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording"
+author: "Erin S. King et. al"
+date: "`r Sys.Date()`"
+output: 
+  bookdown::gitbook:
+    fig_caption: TRUE
+    citation_package: biblatex
+    biblio-style: apa
+    split_bib: false
+bibliograpy: packages.bib
+---
+```{r, include = FALSE}
+# Grab packages if not installed
+# Note, if RStudio is having issues w/ tidyverse, run this command in R (not Rstudio):
+# install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source")
+list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest" )
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::write_bib(list.of.packages, "packages.bib",width = 60)
+```
+
+# Introduction
+The following analysis in this PH1976 project is to demonstrate the tools examined in this course for data categorization, regression, and prediction. The project's aim is to predict Parkinson’s disease (PD) using the extracted features from the voice recording of patients. For each individual, three recording samples were collected. The [data and corresponding analysis](https://doi.org/10.1016/j.asoc.2018.10.022) is provided by @Sakar in their seminal research on implementing tunable Q-factor wavelet transforms in conjunction with existing data prediction methods. The methods found in this study serve as a roadmap for this project and inform the methods chosen for categorization and prediction.  
+
+## Definition
+Parkinson’s disease (PD) is a progressive neurodegenerative disorder. To accurately detect the disease in the
+early stage, many telediagnosis and telemonitoring systems have recently been proposed. Since vocal problem is
+one of the most important symptoms which can be seen in the earlier stage of PD patients, vocal disorders-
+based systems become popular in PD diagnosis and monitoring. In these systems, various speech signal
+processing algorithms have been used to extract clinically useful information for PD assessment, and the
+calculated features are fed to different learning algorithms to make reliable decisions. PD telemedicine studies
+showed that the choice of extracted features and learning algorithms directly influences the accuracy and
+reliability of distinguishing PD patients.  
+
+## Data
+In this study, Sakar et. al collected the voice recordings of 252 subjects including PD patients and healthy individuals. They gathered three recording samples from each subject and extracted seven feature subsets from the recording samples. The feature subsets were baseline features, intensity-based features, bandwidth and formant features, vocal fold features, Mel Frequency Cepstral Coefficients (MFCC), wavelet transform based features (WT) and tunable Q-factor wavelet transform based features (TQWT).  
+
+## Study Design
+Need to fill this out based on our own analysis.  
+
+## Study Population
+The dataset includes PD patients with age ranging from 33 to 87 (65.1 ± 10.9) and healthy individuals with age
+ranging from 41 to 82 (61.1 ± 8.9). Each patient has three voice recording samples, with 7 aforementioned
+feature subsets. Each feature subset contains several features.  
+
+# Dataset
+## Preprocessing and Standardization
+```{r, include=FALSE}
+#Set the working directory and get the data
+project_dir = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(project_dir)
+training_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_training set_p.csv',sep="")
+test_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_test set_p.csv',sep="")
+training_data = read.csv(training_set_path)
+test_data = read.csv(test_set_path)
+```
+```{r,include=FALSE}
+#Break the training data into feature subsets
+train_df.baseline = data.frame(training_data[c(2:3,4:24)])
+train_df.intensity = data.frame(training_data[c(2:3,25:27)])
+train_df.formant = data.frame(training_data[c(2:3,28:35)])
+train_df.vff = data.frame(training_data[c(2:3,36:57)])
+train_df.mfcc = data.frame(training_data[c(2:3,58:141)])
+train_df.wt = data.frame(training_data[c(2:3,142:323)])
+train_df.tqwt = data.frame(training_data[c(2:3,324:755)])
+#Break the test data into feature subsets
+test_df.baseline = data.frame(test_data[c(2:3,4:24)])
+test_df.intensity = data.frame(test_data[c(2:3,25:27)])
+test_df.formant = data.frame(test_data[c(2:3,28:35)])
+test_df.vff = data.frame(test_data[c(2:3,36:57)])
+test_df.mfcc = data.frame(test_data[c(2:3,58:141)])
+test_df.wt = data.frame(test_data[c(2:3,142:323)])
+test_df.tqwt = data.frame(test_data[c(2:3,324:755)])
+```
+For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:  
+
+* Baseline Features
+* Time Frequency Features 
+    + Intensity based
+    + Formant and Bandwidth based
+* Vocal Fold Features
+* Mel Frequency Cepstral Coefficients (MFCC)
+* Wavelet Transform-based Features
+* Tunable Q-Factor Wavelet Transform-based Features (TQWT)  
+
+```{r, include=FALSE}
+
+# Standardizing the data for cross-comparison
+
+require(tidyverse)
+require(broom)
+require(mosaic)
+
+# Training
+#Baseline
+train_df.baseline.std = train_df.baseline
+for(ii in 4:length(train_df.baseline.std))
+  {
+  train_df.baseline.std[,ii] = zscore(train_df.baseline.std[,ii])
+  }
+#Formant
+train_df.formant.std = train_df.formant
+for(ii in 4:length(train_df.formant.std))
+  {
+  train_df.formant.std[,ii] = zscore(train_df.formant.std[,ii])
+}
+#Intensity
+train_df.intensity.std = train_df.intensity
+for(ii in 4:length(train_df.intensity.std))
+  {
+  train_df.intensity.std[,ii] = zscore(train_df.intensity.std[,ii])
+}
+#MFCC
+train_df.mfcc.std = train_df.mfcc
+for(ii in 4:length(train_df.mfcc.std))
+  {
+  train_df.mfcc.std[,ii] = zscore(train_df.mfcc.std[,ii])
+}
+#WT
+train_df.wt.std = train_df.wt
+for(ii in 4:length(train_df.wt.std))
+  {
+  train_df.wt.std[,ii] = zscore(train_df.wt.std[,ii])
+  }
+#TQWT
+train_df.tqwt.std = train_df.tqwt
+for(ii in 4:length(train_df.tqwt.std))
+  {
+  train_df.tqwt.std[,ii] = zscore(train_df.tqwt.std[,ii])
+}
+#VFF
+train_df.vff.std = train_df.vff
+for(ii in 4:length(train_df.vff.std))
+  {
+  train_df.vff.std[,ii] = zscore(train_df.vff.std[,ii])
+}
+
+# Test
+
+#Baseline
+test_df.baseline.std = test_df.baseline
+for(ii in 4:length(test_df.baseline.std))
+  {
+  test_df.baseline.std[,ii] = zscore(test_df.baseline.std[,ii])
+  }
+#Formant
+test_df.formant.std = test_df.formant
+for(ii in 4:length(test_df.formant.std))
+  {
+  test_df.formant.std[,ii] = zscore(test_df.formant.std[,ii])
+}
+#Intensity
+test_df.intensity.std = test_df.intensity
+for(ii in 4:length(test_df.intensity.std))
+  {
+  test_df.intensity.std[,ii] = zscore(test_df.intensity.std[,ii])
+}
+#MFCC
+test_df.mfcc.std = test_df.mfcc
+for(ii in 4:length(test_df.mfcc.std))
+  {
+  test_df.mfcc.std[,ii] = zscore(test_df.mfcc.std[,ii])
+}
+#WT
+test_df.wt.std = test_df.wt
+for(ii in 4:length(test_df.wt.std))
+  {
+  test_df.wt.std[,ii] = zscore(test_df.wt.std[,ii])
+  }
+#TQWT
+test_df.tqwt.std = test_df.tqwt
+for(ii in 4:length(test_df.tqwt.std))
+  {
+  test_df.tqwt.std[,ii] = zscore(test_df.tqwt.std[,ii])
+}
+#VFF
+test_df.vff.std = test_df.vff
+for(ii in 4:length(test_df.vff.std))
+  {
+  test_df.vff.std[,ii] = zscore(test_df.vff.std[,ii])
+}
+```
+
+To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Formant** sub feature. This allows all data comparisons to be made equivalently.
+
+```{r prestd,echo=FALSE,fig.align='center',fig.cap="\\label{fig:prestd}Formant Sub-feature: Pre-standardization"}
+par(mfrow=c(2,4))
+for(ii in 1:length(train_df.formant)){
+  hist(train_df.formant[,ii],main="",xlab=colnames(train_df.formant[ii]))
+}
+```
+  
+
+```{r poststd, echo=FALSE,fig.align='center',fig.cap="\\label{fig:poststd}Formant Sub-feature: Post-standardization"}
+par(mfrow=c(2,4))
+for(ii in 1:length(train_df.formant.std)){
+  hist(train_df.formant.std[,ii],main="",xlab=colnames(train_df.formant.std[ii]))
+}
+```
+  
+## Feature Selection
+Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
+1. It reduces the high dimensionality of the data set.
+2. It maximizes the joint dependency of the data set.
+This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The **Boruta** package in RStudio will be used for this purpose.  
+
+
+
+```{r boruta, include = FALSE}
+require(Boruta)
+require(mlbench)
+require(caret)
+require(randomForest)
+#Find important features in training data
+set.seed(123)
+boruta.baseline = Boruta(class ~ ., data = train_df.baseline.std, doTrace = 2)
+boruta.formant = Boruta(class ~., data = train_df.formant.std, doTrace = 2,maxRuns = 500)
+boruta.intensity = Boruta(class ~., data = train_df.intensity.std, doTrace = 2,maxRuns = 500)
+boruta.mfcc = Boruta(class ~., data = train_df.mfcc.std, doTrace = 2,maxRuns = 500)
+boruta.tqwt = Boruta(class ~., data = train_df.tqwt.std, doTrace = 2,maxRuns = 500)
+boruta.vff = Boruta(class ~., data = train_df.vff.std, doTrace = 2,maxRuns = 500)
+boruta.wt = Boruta(class ~., data = train_df.wt.std, doTrace = 2,maxRuns = 500)
+```
+   
+mRMR analysis yields the following results:
+* Baseline
+```{r}
+print(boruta.baseline)
+```
+* Formant
+```{r}
+print(boruta.formant)
+```
+* Intensity
+```{r}
+print(boruta.intensity)
+```
+* MFCC
+```{r}
+print(boruta.mfcc)
+```
+* TQWT
+```{r}
+print(boruta.tqwt)
+```
+* VFF
+```{r}
+print(boruta.vff)
+```
+* WT
+```{r}
+print(boruta.wt)
+```
+ 
+ 
+```{r, boruta.baseline, echo=FALSE}
+#Generate Boruta plots
+plot(boruta.baseline, las = 2,main="Baseline mRMR")
+```
+```{r, boruta.formant, echo=FALSE}
+plot(boruta.formant, las = 2,main = "Formant mRMR")
+```
+```{r, boruta.intensity, echo=FALSE}
+plot(boruta.intensity, las = 2, main="Intensity mRMR")
+```
+```{r, boruta.mfcc, echo=FALSE}
+plot(boruta.mfcc, las = 2, main="MFCC mRMR")
+```
+```{r, boruta.tqwt, echo=FALSE}
+plot(boruta.tqwt, las = 2, main="TQWT mRMR")
+```
+```{r, boruta.vff, echo=FALSE}
+plot(boruta.vff, las = 2, main="VFF mRMR")
+```
+```{r, boruta.wt, echo=FALSE}
+plot(boruta.wt, las = 2, main="WT mRMR")
+```
+  
+
+```{r, include=FALSE}
+#Force "Tentative" values
+chosen.baseline = getNonRejectedFormula(TentativeRoughFix(boruta.baseline))
+chosen.formant = getNonRejectedFormula(TentativeRoughFix(boruta.formant))
+chosen.intensity = getNonRejectedFormula(TentativeRoughFix(boruta.intensity))
+chosen.mfcc = getNonRejectedFormula(TentativeRoughFix(boruta.mfcc))
+chosen.tqwt = getNonRejectedFormula(TentativeRoughFix(boruta.tqwt))
+chosen.vff = getNonRejectedFormula(TentativeRoughFix(boruta.vff))
+chosen.wt = getNonRejectedFormula(TentativeRoughFix(boruta.wt))
+```

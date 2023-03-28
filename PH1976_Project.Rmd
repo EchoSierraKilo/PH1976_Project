@@ -1,6 +1,6 @@
 ---
 title: "PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording"
-author: "Erin S. King et. al"
+author: "Erin S. King, One Fabbert"
 date: "`r Sys.Date()`"
 output: 
   bookdown::gitbook:
@@ -10,6 +10,15 @@ output:
     split_bib: false
 bibliograpy: packages.bib
 ---
+```{r, include=FALSE}
+#Set the working directory and get the data
+project_dir = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(project_dir)
+training_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_training set_p.csv',sep="")
+test_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_test set_p.csv',sep="")
+training_data = read.csv(training_set_path)
+test_data = read.csv(test_set_path)
+```
 ```{r, include = FALSE}
 # Grab packages if not installed
 # Note, if RStudio is having issues w/ tidyverse, run this command in R (not Rstudio):
@@ -50,15 +59,6 @@ feature subsets. Each feature subset contains several features.
 
 # Dataset
 ## Preprocessing and Standardization
-```{r, include=FALSE}
-#Set the working directory and get the data
-project_dir = dirname(rstudioapi::getActiveDocumentContext()$path)
-setwd(project_dir)
-training_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_training set_p.csv',sep="")
-test_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_test set_p.csv',sep="")
-training_data = read.csv(training_set_path)
-test_data = read.csv(test_set_path)
-```
 ```{r,include=FALSE}
 #Break the training data into feature subsets
 train_df.baseline = data.frame(training_data[c(2:3,4:24)])
@@ -190,7 +190,7 @@ To start, data from all sub features are standardized such that each feature has
 
 ```{r prestd,echo=FALSE,fig.align='center',fig.cap="\\label{fig:prestd}Formant Sub-feature: Pre-standardization"}
 par(mfrow=c(2,4))
-for(ii in 1:length(train_df.formant)){
+for(ii in 3:length(train_df.formant)){
   hist(train_df.formant[,ii],main="",xlab=colnames(train_df.formant[ii]))
 }
 ```
@@ -198,7 +198,7 @@ for(ii in 1:length(train_df.formant)){
 
 ```{r poststd, echo=FALSE,fig.align='center',fig.cap="\\label{fig:poststd}Formant Sub-feature: Post-standardization"}
 par(mfrow=c(2,4))
-for(ii in 1:length(train_df.formant.std)){
+for(ii in 3:length(train_df.formant.std)){
   hist(train_df.formant.std[,ii],main="",xlab=colnames(train_df.formant.std[ii]))
 }
 ```
@@ -207,7 +207,7 @@ for(ii in 1:length(train_df.formant.std)){
 Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
 1. It reduces the high dimensionality of the data set.
 2. It maximizes the joint dependency of the data set.
-This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The **Boruta** package in RStudio will be used for this purpose.  
+This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The **Boruta** package in RStudio will be used for this purpose, and utilizes Random Forest to perform a top-down search on the corresponding data frame to determine relevant features.     
 
 
 
@@ -227,61 +227,62 @@ boruta.vff = Boruta(class ~., data = train_df.vff.std, doTrace = 2,maxRuns = 500
 boruta.wt = Boruta(class ~., data = train_df.wt.std, doTrace = 2,maxRuns = 500)
 ```
    
-mRMR analysis yields the following results:
+mRMR analysis yields the following results:  
+
 * Baseline
-```{r}
+```{r, echo=FALSE}
 print(boruta.baseline)
 ```
 * Formant
-```{r}
+```{r, echo=FALSE}
 print(boruta.formant)
 ```
 * Intensity
-```{r}
+```{r, echo=FALSE}
 print(boruta.intensity)
 ```
 * MFCC
-```{r}
+```{r, echo=FALSE}
 print(boruta.mfcc)
 ```
 * TQWT
-```{r}
+```{r, echo=FALSE}
 print(boruta.tqwt)
 ```
 * VFF
-```{r}
+```{r, echo=FALSE}
 print(boruta.vff)
 ```
 * WT
-```{r}
+```{r, echo=FALSE}
 print(boruta.wt)
 ```
  
  
-```{r, boruta.baseline, echo=FALSE}
+```{r boruta.baseline, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.baseline}Boruta plot for Baseline features"}
 #Generate Boruta plots
 plot(boruta.baseline, las = 2,main="Baseline mRMR")
 ```
-```{r, boruta.formant, echo=FALSE}
+```{r boruta.formant, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.formant}Boruta plot for Formant features"}
 plot(boruta.formant, las = 2,main = "Formant mRMR")
 ```
-```{r, boruta.intensity, echo=FALSE}
+```{r boruta.intensity, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.intensity}Boruta plot for Intensity features"}
 plot(boruta.intensity, las = 2, main="Intensity mRMR")
 ```
-```{r, boruta.mfcc, echo=FALSE}
+```{r boruta.mfcc, echo=FALSE, , fig.align='center',fig.cap="\\label{fig:boruta.mfcc}Boruta plot for MFCC features"}
 plot(boruta.mfcc, las = 2, main="MFCC mRMR")
 ```
-```{r, boruta.tqwt, echo=FALSE}
+```{r boruta.tqwt, echo=FALSE, , fig.align='center',fig.cap="\\label{fig:boruta.tqwt}Boruta plot for TQWT features"}
 plot(boruta.tqwt, las = 2, main="TQWT mRMR")
 ```
-```{r, boruta.vff, echo=FALSE}
+```{r boruta.vff, echo=FALSE, , fig.align='center',fig.cap="\\label{fig:boruta.vff}Boruta plot for VFF features"}
 plot(boruta.vff, las = 2, main="VFF mRMR")
 ```
-```{r, boruta.wt, echo=FALSE}
+```{r boruta.wt, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.wt}Boruta plot for WT features"}
 plot(boruta.wt, las = 2, main="WT mRMR")
 ```
   
-
+Following this initial assessment, chosen variables are selected for regression by using **getNonRejectedFormula()**. This collapses any variables left as **Tentative** factors into either 
 ```{r, include=FALSE}
 #Force "Tentative" values
 chosen.baseline = getNonRejectedFormula(TentativeRoughFix(boruta.baseline))
@@ -291,4 +292,28 @@ chosen.mfcc = getNonRejectedFormula(TentativeRoughFix(boruta.mfcc))
 chosen.tqwt = getNonRejectedFormula(TentativeRoughFix(boruta.tqwt))
 chosen.vff = getNonRejectedFormula(TentativeRoughFix(boruta.vff))
 chosen.wt = getNonRejectedFormula(TentativeRoughFix(boruta.wt))
+```
+  
+## Baseline Features
+
+For baseline features, both Random Forest and Logistic Regression are investigated.
+```{r, include = FALSE}
+library(boot)
+library(randomForest)
+#Logistic
+logit.baseline = glm(formula = chosen.baseline, family="binomial",data=train_df.baseline.std)
+err.logit.baseline = cv.glm(train_df.baseline,logit.baseline)$delta[1]
+
+#Random Forest
+rf.baseline = randomForest(chosen.baseline,data=train_df.baseline.std,importance=TRUE)
+```
+
+```{r,echo=FALSE}
+importance(rf.baseline)
+varImpPlot(rf.baseline)
+err.rf.baseline = last(rf.baseline$mse)
+```
+  
+```{r baseline.comparison, echo=FALSE, fig.align='center',fig.cap="\\label{fig:baseline.comparison}MSE for Baseline comparison: Logistic Regression vs. Random Forest"}
+barplot(c(err.logit.baseline,err.rf.baseline))
 ```

@@ -1,6 +1,6 @@
 ---
 title: "PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording"
-author: "Erin S. King, One Fabbert"
+author: "Erin S. King, Name, Name, Name, Name"
 date: "`r Sys.Date()`"
 output: 
   bookdown::gitbook:
@@ -192,7 +192,7 @@ To start, data from all sub features are standardized such that each feature has
 par(mfrow=c(2,4))
 for(ii in 3:length(train_df.formant)){
   hist(train_df.formant[,ii],main="",xlab=colnames(train_df.formant[ii]))
-}
+
 ```
   
 
@@ -200,7 +200,7 @@ for(ii in 3:length(train_df.formant)){
 par(mfrow=c(2,4))
 for(ii in 3:length(train_df.formant.std)){
   hist(train_df.formant.std[,ii],main="",xlab=colnames(train_df.formant.std[ii]))
-}
+
 ```
   
 ## Feature Selection

@@ -477,6 +477,12 @@ rf_model_int <- randomForest(class ~ .,data = train_df.intensity, ntree = 500, m
 rf_pred_int <- predict(rf_model_int, newdata = test_df.intensity)
 accuracy_int <- sum(rf_pred_int == test_df.intensity$class) / length(test_df.intensity$class)
 
+#KNN
+formula_formant <- class ~ intensity_formant
+knn_params_formant <- expand.grid(k = 10)
+knn_model_formant <- train( formula = formula_formant, data = train_df_intensity, method = "knn", tuneGrid = knn_params_formant, trControl = trainControl(method = "cv"))
+test_predictions_formant <- predict(knn_model_formant, newdata = test_intensity_formant_data)
+
 ```
 
 ```{r}
@@ -529,6 +535,12 @@ accuracy_formant <- sum(predicted_classes_formant == actual_classes_formant) / l
 rf_model_formant <- randomForest(class ~ .,data = train_df.formant, ntree = 500, mtry = sqrt(ncol(train_df.formant)), importance = TRUE)
 rf_pred_formant <- predict(rf_model_formant, newdata = test_df.formant)
 accuracy_formant <- sum(rf_pred_formant == test_df.formant$class) / length(test_df.formant$class)
+
+#KNN
+formula_formant <- class_formant ~ .
+knn_params_formant <- expand.grid(k_formant = 10)
+knn_model_formant <- train(formula = formula_formant, data = train_df.formant, method = "knn", tuneGrid = knn_params_formant, trControl = trainControl(method = "cv"))
+test_predictions_formant <- predict(knn_model_formant, newdata = test_formant_data)
 
 ```
 
@@ -583,6 +595,13 @@ rf_model_vff <- randomForest(class ~ .,data = train_df.VFF, ntree = 500, mtry = 
 rf_pred_vff <- predict(rf_model_vff, newdata = test_df.VFF)
 accuracy_vff <- sum(rf_pred_vff == test_df.VFF$class) / length(test_df.VFF$class)
 
+# KNN
+formula_vff <- class_vff ~ .
+knn_params_vff <- expand.grid(k_vff = 10)
+knn_model_vff <- train(formula = formula_vff, data = train_df.vff, method = "knn", tuneGrid = knn_params_vff, trControl = trainControl(method = "cv"))
+test_predictions_vff <- predict(knn_model_vff, newdata = test_vff_data)
+
+
 ```
 
 ```{r}
@@ -635,6 +654,12 @@ accuracy_mfcc <- sum(predicted_classes_mfcc == actual_classes_mfcc) / length(act
 rf_model_mfcc <- randomForest(class ~ .,data = train_df.MFCC, ntree = 500, mtry = sqrt(ncol(train_df.MFCC)), importance = TRUE)
 rf_pred_mfcc <- predict(rf_model_mfcc, newdata = test_df.MFCC)
 accuracy_mfcc <- sum(rf_pred_mfcc == test_df.MFCC$class) / length(test_df.MFCC$class)
+
+#KFF
+formula_mcff <- class_mcff ~ .
+knn_params_mcff <- expand.grid(k_mcff = 10)
+knn_model_mcff <- train( formula = formula_mcff, data = train_df.mcff, method = "knn", tuneGrid = knn_params_mcff, trControl = trainControl(method = "cv"))
+test_predictions_mcff <- predict(knn_model_mcff, newdata = test_mcff_data)
 
 ```
 
@@ -689,6 +714,12 @@ rf_model_wt <- randomForest(class ~ .,data = train_df.WT, ntree = 500, mtry = sq
 rf_pred_wt <- predict(rf_model_wt, newdata = test_df.WT)
 accuracy_wt <- sum(rf_pred_wt == test_df.WT$class) / length(test_df.WT$class)
 
+# KNN
+formula_wt <- class_wt ~ .
+knn_params_wt <- expand.grid(k_wt = 10)
+knn_model_wt <- train(formula = formula_wt, data = train_df_wt, method = "knn", tuneGrid = knn_params_wt, trControl = trainControl(method = "cv"))
+test_predictions_wt <- predict(knn_model_wt, newdata = test_wt_data)
+
 ```
 
 ```{r}
@@ -736,7 +767,11 @@ rf_model_tqwt <- randomForest(class ~ ., data = train_df_TQWT, ntree = 500, mtry
 rf_pred_tqwt <- predict(rf_model_tqwt, newdata = test_df_TQWT)
 accuracy_tqwt <- sum(rf_pred_tqwt == test_df_TQWT$class) / length(test_df_TQWT$class)
 
-
+#KNN
+formula_tqwt <- class_tqwt ~ .
+knn_params_tqwt <- expand.grid(k = 10)
+knn_model_tqwt <- train(formula = formula_tqwt, data = train_df.TQWT, method = "knn", tuneGrid = knn_params_tqwt, trControl = trainControl(method = "cv"))
+test_predictions_tqwt <- predict(knn_model_tqwt, newdata = test_TQWT_data)
 
 ```
 

@@ -22,7 +22,7 @@ test_data = read.csv(test_set_path)
 # Grab packages if not installed
 # Note, if RStudio is having issues w/ tidyverse, run this command in R (not Rstudio):
 # install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source")
-list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest")
+list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)
 for(package in list.of.packages){
@@ -106,15 +106,6 @@ train_df.wt_test <- train_df.wt[-train_indices, ]
 
 train_df.tqwt_train <- train_df.tqwt[train_indices, ]
 train_df.tqwt_test <- train_df.tqwt[-train_indices, ]
-
-#Break the test data into feature subsets
-test_df.baseline = data.frame(test_data[c(1:24)])
-test_df.intensity = data.frame(test_data[c(1:3,25:27)])
-test_df.formant = data.frame(test_data[c(1:3,28:35)])
-test_df.vff = data.frame(test_data[c(1:3,36:57)])
-test_df.mfcc = data.frame(test_data[c(1:3,58:141)])
-test_df.wt = data.frame(test_data[c(1:3,142:323)])
-test_df.tqwt = data.frame(test_data[c(1:3,324:755)])
 ```
 For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:  
 
@@ -154,20 +145,18 @@ standardize_data <- function(train_df, test_df) {
   return(list(train_df, test_df))
 }
 
-# Standardize train and train_test datasets
+# Standardize train and test datasets
 for (i in subset_names) {
-  # Standardize train_df and train_test_df
+  # Standardize train_df and test_df
   standardized_data <- standardize_data(get(paste0("train_df.", i, "_train")), get(paste0("train_df.", i, "_test")))
-  assign(paste0("train_df_std.", i), standardized_data[[1]])
-  assign(paste0("train_test_df_std.", i), standardized_data[[2]])
+  assign(paste0("train_df_std.", i, "_train"), standardized_data[[1]])
+  assign(paste0("train_df_std.", i, "_test"), standardized_data[[2]])
 }
 
 # Standardize test dataset
-for (i in subset_names) {
-  # Standardize test_df
-  standardized_data <- standardize_data(get(paste0("train_df.", i, "_train")), get(paste0("test_df.", i)))
-  assign(paste0("test_df_std.", i), standardized_data[[2]])
-}
+  standardized_data <- standardize_data(get(paste0("training_data")), get(paste0("test_data")))
+  assign(paste0("test_df_std"), standardized_data[[2]])
+
 ```
 
 To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
@@ -175,36 +164,45 @@ To start, data from all sub features are standardized such that each feature has
 ```{r, include = FALSE}
 
 plot_subfeatures <- function(subfeature_name, train_df, train_df_std) {
+  optimal_mfrow <- function(num_plots) {
+    max_cols <- floor(sqrt(num_plots))
+    num_rows <- ceiling(num_plots / max_cols)
+    return(c(num_rows, max_cols))
+  }
+
+  num_plots <- ncol(train_df) - 2
+
   # Pre-standardization
   cat(paste0("\\begin{figure}[h]\\centering\n"))
   cat(paste0("\\caption{", subfeature_name, " Sub-feature: Pre-standardization}\n"))
-  
-  par(mfrow = c(2, 4))
+
+  par(mfrow = optimal_mfrow(num_plots))
   for (ii in 3:ncol(train_df)) {
     hist(train_df[, ii], main = "", xlab = colnames(train_df)[ii])
   }
   cat("\\end{figure}\n")
-  
+
   # Post-standardization
   cat(paste0("\\begin{figure}[h]\\centering\n"))
   cat(paste0("\\caption{", subfeature_name, " Sub-feature: Post-standardization}\n"))
-  
-  par(mfrow = c(2, 4))
+
+  par(mfrow = optimal_mfrow(num_plots))
   for (ii in 3:ncol(train_df_std)) {
     hist(train_df_std[, ii], main = "", xlab = colnames(train_df_std)[ii])
   }
   cat("\\end{figure}\n")
 }
 
+
 ```
 
-```{r, echo=FALSE, results='asis'}
+```{r, echo=FALSE, results='asis', fig.width=10, fig.height=10}
 
 selected_subsets <- c("baseline", "intensity", "formant")
 # Generate plots using function
 for (selected_subset in selected_subsets) {
   train_df_subset <- get(paste0("train_df.", selected_subset, "_train"))
-  train_df_std_subset <- get(paste0("train_df_std.", selected_subset))
+  train_df_std_subset <- get(paste0("train_df_std.", selected_subset, "_train"))
   
   plot_subfeatures(selected_subset, train_df_subset, train_df_std_subset)
 }
@@ -223,561 +221,329 @@ require(Boruta)
 require(mlbench)
 require(caret)
 require(randomForest)
-#Find important features in training data
-set.seed(123)
-boruta.baseline = Boruta(class ~ ., data = train_df.baseline.std, doTrace = 2)
-boruta.formant = Boruta(class ~., data = train_df.formant.std, doTrace = 2,maxRuns = 500)
-boruta.intensity = Boruta(class ~., data = train_df.intensity.std, doTrace = 2,maxRuns = 500)
-boruta.mfcc = Boruta(class ~., data = train_df.mfcc.std, doTrace = 2,maxRuns = 500)
-boruta.tqwt = Boruta(class ~., data = train_df.tqwt.std, doTrace = 2,maxRuns = 500)
-boruta.vff = Boruta(class ~., data = train_df.vff.std, doTrace = 2,maxRuns = 500)
-boruta.wt = Boruta(class ~., data = train_df.wt.std, doTrace = 2,maxRuns = 500)
-```
-   
-mRMR analysis yields the following results:  
+# Function to perform Boruta feature selection
+perform_boruta <- function(dataset_name, standardized_train_df, max_runs = 500) {
+  cat("Performing Boruta on", dataset_name, "\n")
+  set.seed(123)
+  boruta_result <- Boruta(class ~ ., data = standardized_train_df, doTrace = 2, maxRuns = max_runs)
+  return(boruta_result)
+}
 
-* Baseline
+# Call the perform_boruta function for each subset. Finds important features in each subset
+boruta_results <- list()
+for (subset_name in subset_names) {
+  standardized_train_df <- get(paste0("train_df_std.", subset_name, "_train"))
+  boruta_result <- perform_boruta(subset_name, standardized_train_df)
+  boruta_results[[subset_name]] <- boruta_result
+}
+```
+
+```{r, include=FALSE}
+# Boruta plot function for multiple objects
+generate_boruta_plots <- function(boruta_list) {
+  for (name in names(boruta_list)) {
+    label <- paste0("Boruta plot for ", name, " features")
+    fig_label <- paste0("fig:", gsub(" ", "_", tolower(label)))
+    
+    cat(paste0("\\begin{figure}[ht!]\n"))
+    cat(paste0("\\centering\n"))
+    cat(paste0("\\caption{", label, "}\n"))
+    cat(paste0("\\label{", fig_label, "}\n"))
+    
+    plot(boruta_list[[name]], las = 2, main = paste0(name, " mRMR"))
+    
+    cat("\\end{figure}\n")
+  }
+}
+
+```
+mRMR analysis yields the following results:  
 ```{r, echo=FALSE}
-print(boruta.baseline)
-```
-* Formant
-```{r, echo=FALSE}
-print(boruta.formant)
-```
-* Intensity
-```{r, echo=FALSE}
-print(boruta.intensity)
-```
-* MFCC
-```{r, echo=FALSE}
-print(boruta.mfcc)
-```
-* TQWT
-```{r, echo=FALSE}
-print(boruta.tqwt)
-```
-* VFF
-```{r, echo=FALSE}
-print(boruta.vff)
-```
-* WT
-```{r, echo=FALSE}
-print(boruta.wt)
-```
- 
- 
-```{r boruta.baseline, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.baseline}Boruta plot for Baseline features"}
-#Generate Boruta plots
-plot(boruta.baseline, las = 2,main="Baseline mRMR")
-```
-```{r boruta.formant, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.formant}Boruta plot for Formant features"}
-plot(boruta.formant, las = 2,main = "Formant mRMR")
-```
-```{r boruta.intensity, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.intensity}Boruta plot for Intensity features"}
-plot(boruta.intensity, las = 2, main="Intensity mRMR")
-```
-```{r boruta.mfcc, echo=FALSE, , fig.align='center',fig.cap="\\label{fig:boruta.mfcc}Boruta plot for MFCC features"}
-plot(boruta.mfcc, las = 2, main="MFCC mRMR")
-```
-```{r boruta.tqwt, echo=FALSE, , fig.align='center',fig.cap="\\label{fig:boruta.tqwt}Boruta plot for TQWT features"}
-plot(boruta.tqwt, las = 2, main="TQWT mRMR")
-```
-```{r boruta.vff, echo=FALSE, , fig.align='center',fig.cap="\\label{fig:boruta.vff}Boruta plot for VFF features"}
-plot(boruta.vff, las = 2, main="VFF mRMR")
-```
-```{r boruta.wt, echo=FALSE, fig.align='center',fig.cap="\\label{fig:boruta.wt}Boruta plot for WT features"}
-plot(boruta.wt, las = 2, main="WT mRMR")
+# Generate Boruta plots using the generate_boruta_plots function
+generate_boruta_plots(boruta_results)
+
 ```
   
 Following this initial assessment, chosen variables are selected for regression by using **getNonRejectedFormula()**. This collapses any variables left as **Tentative** factors into either 
 ```{r, include=FALSE}
-#Force "Tentative" values
-chosen.baseline = getNonRejectedFormula(TentativeRoughFix(boruta.baseline))
-chosen.formant = getNonRejectedFormula(TentativeRoughFix(boruta.formant))
-chosen.intensity = getNonRejectedFormula(TentativeRoughFix(boruta.intensity))
-chosen.mfcc = getNonRejectedFormula(TentativeRoughFix(boruta.mfcc))
-chosen.tqwt = getNonRejectedFormula(TentativeRoughFix(boruta.tqwt))
-chosen.vff = getNonRejectedFormula(TentativeRoughFix(boruta.vff))
-chosen.wt = getNonRejectedFormula(TentativeRoughFix(boruta.wt))
-<<<<<<< Updated upstream
+#Force "Tentative" values function
+get_chosen_features <- function(boruta_results) {
+  chosen_features <- list()
+  for (name in names(boruta_results)) {
+    chosen_formula <- getNonRejectedFormula(TentativeRoughFix(boruta_results[[name]]))
+    chosen_features[[name]] <- chosen_formula
+  }
+  return(chosen_features)
+}
 ```
-  
-## Baseline Features
 
-For baseline features, both Random Forest and Logistic Regression are investigated.
+``````{r, echo=FALSE}
+# Get chosen features using the get_chosen_features function
+chosen_features <- get_chosen_features(boruta_results)
+```
+
+## Model Selection
 ```{r, include = FALSE}
-library(boot)
-library(randomForest)
-#Logistic
-logit.baseline = glm(formula = chosen.baseline, family="binomial",data=train_df.baseline.std)
-err.logit.baseline = cv.glm(train_df.baseline,logit.baseline)$delta[1]
 
-#Random Forest
-rf.baseline = randomForest(chosen.baseline,data=train_df.baseline.std,importance=TRUE)
-```
-
-```{r,echo=FALSE}
-importance(rf.baseline)
-varImpPlot(rf.baseline)
-err.rf.baseline = last(rf.baseline$mse)
-```
+#Function for Multilayer Perceptron
+train_mlp <- function(train_df, formula) {
+  library(neuralnet)
+  set.seed(123)
   
-```{r baseline.comparison, echo=FALSE, fig.align='center',fig.cap="\\label{fig:baseline.comparison}MSE for Baseline comparison: Logistic Regression vs. Random Forest"}
-barplot(c(err.logit.baseline,err.rf.baseline))
-```
-=======
+  threshold_func <- function(x) ifelse(x > 0.5, 1, 0)
+  train_df$class <- as.numeric(train_df$class) - 1
+  
+  mlp_model <- neuralnet(formula, data = train_df, hidden = c(5), linear.output = FALSE, act.fct = "logistic", stepmax = 1e+05)
+  return(list(model = mlp_model, threshold_func = threshold_func))
+}
+
+test_model <- function(model_obj, test_df, model_type, chosen_formula) {
+  if (model_type == "mlp") {
+    model <- model_obj$model
+    threshold_func <- model_obj$threshold_func
+    
+    test_data <- model.matrix(chosen_formula, data = test_df)[, -1]
+    predictions <- compute(model, test_data)$net.result
+    predicted_classes <- sapply(predictions, threshold_func)
+    actual_classes <- test_df$class
+    
+    accuracy <- sum(predicted_classes == actual_classes) / length(actual_classes)
+  } else {
+    predictions <- predict(model_obj, test_df)
+    
+    if (model_type %in% c("logit", "svm_linear", "svm_rbf")) {
+      predicted_classes <- ifelse(predictions > 0.5, 1, 0)
+    } else {
+      predicted_classes <- predictions
+    }
+    actual_classes <- test_df$class
+    
+    accuracy <- sum(predicted_classes == actual_classes) / length(actual_classes)
+  }
+  
+  return(accuracy)
+}
 
 ```
 
-```{r}
-# Separate the predictors and the target variable in both datasets
-train_baseline_class <- train_df.baseline[, 1]
-train_baseline_data <- train_df.baseline[, -1]
-test_baseline_class <- test_df.baseline[, 1]
-test_baseline_data <- test_df.baseline[, -1]
 
-train_intensity_class <- train_df.intensity[, 1]
-train_intensity_data <- train_df.intensity[, -1]
-test_intensity_class <- test_df.intensity[, 1]
-test_intensity_data <- test_df.intensity[, -1]
+```{r, include = FALSE}
 
-train_formant_class <- train_df.formant[, 1]
-train_formant_data <- train_df.formant[, -1]
-test_formant_class <- test_df.formant[, 1]
-test_formant_data <- test_df.formant[, -1]
+#Modeling function
+generate_models <- function(dataset_name, train_df, test_df) {
+  library(caret)
+  library(randomForest)
+  library(e1071)
+  library(nnet)
+  library(kernlab)
+  library(naivebayes)
+  
+  set.seed(123)
+  # Create chosen_formula
+  chosen_formula <- as.formula(chosen_features[[dataset_name]])
 
-train_vff_class <- train_df.vff[, 1]
-train_vff_data <- train_df.vff[, -1]
-test_vff_class <- test_df.vff[, 1]
-test_vff_data <- test_df.vff[, -1]
+  # Convert the class variable into a factor
+  train_df$class <- as.factor(train_df$class)
+  test_df$class <- as.factor(test_df$class)
 
-train_mfcc_class <- train_df.mfcc[, 1]
-train_mfcc_data <- train_df.mfcc[, -1]
-test_mfcc_class <- test_df.mfcc[, 1]
-test_mfcc_data <- test_df.mfcc[, -1]
+  # Create chosen_formula
+  chosen_formula <- as.formula(chosen_features[[dataset_name]])
 
-train_wt_class <- train_df.wt[, 1]
-train_wt_data <- train_df.wt[, -1]
-test_wt_class <- test_df.wt[, 1]
-test_wt_data <- test_df.wt[, -1]
+  # Train/test data
+  train_data <- model.matrix(chosen_formula, data = train_df)[, -1]
+  train_class <- train_df$class
+  test_data <- model.matrix(chosen_formula, data = test_df)[, -1]
+  test_class <- test_df$class
 
-train_tqwt_class <- train_df.tqwt[, 1]
-train_tqwt_data <- train_df.tqwt[, -1]
-test_tqwt_class <- test_df.tqwt[, 1]
-test_tqwt_data <- test_df.tqwt[, -1]
+  # Initialize list to store models and accuracy
+  models_and_accuracy <- list()
 
-```
+  # Logistic Regression
+  logit_model <- glm(formula = chosen_formula, family = "binomial", data = train_df)
+  logit_predictions <- predict(logit_model, newdata = test_df, type = "response")
+  logit_predicted_classes <- ifelse(logit_predictions > 0.5, 1, 0)
+  accuracy_logit <- sum(logit_predicted_classes == test_class) / length(test_class)
 
-```{r}
-# Baseline
-#SVM
-# Create, train, and test SVM with Linear kernel for accuracy
-accuracy_linear <- 0
-svm_linear <- svm(train_baseline_data, train_baseline_class, kernel = "linear")
-predictions_linear <- predict(svm_linear, test_baseline_data)
-accuracy_linear <- sum(predictions_linear == test_baseline_class) / length(test_baseline_class)
+  models_and_accuracy[["Logistic\nRegression"]] <- list(model = logit_model, accuracy = accuracy_logit)
+  
+  # Define the parameter grid for tuning the Random Forest
+  tuneGrid <- expand.grid(mtry = sqrt(ncol(train_df)),
+                        splitrule = "gini",
+                        min.node.size = c(1, 3, 5, 10, 15))
 
-# Create, train, and test SVM with RBF kernel for accuracy
-accuracy_rbf <- 0
-svm_rbf <- svm(train_baseline_data, train_baseline_class, kernel = "radial")
-predictions_rbf <- predict(svm_rbf, test_baseline_data)
-class_labels <- ifelse(predictions_rbf > 0.5, 1, 0)
-accuracy_rbf <- sum(class_labels == test_baseline_class) / length(test_baseline_class)
+  # Set up cross-validation
+  cvControl <- trainControl(method = "cv", number = 5, search = "grid")
 
+  # Random Forest model using cross-validation
+  rf_model <- train(chosen_formula, data = train_df,
+                  method = "ranger",
+                  trControl = cvControl,
+                  tuneGrid = tuneGrid,
+                  importance = "none",
+                  num.trees = 500)
+  
+  rf_pred <- predict(rf_model, newdata = test_df)
+  accuracy_rf <- sum(rf_pred == test_class) / length(test_class)
 
-#Multilayer Perceptron
-install.packages("neuralnet")
-library(neuralnet)
+  models_and_accuracy[["Random\nForest"]] <- list(model = rf_model, accuracy = accuracy_rf)
 
-# train_df.baseline$class <- as.logical(train_df.baseline$class)
-nn.2 <-nnet(class ~ .,data = train_df.baseline, size = 2,decay = 1e-5,maxit = 100)
-predicted.class <- predict(nn.2, test_df.baseline, type = "class")
-comparison <- data.frame(actual = test.data$class, predicted = predicted.class)
+  # SVM with Linear Kernel
+  svm_linear <- svm(train_data, train_class, kernel = "linear")
+  predictions_linear <- predict(svm_linear, test_data)
+  accuracy_linear <- sum(predictions_linear == test_class) / length(test_class)
 
-  # How did we do?
-  table(comparison)
+  models_and_accuracy[["SVM\nLinear"]] <- list(model = svm_linear, accuracy = accuracy_linear)
 
+  # SVM with RBF Kernel
+  svm_rbf <- svm(train_data, train_class, kernel = "radial")
+  predictions_rbf <- predict(svm_rbf, test_data)
+  accuracy_rbf <- sum(predictions_rbf == test_class) / length(test_class)
 
-# Naive Bayes
+  models_and_accuracy[["SVM RBF"]] <- list(model = svm_rbf, accuracy = accuracy_rbf)
 
-formula <- class ~ .
-nb_model <- naiveBayes(formula, data = train_df.baseline)
-predictions <- predict(nb_model, newdata = test_df.baseline)
-accuracy_nb <- sum(predictions == test_baseline_class) / length(test_baseline_class)
+  # Multilayer Perceptron
+  mlp_model <- train_mlp(train_df, chosen_formula)
+  accuracy_mlp <- test_model(mlp_model, test_df, "mlp", chosen_formula)
 
+  models_and_accuracy[["Multilayer\nPerceptron"]] <- list(model = mlp_model$model, accuracy = accuracy_mlp)
 
-# Logistic Regression
+  # Naive Bayes
+  nb_model <- naive_bayes(chosen_formula, data = train_df)
+  nb_predictions <- predict(nb_model, newdata = test_df)
+  accuracy_nb <- sum(nb_predictions == test_class) / length(test_class)
 
-model <- glm(class ~ ., data = train_df.baseline, family = binomial)
-predictions <- predict(model, newdata = test_set, type = "response")
-predicted_classes <- ifelse(predictions > 0.5, 1, 0)
-actual_classes <- test_df.baseline$class
-accuracy <- sum(predicted_classes == actual_classes) / length(actual_classes)
+  models_and_accuracy[["Naive\nBayes"]] <- list(model = nb_model, accuracy = accuracy_nb)
 
+  # KNN
+  k <- 10
+  knn_predictions <- knn(train = train_data, test = test_data, cl = train_class, k = k)
+  accuracy_knn <- sum(knn_predictions == test_class) / length(test_class)
+  knn_model <- list(train_data = train_data, train_class = train_class, k = k)
 
-# Random Forest
-rf_model <- randomForest(class ~ .,data = train_df.baseline, ntree = 500, mtry = sqrt(ncol(train_df.baseline)), importance = TRUE)
-rf_pred <- predict(rf_model, newdata = test_df.baseline)
-accuracy <- sum(rf_pred == test_df.baseline$class) / length(test_df.baseline$class)
+  models_and_accuracy[["KNN"]] <- list(model = knn_model, accuracy = accuracy_knn)
 
+  # Generate a bar plot comparing the accuracy of each model
+  model_names <- names(models_and_accuracy)
+  model_accuracies <- sapply(models_and_accuracy, function(x) x$accuracy)
 
-# KNN
+  plot_title <- paste0("Model Accuracies for ", dataset_name)
+  par(mar = c(8, 4, 4, 2) + 0.1)  # Increase bottom margin size
+  barplot(model_accuracies, names.arg = model_names, main = plot_title, xlab = "Models", ylab = "Accuracy", las = 2)
+  par(mar = c(5, 4, 4, 2) + 0.1)  # Reset the margins to default values
 
-formula <- class ~ .
-knn_params <- expand.grid(k = 10)
-knn_model <- train( formula = formula, data = train_df.baseline, method = "knn", tuneGrid = knn_params, trControl = trainControl(method = "cv"))
-test_predictions <- predict(knn_model, newdata = test_baseline_data)
-
-```
-
-```{r}
-# Intensity
-# Create, train, and test SVM with Linear kernel for accuracy
-accuracy_linear_int <- 0
-svm_linear_int <- svm(train_intensity_data, train_intensity_class, kernel = "linear")
-predictions_linear_int <- predict(svm_linear_int, test_intensity_data)
-accuracy_linear_int <- sum(predictions_linear_int == test_intensity_class) / length(test_intensity_class)
-
-# Create, train, and test SVM with RBF kernel for accuracy
-accuracy_rbf_int <- 0
-svm_rbf_int <- svm(train_intensity_data, train_intensity_class, kernel = "radial")
-predictions_rbf_int <- predict(svm_rbf_int, test_intensity_data)
-class_labels_int <- ifelse(predictions_rbf_int > 0.5, 1, 0)
-accuracy_rbf_int <- sum(class_labels_int == test_intensity_class) / length(test_intensity_class)
-
-
-# Multilayer Perceptron
-install.packages("neuralnet")
-library(neuralnet)
-
-# train_df.intensity$class <- as.logical(train_df.intensity$class)
-nn.2_int <-nnet(class ~ .,data = train_df.intensity, size = 2,decay = 1e-5,maxit = 100)
-predicted.class_int <- predict(nn.2_int, test_df.intensity, type = "class")
-comparison_int <- data.frame(actual = test.data$class, predicted = predicted.class_int)
-
-# How did we do?
-table(comparison_int)
-
-
-# Naive Bayes
-
-formula_int <- class ~ .
-nb_model_int <- naiveBayes(formula_int, data = train_df.intensity)
-predictions_int <- predict(nb_model_int, newdata = test_df.intensity)
-accuracy_nb_int <- sum(predictions_int == test_intensity_class) / length(test_intensity_class)
-
-
-# Logistic Regression
-
-model_int <- glm(class ~ ., data = train_df.intensity, family = binomial)
-predictions_int <- predict(model_int, newdata = test_set, type = "response")
-predicted_classes_int <- ifelse(predictions_int > 0.5, 1, 0)
-actual_classes_int <- test_df.intensity$class
-accuracy_int <- sum(predicted_classes_int == actual_classes_int) / length(actual_classes_int)
-
-
-# Random Forest
-rf_model_int <- randomForest(class ~ .,data = train_df.intensity, ntree = 500, mtry = sqrt(ncol(train_df.intensity)), importance = TRUE)
-rf_pred_int <- predict(rf_model_int, newdata = test_df.intensity)
-accuracy_int <- sum(rf_pred_int == test_df.intensity$class) / length(test_df.intensity$class)
-
-#KNN
-formula_formant <- class ~ intensity_formant
-knn_params_formant <- expand.grid(k = 10)
-knn_model_formant <- train( formula = formula_formant, data = train_df_intensity, method = "knn", tuneGrid = knn_params_formant, trControl = trainControl(method = "cv"))
-test_predictions_formant <- predict(knn_model_formant, newdata = test_intensity_formant_data)
+  return(models_and_accuracy)
+}
 
 ```
 
-```{r}
-#Formant
-# Create, train, and test SVM with Linear kernel for accuracy
-accuracy_linear_formant <- 0
-svm_linear_formant <- svm(train_formant_data, train_formant_class, kernel = "linear")
-predictions_linear_formant <- predict(svm_linear_formant, test_formant_data)
-accuracy_linear_formant <- sum(predictions_linear_formant == test_formant_class) / length(test_formant_class)
+```{r, echo = FALSE}
 
-# Create, train, and test SVM with RBF kernel for accuracy
-accuracy_rbf_formant <- 0
-svm_rbf_formant <- svm(train_formant_data, train_formant_class, kernel = "radial")
-predictions_rbf_formant <- predict(svm_rbf_formant, test_formant_data)
-class_labels_formant <- ifelse(predictions_rbf_formant > 0.5, 1, 0)
-accuracy_rbf_formant <- sum(class_labels_formant == test_formant_class) / length(test_formant_class)
+#Pass chosen_features, subset_names, and training/test data to choose the best model.
+best_models <- list()
 
+for (subset_name in subset_names) {
+  train_df <- get(paste0("train_df_std.", subset_name, "_train"))
+  test_df <- get(paste0("train_df_std.", subset_name, "_test"))
 
-#Multilayer Perceptron
-install.packages("neuralnet")
-library(neuralnet)
+  models_and_accuracy <- suppressWarnings(generate_models(subset_name, train_df, test_df))
 
-# train_df.formant$class <- as.logical(train_df.formant$class)
-nn.2_formant <-nnet(class ~ .,data = train_df.formant, size = 2,decay = 1e-5,maxit = 100)
-predicted.class_formant <- predict(nn.2_formant, test_df.formant, type = "class")
-comparison_formant <- data.frame(actual = test_data$formant, predicted = predicted.class_formant)
+  # Find the model with the highest accuracy
+  best_model <- names(which.max(sapply(models_and_accuracy, function(x) x$accuracy)))
+  cat("Best model for", subset_name, "is", best_model, "with an accuracy of", models_and_accuracy[[best_model]]$accuracy, "\n")
 
-# How did we do?
-table(comparison_formant)
-
-
-# Naive Bayes
-
-formula_formant <- class ~ .
-nb_model_formant <- naiveBayes(formula_formant, data = train_df.formant)
-predictions_formant <- predict(nb_model_formant, newdata = test_df.formant)
-accuracy_nb_formant <- sum(predictions_formant == test_formant_class) / length(test_formant_class)
-
-
-# Logistic Regression
-
-model_formant <- glm(class ~ ., data = train_df.formant, family = binomial)
-predictions_formant <- predict(model_formant, newdata = test_set_formant, type = "response")
-predicted_classes_formant <- ifelse(predictions_formant > 0.5, 1, 0)
-actual_classes_formant <- test_df.formant$class
-accuracy_formant <- sum(predicted_classes_formant == actual_classes_formant) / length(actual_classes_formant)
-
-
-# Random Forest
-rf_model_formant <- randomForest(class ~ .,data = train_df.formant, ntree = 500, mtry = sqrt(ncol(train_df.formant)), importance = TRUE)
-rf_pred_formant <- predict(rf_model_formant, newdata = test_df.formant)
-accuracy_formant <- sum(rf_pred_formant == test_df.formant$class) / length(test_df.formant$class)
-
-#KNN
-formula_formant <- class_formant ~ .
-knn_params_formant <- expand.grid(k_formant = 10)
-knn_model_formant <- train(formula = formula_formant, data = train_df.formant, method = "knn", tuneGrid = knn_params_formant, trControl = trainControl(method = "cv"))
-test_predictions_formant <- predict(knn_model_formant, newdata = test_formant_data)
+  # Store the best model for this subset
+  best_models[[subset_name]] <- list(model = models_and_accuracy[[best_model]]$model, accuracy = models_and_accuracy[[best_model]]$accuracy)
+}
 
 ```
 
-```{r}
-#VFF
-# Create, train, and test SVM with Linear kernel for accuracy
-accuracy_linear_vff <- 0
-svm_linear_vff <- svm(train_VFF_data, train_VFF_class, kernel = "linear")
-predictions_linear_vff <- predict(svm_linear_vff, test_VFF_data)
-accuracy_linear_vff <- sum(predictions_linear_vff == test_VFF_class) / length(test_VFF_class)
+```{r, echo=FALSE}
 
-# Create, train, and test SVM with RBF kernel for accuracy
-accuracy_rbf_vff <- 0
-svm_rbf_vff <- svm(train_VFF_data, train_VFF_class, kernel = "radial")
-predictions_rbf_vff <- predict(svm_rbf_vff, test_VFF_data)
-class_labels_vff <- ifelse(predictions_rbf_vff > 0.5, 1, 0)
-accuracy_rbf_vff <- sum(class_labels_vff == test_VFF_class) / length(test_VFF_class)
+train_ensemble_model <- function(train_df) {
+  control <- trainControl(method = "repeatedcv", number = 10, repeats = 3, savePredictions = "final", classProbs = TRUE)
+  metric <- "Accuracy"
 
+  # Define the list of models for the ensemble
+  model_list <- c("glm", "svmLinear", "svmRadial", "nnet", "naive_bayes", "ranger", "knn")
 
-#Multilayer Perceptron
-install.packages("neuralnet")
-library(neuralnet)
-
-# train_df.VFF$class <- as.logical(train_df.VFF$class)
-nn.2_vff <-nnet(class ~ .,data = train_df.VFF, size = 2,decay = 1e-5,maxit = 100)
-predicted.class_vff <- predict(nn.2_vff, test_df.VFF, type = "class")
-comparison_vff <- data.frame(actual = test.data_VFF$class, predicted = predicted.class_vff)
-
-# How did we do?
-table(comparison_vff)
-
-
-# Naive Bayes
-
-formula_vff <- class ~ .
-nb_model_vff <- naiveBayes(formula_vff, data = train_df.VFF)
-predictions_vff <- predict(nb_model_vff, newdata = test_df.VFF)
-accuracy_nb_vff <- sum(predictions_vff == test_VFF_class) / length(test_VFF_class)
-
-
-# Logistic Regression
-
-model_vff <- glm(class ~ ., data = train_df.VFF, family = binomial)
-predictions_vff <- predict(model_vff, newdata = test_set_VFF, type = "response")
-predicted_classes_vff <- ifelse(predictions_vff > 0.5, 1, 0)
-actual_classes_vff <- test_df.VFF$class
-accuracy_vff <- sum(predicted_classes_vff == actual_classes_vff) / length(actual_classes_vff)
-
-
-# Random Forest
-rf_model_vff <- randomForest(class ~ .,data = train_df.VFF, ntree = 500, mtry = sqrt(ncol(train_df.VFF)), importance = TRUE)
-rf_pred_vff <- predict(rf_model_vff, newdata = test_df.VFF)
-accuracy_vff <- sum(rf_pred_vff == test_df.VFF$class) / length(test_df.VFF$class)
-
-# KNN
-formula_vff <- class_vff ~ .
-knn_params_vff <- expand.grid(k_vff = 10)
-knn_model_vff <- train(formula = formula_vff, data = train_df.vff, method = "knn", tuneGrid = knn_params_vff, trControl = trainControl(method = "cv"))
-test_predictions_vff <- predict(knn_model_vff, newdata = test_vff_data)
-
+  # Train the ensemble model using stacking and caretList
+  ensemble_model <- caretList(formula = chosen_formula, data = train_df, methodList = model_list, trControl = control, metric = metric)
+  
+  return(ensemble_model)
+}
 
 ```
 
-```{r}
-#MFCC
-# Create, train, and test SVM with Linear kernel for accuracy
-accuracy_linear_mfcc <- 0
-svm_linear_mfcc <- svm(train_MFCC_data, train_MFCC_class, kernel = "linear")
-predictions_linear_mfcc <- predict(svm_linear_mfcc, test_MFCC_data)
-accuracy_linear_mfcc <- sum(predictions_linear_mfcc == test_MFCC_class) / length(test_MFCC_class)
+```{r, echo+FALSE}
 
-# Create, train, and test SVM with RBF kernel for accuracy
-accuracy_rbf_mfcc <- 0
-svm_rbf_mfcc <- svm(train_MFCC_data, train_MFCC_class, kernel = "radial")
-predictions_rbf_mfcc <- predict(svm_rbf_mfcc, test_MFCC_data)
-class_labels_mfcc <- ifelse(predictions_rbf_mfcc > 0.5, 1, 0)
-accuracy_rbf_mfcc <- sum(class_labels_mfcc == test_MFCC_class) / length(test_MFCC_class)
+evaluate_ensemble_model <- function(ensemble_model, test_df) {
+  # Make predictions with the ensemble model
+  predictions <- predict(ensemble_model, newdata = test_df)
 
-
-#Multilayer Perceptron
-install.packages("neuralnet")
-library(neuralnet)
-
-# train_df.MFCC$class <- as.logical(train_df.MFCC$class)
-nn.2_mfcc <-nnet(class ~ .,data = train_df.MFCC, size = 2,decay = 1e-5,maxit = 100)
-predicted.class_mfcc <- predict(nn.2_mfcc, test_df.MFCC, type = "class")
-comparison_mfcc <- data.frame(actual = test_data$MFCC, predicted = predicted.class_mfcc)
-
-# How did we do?
-table(comparison_mfcc)
-
-
-# Naive Bayes
-
-formula_mfcc <- class ~ .
-nb_model_mfcc <- naiveBayes(formula_mfcc, data = train_df.MFCC)
-predictions_mfcc <- predict(nb_model_mfcc, newdata = test_df.MFCC)
-accuracy_nb_mfcc <- sum(predictions_mfcc == test_MFCC_class) / length(test_MFCC_class)
-
-
-# Logistic Regression
-
-model_mfcc <- glm(class ~ ., data = train_df.MFCC, family = binomial)
-predictions_mfcc <- predict(model_mfcc, newdata = test_set, type = "response")
-predicted_classes_mfcc <- ifelse(predictions_mfcc > 0.5, 1, 0)
-actual_classes_mfcc <- test_df.MFCC$class
-accuracy_mfcc <- sum(predicted_classes_mfcc == actual_classes_mfcc) / length(actual_classes_mfcc)
-
-
-# Random Forest
-rf_model_mfcc <- randomForest(class ~ .,data = train_df.MFCC, ntree = 500, mtry = sqrt(ncol(train_df.MFCC)), importance = TRUE)
-rf_pred_mfcc <- predict(rf_model_mfcc, newdata = test_df.MFCC)
-accuracy_mfcc <- sum(rf_pred_mfcc == test_df.MFCC$class) / length(test_df.MFCC$class)
-
-#KFF
-formula_mcff <- class_mcff ~ .
-knn_params_mcff <- expand.grid(k_mcff = 10)
-knn_model_mcff <- train( formula = formula_mcff, data = train_df.mcff, method = "knn", tuneGrid = knn_params_mcff, trControl = trainControl(method = "cv"))
-test_predictions_mcff <- predict(knn_model_mcff, newdata = test_mcff_data)
+  # Calculate accuracy
+  test_class <- test_df$class
+  accuracy <- sum(predictions == test_class) / length(test_class)
+  
+  return(accuracy)
+}
 
 ```
 
-```{r}
-#WT
-# Create, train, and test SVM with Linear kernel for accuracy
-accuracy_linear_wt <- 0
-svm_linear_wt <- svm(train_WT_data, train_WT_class, kernel = "linear")
-predictions_linear_wt <- predict(svm_linear_wt, test_WT_data)
-accuracy_linear_wt <- sum(predictions_linear_wt == test_WT_class) / length(test_WT_class)
+```{r, echo=FALSE}
 
-# Create, train, and test SVM with RBF kernel for accuracy
-accuracy_rbf_wt <- 0
-svm_rbf_wt <- svm(train_WT_data, train_WT_class, kernel = "radial")
-predictions_rbf_wt <- predict(svm_rbf_wt, test_WT_data)
-class_labels_wt <- ifelse(predictions_rbf_wt > 0.5, 1, 0)
-accuracy_rbf_wt <- sum(class_labels_wt == test_WT_class) / length(test_WT_class)
-
-
-#Multilayer Perceptron
-install.packages("neuralnet")
-library(neuralnet)
-
-# train_df.WT$class <- as.logical(train_df.WT$class)
-nn.2_wt <-nnet(class ~ .,data = train_df.WT, size = 2,decay = 1e-5,maxit = 100)
-predicted.class_wt <- predict(nn.2_wt, test_df.WT, type = "class")
-comparison_wt <- data.frame(actual = test_data$WT, predicted = predicted.class_wt)
-
-# How did we do?
-table(comparison_wt)
-
-
-# Naive Bayes
-
-formula_wt <- class ~ .
-nb_model_wt <- naiveBayes(formula_wt, data = train_df.WT)
-predictions_wt <- predict(nb_model_wt, newdata = test_df.WT)
-accuracy_nb_wt <- sum(predictions_wt == test_WT_class) / length(test_WT_class)
-
-
-# Logistic Regression
-
-model_wt <- glm(class ~ ., data = train_df.WT, family = binomial)
-predictions_wt <- predict(model_wt, newdata = test_set_wt, type = "response")
-predicted_classes_wt <- ifelse(predictions_wt > 0.5, 1, 0)
-actual_classes_wt <- test_df.WT$class
-accuracy_wt <- sum(predicted_classes_wt == actual_classes_wt) / length(actual_classes_wt)
-
-
-# Random Forest
-rf_model_wt <- randomForest(class ~ .,data = train_df.WT, ntree = 500, mtry = sqrt(ncol(train_df.WT)), importance = TRUE)
-rf_pred_wt <- predict(rf_model_wt, newdata = test_df.WT)
-accuracy_wt <- sum(rf_pred_wt == test_df.WT$class) / length(test_df.WT$class)
-
-# KNN
-formula_wt <- class_wt ~ .
-knn_params_wt <- expand.grid(k_wt = 10)
-knn_model_wt <- train(formula = formula_wt, data = train_df_wt, method = "knn", tuneGrid = knn_params_wt, trControl = trainControl(method = "cv"))
-test_predictions_wt <- predict(knn_model_wt, newdata = test_wt_data)
+ensemble_prediction <- function(train_df, test_df, new_data) {
+  # Train the ensemble model
+  ensemble_model <- train_ensemble_model(train_df)
+  
+  # Evaluate the ensemble model
+  accuracy <- evaluate_ensemble_model(ensemble_model, test_df)
+  cat("Ensemble model accuracy:", accuracy, "\n")
+  
+  # Make predictions for the new data
+  predictions <- predict(ensemble_model, newdata = new_data)
+  
+  # Overwrite the Class column in the new_data dataset with the predictions
+  new_data$class <- predictions
+  
+  return(new_data)[1:2,]
+}
 
 ```
 
-```{r}
-#TQWT
-# Create, train, and test SVM with Linear kernel for accuracy
-accuracy_linear_tqwt <- 0
-svm_linear_tqwt <- svm(train_TQWT_data, train_TQWT_class, kernel = "linear")
-predictions_linear_tqwt <- predict(svm_linear_tqwt, test_TQWT_data)
-accuracy_linear_tqwt <- sum(predictions_linear_tqwt == test_TQWT_class) / length(test_TQWT_class)
+```{r, echo=FALSE}
 
-# Create, train, and test SVM with RBF kernel for accuracy
-accuracy_rbf_tqwt <- 0
-svm_rbf_tqwt <- svm(train_TQWT_data, train_TQWT_class, kernel = "radial")
-predictions_rbf_tqwt <- predict(svm_rbf_tqwt, test_TQWT_data)
-class_labels_tqwt <- ifelse(predictions_rbf_tqwt > 0.5, 1, 0)
-accuracy_rbf_tqwt <- sum(class_labels_tqwt == test_TQWT_class) / length(test_TQWT_class)
+library(randomForest)
+library(e1071)
+library(nnet)
+library(kernlab)
+library(naivebayes)
+library(dplyr)
+library(caretEnsemble)
 
-#Multilayer Perceptron
-install.packages("neuralnet")
-library(neuralnet)
+# Combine the training and test datasets of each subfeature and add unique ID
+combined_train_df <- Reduce(function(x, y) left_join(x, y, by = "id"), lapply(subset_names, function(subset_name) {
+  df <- get(paste0("train_df_std.", subset_name, "_train"))
+  df$id <- seq_len(nrow(df))
+  df
+}))
 
-# train_df.TQWT$class <- as.logical(train_df.TQWT$class)
-nn.2_tqwt <- nnet(class ~ ., data = train_df_TQWT, size = 2, decay = 1e-5, maxit = 100)
-predicted_class_tqwt <- predict(nn.2_tqwt, test_df_TQWT, type = "class")
-comparison_tqwt <- data.frame(actual = test_TQWT_class, predicted = predicted_class_tqwt)
+combined_test_df <- Reduce(function(x, y) left_join(x, y, by = "id"), lapply(subset_names, function(subset_name) {
+  df <- get(paste0("train_df_std.", subset_name, "_test"))
+  df$id <- seq_len(nrow(df))
+  df
+}))
 
-# How did we do?
-table(comparison_tqwt)
+# Create chosen_formula
+chosen_columns <- setdiff(names(combined_train_df), c("class", "id"))
+terms_rhs <- paste(chosen_columns, collapse = " + ")
+terms_lhs <- quote(class)
+terms_env <- as.environment(as.list(terms_lhs))
+eval(parse(text = paste("terms_lhs <- class ~", terms_rhs)), envir = terms_env)
+chosen_formula <- as.formula(terms_lhs, env = terms_env)
 
-# Naive Bayes
-formula_tqwt <- class ~ .
-nb_model_tqwt <- naiveBayes(formula_tqwt, data = train_df_TQWT)
-predictions_tqwt <- predict(nb_model_tqwt, newdata = test_df_TQWT)
-accuracy_nb_tqwt <- sum(predictions_tqwt == test_TQWT_class) / length(test_TQWT_class)
+# Train and evaluate the ensemble model using the combined train and test datasets
+predictions <- ensemble_prediction(combined_train_df, combined_test_df, test_df_std)
 
-# Logistic Regression
-model_tqwt <- glm(class ~ ., data = train_df_TQWT, family = binomial)
-predictions_tqwt <- predict(model_tqwt, newdata = test_set_TQWT, type = "response")
-predicted_classes_tqwt <- ifelse(predictions_tqwt > 0.5, 1, 0)
-actual_classes_tqwt <- test_df_TQWT$class
-accuracy_tqwt <- sum(predicted_classes_tqwt == actual_classes_tqwt) / length(actual_classes_tqwt)
-
-# Random Forest
-rf_model_tqwt <- randomForest(class ~ ., data = train_df_TQWT, ntree = 500, mtry = sqrt(ncol(train_df_TQWT)), importance = TRUE)
-rf_pred_tqwt <- predict(rf_model_tqwt, newdata = test_df_TQWT)
-accuracy_tqwt <- sum(rf_pred_tqwt == test_df_TQWT$class) / length(test_df_TQWT$class)
-
-#KNN
-formula_tqwt <- class_tqwt ~ .
-knn_params_tqwt <- expand.grid(k = 10)
-knn_model_tqwt <- train(formula = formula_tqwt, data = train_df.TQWT, method = "knn", tuneGrid = knn_params_tqwt, trControl = trainControl(method = "cv"))
-test_predictions_tqwt <- predict(knn_model_tqwt, newdata = test_TQWT_data)
-
+# Print predictions
+print(predictions)
 ```
-
-
->>>>>>> Stashed changes

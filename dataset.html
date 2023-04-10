@@ -20,10 +20,10 @@
   
   
 
-<meta name="author" content="Erin S. King, Name, Name, Name, Name" />
+<meta name="author" content="Erin S. King" />
 
 
-<meta name="date" content="2023-03-27" />
+<meta name="date" content="2023-04-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="introduction.html"/>
-
+<link rel="next" href="model-predictions.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -54,6 +54,70 @@
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 
 </head>
@@ -79,8 +143,9 @@
 <ul>
 <li class="chapter" data-level="2.1" data-path="dataset.html"><a href="dataset.html#preprocessing-and-standardization"><i class="fa fa-check"></i><b>2.1</b> Preprocessing and Standardization</a></li>
 <li class="chapter" data-level="2.2" data-path="dataset.html"><a href="dataset.html#feature-selection"><i class="fa fa-check"></i><b>2.2</b> Feature Selection</a></li>
-<li class="chapter" data-level="2.3" data-path="dataset.html"><a href="dataset.html#baseline-features"><i class="fa fa-check"></i><b>2.3</b> Baseline Features</a></li>
+<li class="chapter" data-level="2.3" data-path="dataset.html"><a href="dataset.html#model-selection"><i class="fa fa-check"></i><b>2.3</b> Model Selection</a></li>
 </ul></li>
+<li class="chapter" data-level="3" data-path="model-predictions.html"><a href="model-predictions.html"><i class="fa fa-check"></i><b>3</b> Model Predictions</a></li>
 </ul>
 
       </nav>
@@ -102,6 +167,7 @@
 <h1><span class="header-section-number">2</span> Dataset<a href="dataset.html#dataset" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="preprocessing-and-standardization" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Preprocessing and Standardization<a href="dataset.html#preprocessing-and-standardization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model. The best model for each subset will be selected based on these results.</p>
 <p>For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:</p>
 <ul>
 <li>Baseline Features</li>
@@ -115,19 +181,9 @@
 <li>Wavelet Transform-based Features</li>
 <li>Tunable Q-Factor Wavelet Transform-based Features (TQWT)</li>
 </ul>
-<p>To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the <span class="citation">[@tidyverse]</span>, <span class="citation">[@broom]</span>, and <span class="citation">[@mosaic]</span> packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the <strong>Formant</strong> sub feature. This allows all data comparisons to be made equivalently.</p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:prestd"></span>
-<img src="PH1976_Project_files/figure-html/prestd-1.png" alt="\label{fig:prestd}Formant Sub-feature: Pre-standardization" width="672" />
-<p class="caption">
-Figure 2.1: Formant Sub-feature: Pre-standardization
-</p>
-</div>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:poststd"></span>
-<img src="PH1976_Project_files/figure-html/poststd-1.png" alt="\label{fig:poststd}Formant Sub-feature: Post-standardization" width="672" />
-<p class="caption">
-Figure 2.2: Formant Sub-feature: Post-standardization
-</p>
-</div>
+<p>Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set.</p>
+<p>To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the <span class="citation">[@tidyverse]</span>, <span class="citation">[@broom]</span>, and <span class="citation">[@mosaic]</span> packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the <strong>Baseline</strong>, <strong>Intensity</strong>, and <strong>Formant</strong> sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.</p>
+<p>The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.</p>
 </div>
 <div id="feature-selection" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> Feature Selection<a href="dataset.html#feature-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -135,149 +191,355 @@ Figure 2.2: Formant Sub-feature: Post-standardization
 1. It reduces the high dimensionality of the data set.
 2. It maximizes the joint dependency of the data set.
 This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The <strong>Boruta</strong> package in RStudio will be used for this purpose, and utilizes Random Forest to perform a top-down search on the corresponding data frame to determine relevant features.</p>
-<p>mRMR analysis yields the following results:</p>
-<ul>
-<li>Baseline</li>
-</ul>
-<pre><code>## Boruta performed 45 iterations in 2.866691 secs.
-##  20 attributes confirmed important: apq11Shimmer, apq3Shimmer,
-## apq5Shimmer, ddaShimmer, ddpJitter and 15 more;
-##  2 attributes confirmed unimportant: gender, PPE;</code></pre>
-<ul>
-<li>Formant</li>
-</ul>
-<pre><code>## Boruta performed 499 iterations in 20.98058 secs.
-##  7 attributes confirmed important: b1, b3, b4, f1, f2 and 2 more;
-##  1 attributes confirmed unimportant: b2;
-##  1 tentative attributes left: gender;</code></pre>
-<ul>
-<li>Intensity</li>
-</ul>
-<pre><code>## Boruta performed 9 iterations in 0.294049 secs.
-##  4 attributes confirmed important: gender, maxIntensity, meanIntensity,
-## minIntensity;
-##  No attributes deemed unimportant.</code></pre>
-<ul>
-<li>MFCC</li>
-</ul>
-<pre><code>## Boruta performed 499 iterations in 43.2085 secs.
-##  45 attributes confirmed important: mean_2nd_delta,
-## mean_delta_log_energy, mean_MFCC_0th_coef, mean_MFCC_1st_coef,
-## mean_MFCC_2nd_coef and 40 more;
-##  36 attributes confirmed unimportant: gender, mean_0th_delta,
-## mean_10th_delta, mean_10th_delta_delta, mean_11th_delta and 31 more;
-##  4 tentative attributes left: mean_5th_delta, mean_MFCC_8th_coef,
-## std_MFCC_11th_coef, std_MFCC_9th_coef;</code></pre>
-<ul>
-<li>TQWT</li>
-</ul>
-<pre><code>## Boruta performed 499 iterations in 1.155698 mins.
-##  106 attributes confirmed important: tqwt_energy_dec_1,
-## tqwt_energy_dec_11, tqwt_energy_dec_12, tqwt_energy_dec_18,
-## tqwt_energy_dec_2 and 101 more;
-##  291 attributes confirmed unimportant: gender, tqwt_energy_dec_10,
-## tqwt_energy_dec_13, tqwt_energy_dec_14, tqwt_energy_dec_15 and 286
-## more;
-##  36 tentative attributes left: tqwt_energy_dec_17, tqwt_energy_dec_3,
-## tqwt_energy_dec_32, tqwt_entropy_log_dec_13, tqwt_entropy_log_dec_16
-## and 31 more;</code></pre>
-<ul>
-<li>VFF</li>
-</ul>
-<pre><code>## Boruta performed 499 iterations in 33.65084 secs.
-##  17 attributes confirmed important: GNE_mean, GNE_NSR_SEO,
-## GNE_NSR_TKEO, GNE_SNR_SEO, GNE_SNR_TKEO and 12 more;
-##  2 attributes confirmed unimportant: GQ_prc5_95, IMF_SNR_TKEO;
-##  4 tentative attributes left: gender, GQ_std_cycle_closed,
-## IMF_NSR_entropy, VFER_std;</code></pre>
-<ul>
-<li>WT</li>
-</ul>
-<pre><code>## Boruta performed 499 iterations in 57.83202 secs.
-##  53 attributes confirmed important: app_det_TKEO_mean_10_coef,
-## app_det_TKEO_mean_4_coef, app_det_TKEO_mean_5_coef,
-## app_det_TKEO_mean_8_coef, app_det_TKEO_mean_9_coef and 48 more;
-##  109 attributes confirmed unimportant: app_det_TKEO_mean_1_coef,
-## app_det_TKEO_mean_2_coef, app_det_TKEO_mean_3_coef,
-## app_det_TKEO_mean_6_coef, app_det_TKEO_mean_7_coef and 104 more;
-##  21 tentative attributes left: app_entropy_log_1_coef,
-## app_entropy_log_4_coef, app_LT_entropy_log_10_coef,
-## app_LT_entropy_log_2_coef, app_LT_entropy_log_5_coef and 16 more;</code></pre>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/boruta.baseline-1.png" alt="\label{fig:boruta.baseline}Boruta plot for Baseline features" width="672" />
+<p>mRMR analysis yielded the following results. TQWT results are particularly dense, so the plot is not particularly informative, but the overall trend is such that:<br />
+- Red regions are categorically rejected and excluded from the included features.<br />
+- Blue regions are tentative, and are handled in a later section of code.<br />
+- Green regions are found to be imporant and thus selected as included features.</p>
+<pre><code>\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for baseline features}
+\label{fig:boruta_plot_for_baseline_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-1"></span>
+<img src="figure/unnamed-chunk-7-1.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:boruta.baseline)Boruta plot for Baseline features
+Figure 2.1: center
 </p>
 </div>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/boruta.formant-1.png" alt="\label{fig:boruta.formant}Boruta plot for Formant features" width="672" />
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for intensity features}
+\label{fig:boruta_plot_for_intensity_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-2"></span>
+<img src="figure/unnamed-chunk-7-2.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:boruta.formant)Boruta plot for Formant features
+Figure 2.2: center
 </p>
 </div>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/boruta.intensity-1.png" alt="\label{fig:boruta.intensity}Boruta plot for Intensity features" width="672" />
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for formant features}
+\label{fig:boruta_plot_for_formant_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-3"></span>
+<img src="figure/unnamed-chunk-7-3.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:boruta.intensity)Boruta plot for Intensity features
+Figure 2.3: center
 </p>
 </div>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/boruta.mfcc-1.png" alt="\label{fig:boruta.mfcc}Boruta plot for MFCC features" width="672" />
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for vff features}
+\label{fig:boruta_plot_for_vff_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-4"></span>
+<img src="figure/unnamed-chunk-7-4.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:boruta.mfcc)Boruta plot for MFCC features
+Figure 2.4: center
 </p>
 </div>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/boruta.tqwt-1.png" alt="\label{fig:boruta.tqwt}Boruta plot for TQWT features" width="672" />
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for mfcc features}
+\label{fig:boruta_plot_for_mfcc_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-5"></span>
+<img src="figure/unnamed-chunk-7-5.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:boruta.tqwt)Boruta plot for TQWT features
+Figure 2.5: center
 </p>
 </div>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/boruta.vff-1.png" alt="\label{fig:boruta.vff}Boruta plot for VFF features" width="672" />
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for wt features}
+\label{fig:boruta_plot_for_wt_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-6"></span>
+<img src="figure/unnamed-chunk-7-6.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:boruta.vff)Boruta plot for VFF features
+Figure 2.6: center
 </p>
 </div>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/boruta.wt-1.png" alt="\label{fig:boruta.wt}Boruta plot for WT features" width="672" />
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for tqwt features}
+\label{fig:boruta_plot_for_tqwt_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-7"></span>
+<img src="figure/unnamed-chunk-7-7.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:boruta.wt)Boruta plot for WT features
+Figure 2.7: center
 </p>
 </div>
-<p>Following this initial assessment, chosen variables are selected for regression by using <strong>getNonRejectedFormula()</strong>. This collapses any variables left as <strong>Tentative</strong> factors into either</p>
+<pre><code>\end{figure}</code></pre>
+<p>Following this initial assessment, chosen variables are selected for regression by using <strong>getNonRejectedFormula()</strong>. This collapses any variables left as <strong>Tentative</strong> factors into either Accepted or Rejected.</p>
+<p>The following factors were found to be important to the model:</p>
+<pre><code>  [1] &quot;class&quot;                          &quot;id&quot;                            
+  [3] &quot;DFA&quot;                            &quot;RPDE&quot;                          
+  [5] &quot;numPulses&quot;                      &quot;numPeriodsPulses&quot;              
+  [7] &quot;meanPeriodPulses&quot;               &quot;stdDevPeriodPulses&quot;            
+  [9] &quot;locPctJitter&quot;                   &quot;locAbsJitter&quot;                  
+ [11] &quot;rapJitter&quot;                      &quot;ppq5Jitter&quot;                    
+ [13] &quot;ddpJitter&quot;                      &quot;locShimmer&quot;                    
+ [15] &quot;locDbShimmer&quot;                   &quot;apq3Shimmer&quot;                   
+ [17] &quot;apq5Shimmer&quot;                    &quot;apq11Shimmer&quot;                  
+ [19] &quot;ddaShimmer&quot;                     &quot;meanAutoCorrHarmonicity&quot;       
+ [21] &quot;meanNoiseToHarmHarmonicity&quot;     &quot;meanHarmToNoiseHarmonicity&quot;    
+ [23] &quot;gender&quot;                         &quot;minIntensity&quot;                  
+ [25] &quot;maxIntensity&quot;                   &quot;meanIntensity&quot;                 
+ [27] &quot;f1&quot;                             &quot;f2&quot;                            
+ [29] &quot;f3&quot;                             &quot;f4&quot;                            
+ [31] &quot;b1&quot;                             &quot;b3&quot;                            
+ [33] &quot;b4&quot;                             &quot;GQ_std_cycle_open&quot;             
+ [35] &quot;GNE_mean&quot;                       &quot;GNE_std&quot;                       
+ [37] &quot;GNE_SNR_TKEO&quot;                   &quot;GNE_SNR_SEO&quot;                   
+ [39] &quot;GNE_NSR_TKEO&quot;                   &quot;GNE_NSR_SEO&quot;                   
+ [41] &quot;VFER_mean&quot;                      &quot;VFER_std&quot;                      
+ [43] &quot;VFER_entropy&quot;                   &quot;VFER_SNR_TKEO&quot;                 
+ [45] &quot;VFER_SNR_SEO&quot;                   &quot;VFER_NSR_TKEO&quot;                 
+ [47] &quot;VFER_NSR_SEO&quot;                   &quot;IMF_SNR_SEO&quot;                   
+ [49] &quot;IMF_SNR_entropy&quot;                &quot;IMF_NSR_SEO&quot;                   
+ [51] &quot;IMF_NSR_TKEO&quot;                   &quot;IMF_NSR_entropy&quot;               
+ [53] &quot;mean_MFCC_0th_coef&quot;             &quot;mean_MFCC_1st_coef&quot;            
+ [55] &quot;mean_MFCC_2nd_coef&quot;             &quot;mean_MFCC_3rd_coef&quot;            
+ [57] &quot;mean_MFCC_4th_coef&quot;             &quot;mean_MFCC_5th_coef&quot;            
+ [59] &quot;mean_MFCC_6th_coef&quot;             &quot;mean_MFCC_7th_coef&quot;            
+ [61] &quot;mean_delta_log_energy&quot;          &quot;mean_2nd_delta&quot;                
+ [63] &quot;std_Log_energy&quot;                 &quot;std_MFCC_1st_coef&quot;             
+ [65] &quot;std_MFCC_2nd_coef&quot;              &quot;std_MFCC_3rd_coef&quot;             
+ [67] &quot;std_MFCC_4th_coef&quot;              &quot;std_MFCC_5th_coef&quot;             
+ [69] &quot;std_MFCC_6th_coef&quot;              &quot;std_MFCC_7th_coef&quot;             
+ [71] &quot;std_MFCC_8th_coef&quot;              &quot;std_MFCC_10th_coef&quot;            
+ [73] &quot;std_MFCC_11th_coef&quot;             &quot;std_delta_log_energy&quot;          
+ [75] &quot;std_1st_delta&quot;                  &quot;std_2nd_delta&quot;                 
+ [77] &quot;std_3rd_delta&quot;                  &quot;std_4th_delta&quot;                 
+ [79] &quot;std_5th_delta&quot;                  &quot;std_6th_delta&quot;                 
+ [81] &quot;std_7th_delta&quot;                  &quot;std_8th_delta&quot;                 
+ [83] &quot;std_9th_delta&quot;                  &quot;std_10th_delta&quot;                
+ [85] &quot;std_11th_delta&quot;                 &quot;std_12th_delta&quot;                
+ [87] &quot;std_delta_delta_log_energy&quot;     &quot;std_1st_delta_delta&quot;           
+ [89] &quot;std_3rd_delta_delta&quot;            &quot;std_4th_delta_delta&quot;           
+ [91] &quot;std_5th_delta_delta&quot;            &quot;std_6th_delta_delta&quot;           
+ [93] &quot;std_7th_delta_delta&quot;            &quot;std_8th_delta_delta&quot;           
+ [95] &quot;std_9th_delta_delta&quot;            &quot;std_10th_delta_delta&quot;          
+ [97] &quot;std_11th_delta_delta&quot;           &quot;std_12th_delta_delta&quot;          
+ [99] &quot;Ed_1_coef&quot;                      &quot;Ed_2_coef&quot;                     
+[101] &quot;Ed_3_coef&quot;                      &quot;det_entropy_shannon_3_coef&quot;    
+[103] &quot;det_entropy_log_1_coef&quot;         &quot;det_entropy_log_2_coef&quot;        
+[105] &quot;det_entropy_log_3_coef&quot;         &quot;det_TKEO_mean_1_coef&quot;          
+[107] &quot;det_TKEO_std_1_coef&quot;            &quot;det_TKEO_std_3_coef&quot;           
+[109] &quot;app_entropy_shannon_1_coef&quot;     &quot;app_entropy_shannon_2_coef&quot;    
+[111] &quot;app_entropy_shannon_3_coef&quot;     &quot;app_entropy_shannon_4_coef&quot;    
+[113] &quot;app_entropy_shannon_5_coef&quot;     &quot;app_entropy_shannon_9_coef&quot;    
+[115] &quot;app_entropy_log_1_coef&quot;         &quot;app_entropy_log_2_coef&quot;        
+[117] &quot;app_entropy_log_3_coef&quot;         &quot;app_entropy_log_4_coef&quot;        
+[119] &quot;app_entropy_log_5_coef&quot;         &quot;app_entropy_log_6_coef&quot;        
+[121] &quot;app_entropy_log_9_coef&quot;         &quot;app_entropy_log_10_coef&quot;       
+[123] &quot;app_det_TKEO_mean_4_coef&quot;       &quot;app_det_TKEO_mean_5_coef&quot;      
+[125] &quot;app_det_TKEO_mean_8_coef&quot;       &quot;app_det_TKEO_mean_9_coef&quot;      
+[127] &quot;app_det_TKEO_mean_10_coef&quot;      &quot;app_TKEO_std_5_coef&quot;           
+[129] &quot;app_TKEO_std_6_coef&quot;            &quot;app_TKEO_std_10_coef&quot;          
+[131] &quot;Ed2_1_coef&quot;                     &quot;Ed2_2_coef&quot;                    
+[133] &quot;Ed2_3_coef&quot;                     &quot;det_LT_entropy_shannon_1_coef&quot; 
+[135] &quot;det_LT_entropy_shannon_3_coef&quot;  &quot;det_LT_entropy_log_1_coef&quot;     
+[137] &quot;det_LT_entropy_log_3_coef&quot;      &quot;det_LT_TKEO_mean_1_coef&quot;       
+[139] &quot;det_LT_TKEO_mean_3_coef&quot;        &quot;det_LT_TKEO_std_1_coef&quot;        
+[141] &quot;det_LT_TKEO_std_2_coef&quot;         &quot;det_LT_TKEO_std_3_coef&quot;        
+[143] &quot;app_LT_entropy_shannon_1_coef&quot;  &quot;app_LT_entropy_shannon_2_coef&quot; 
+[145] &quot;app_LT_entropy_shannon_3_coef&quot;  &quot;app_LT_entropy_shannon_4_coef&quot; 
+[147] &quot;app_LT_entropy_shannon_5_coef&quot;  &quot;app_LT_entropy_shannon_6_coef&quot; 
+[149] &quot;app_LT_entropy_shannon_8_coef&quot;  &quot;app_LT_entropy_shannon_10_coef&quot;
+[151] &quot;app_LT_entropy_log_1_coef&quot;      &quot;app_LT_entropy_log_2_coef&quot;     
+[153] &quot;app_LT_entropy_log_3_coef&quot;      &quot;app_LT_entropy_log_4_coef&quot;     
+[155] &quot;app_LT_entropy_log_5_coef&quot;      &quot;app_LT_entropy_log_6_coef&quot;     
+[157] &quot;app_LT_entropy_log_8_coef&quot;      &quot;app_LT_entropy_log_9_coef&quot;     
+[159] &quot;app_LT_entropy_log_10_coef&quot;     &quot;app_LT_TKEO_mean_8_coef&quot;       
+[161] &quot;app_LT_TKEO_mean_9_coef&quot;        &quot;app_LT_TKEO_mean_10_coef&quot;      
+[163] &quot;app_LT_TKEO_std_5_coef&quot;         &quot;app_LT_TKEO_std_6_coef&quot;        
+[165] &quot;app_LT_TKEO_std_7_coef&quot;         &quot;app_LT_TKEO_std_8_coef&quot;        
+[167] &quot;app_LT_TKEO_std_9_coef&quot;         &quot;app_LT_TKEO_std_10_coef&quot;       
+[169] &quot;tqwt_energy_dec_1&quot;              &quot;tqwt_energy_dec_2&quot;             
+[171] &quot;tqwt_energy_dec_6&quot;              &quot;tqwt_energy_dec_11&quot;            
+[173] &quot;tqwt_energy_dec_12&quot;             &quot;tqwt_energy_dec_18&quot;            
+[175] &quot;tqwt_energy_dec_24&quot;             &quot;tqwt_energy_dec_25&quot;            
+[177] &quot;tqwt_energy_dec_26&quot;             &quot;tqwt_energy_dec_27&quot;            
+[179] &quot;tqwt_energy_dec_28&quot;             &quot;tqwt_energy_dec_33&quot;            
+[181] &quot;tqwt_energy_dec_34&quot;             &quot;tqwt_energy_dec_35&quot;            
+[183] &quot;tqwt_entropy_shannon_dec_1&quot;     &quot;tqwt_entropy_shannon_dec_6&quot;    
+[185] &quot;tqwt_entropy_shannon_dec_11&quot;    &quot;tqwt_entropy_shannon_dec_12&quot;   
+[187] &quot;tqwt_entropy_shannon_dec_13&quot;    &quot;tqwt_entropy_shannon_dec_14&quot;   
+[189] &quot;tqwt_entropy_shannon_dec_15&quot;    &quot;tqwt_entropy_shannon_dec_32&quot;   
+[191] &quot;tqwt_entropy_shannon_dec_33&quot;    &quot;tqwt_entropy_shannon_dec_34&quot;   
+[193] &quot;tqwt_entropy_shannon_dec_35&quot;    &quot;tqwt_entropy_shannon_dec_36&quot;   
+[195] &quot;tqwt_entropy_log_dec_1&quot;         &quot;tqwt_entropy_log_dec_12&quot;       
+[197] &quot;tqwt_entropy_log_dec_13&quot;        &quot;tqwt_entropy_log_dec_16&quot;       
+[199] &quot;tqwt_entropy_log_dec_18&quot;        &quot;tqwt_entropy_log_dec_19&quot;       
+[201] &quot;tqwt_entropy_log_dec_25&quot;        &quot;tqwt_entropy_log_dec_26&quot;       
+[203] &quot;tqwt_entropy_log_dec_27&quot;        &quot;tqwt_entropy_log_dec_28&quot;       
+[205] &quot;tqwt_entropy_log_dec_32&quot;        &quot;tqwt_entropy_log_dec_33&quot;       
+[207] &quot;tqwt_entropy_log_dec_34&quot;        &quot;tqwt_entropy_log_dec_35&quot;       
+[209] &quot;tqwt_TKEO_mean_dec_2&quot;           &quot;tqwt_TKEO_mean_dec_6&quot;          
+[211] &quot;tqwt_TKEO_mean_dec_11&quot;          &quot;tqwt_TKEO_mean_dec_12&quot;         
+[213] &quot;tqwt_TKEO_mean_dec_13&quot;          &quot;tqwt_TKEO_mean_dec_18&quot;         
+[215] &quot;tqwt_TKEO_mean_dec_19&quot;          &quot;tqwt_TKEO_mean_dec_25&quot;         
+[217] &quot;tqwt_TKEO_mean_dec_26&quot;          &quot;tqwt_TKEO_mean_dec_27&quot;         
+[219] &quot;tqwt_TKEO_mean_dec_32&quot;          &quot;tqwt_TKEO_mean_dec_33&quot;         
+[221] &quot;tqwt_TKEO_mean_dec_34&quot;          &quot;tqwt_TKEO_mean_dec_35&quot;         
+[223] &quot;tqwt_TKEO_std_dec_6&quot;            &quot;tqwt_TKEO_std_dec_8&quot;           
+[225] &quot;tqwt_TKEO_std_dec_11&quot;           &quot;tqwt_TKEO_std_dec_12&quot;          
+[227] &quot;tqwt_TKEO_std_dec_13&quot;           &quot;tqwt_TKEO_std_dec_14&quot;          
+[229] &quot;tqwt_TKEO_std_dec_17&quot;           &quot;tqwt_TKEO_std_dec_19&quot;          
+[231] &quot;tqwt_TKEO_std_dec_25&quot;           &quot;tqwt_TKEO_std_dec_26&quot;          
+[233] &quot;tqwt_TKEO_std_dec_34&quot;           &quot;tqwt_medianValue_dec_31&quot;       
+[235] &quot;tqwt_medianValue_dec_34&quot;        &quot;tqwt_meanValue_dec_34&quot;         
+[237] &quot;tqwt_meanValue_dec_36&quot;          &quot;tqwt_stdValue_dec_1&quot;           
+[239] &quot;tqwt_stdValue_dec_2&quot;            &quot;tqwt_stdValue_dec_5&quot;           
+[241] &quot;tqwt_stdValue_dec_6&quot;            &quot;tqwt_stdValue_dec_7&quot;           
+[243] &quot;tqwt_stdValue_dec_11&quot;           &quot;tqwt_stdValue_dec_12&quot;          
+[245] &quot;tqwt_stdValue_dec_13&quot;           &quot;tqwt_stdValue_dec_18&quot;          
+[247] &quot;tqwt_stdValue_dec_19&quot;           &quot;tqwt_stdValue_dec_25&quot;          
+[249] &quot;tqwt_stdValue_dec_26&quot;           &quot;tqwt_stdValue_dec_27&quot;          
+[251] &quot;tqwt_stdValue_dec_32&quot;           &quot;tqwt_stdValue_dec_33&quot;          
+[253] &quot;tqwt_stdValue_dec_34&quot;           &quot;tqwt_stdValue_dec_35&quot;          
+[255] &quot;tqwt_minValue_dec_7&quot;            &quot;tqwt_minValue_dec_11&quot;          
+[257] &quot;tqwt_minValue_dec_12&quot;           &quot;tqwt_minValue_dec_13&quot;          
+[259] &quot;tqwt_minValue_dec_14&quot;           &quot;tqwt_minValue_dec_17&quot;          
+[261] &quot;tqwt_maxValue_dec_6&quot;            &quot;tqwt_maxValue_dec_11&quot;          
+[263] &quot;tqwt_maxValue_dec_12&quot;           &quot;tqwt_maxValue_dec_13&quot;          
+[265] &quot;tqwt_maxValue_dec_14&quot;           &quot;tqwt_maxValue_dec_17&quot;          
+[267] &quot;tqwt_skewnessValue_dec_24&quot;      &quot;tqwt_skewnessValue_dec_25&quot;     
+[269] &quot;tqwt_skewnessValue_dec_26&quot;      &quot;tqwt_skewnessValue_dec_27&quot;     
+[271] &quot;tqwt_kurtosisValue_dec_12&quot;      &quot;tqwt_kurtosisValue_dec_16&quot;     
+[273] &quot;tqwt_kurtosisValue_dec_17&quot;      &quot;tqwt_kurtosisValue_dec_18&quot;     
+[275] &quot;tqwt_kurtosisValue_dec_19&quot;      &quot;tqwt_kurtosisValue_dec_20&quot;     
+[277] &quot;tqwt_kurtosisValue_dec_22&quot;      &quot;tqwt_kurtosisValue_dec_25&quot;     
+[279] &quot;tqwt_kurtosisValue_dec_26&quot;      &quot;tqwt_kurtosisValue_dec_27&quot;     
+[281] &quot;tqwt_kurtosisValue_dec_29&quot;      &quot;tqwt_kurtosisValue_dec_32&quot;     
+[283] &quot;tqwt_kurtosisValue_dec_33&quot;      &quot;tqwt_kurtosisValue_dec_34&quot;     
+[285] &quot;tqwt_kurtosisValue_dec_35&quot;     </code></pre>
 </div>
-<div id="baseline-features" class="section level2 hasAnchor" number="2.3">
-<h2><span class="header-section-number">2.3</span> Baseline Features<a href="dataset.html#baseline-features" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>For baseline features, both Random Forest and Logistic Regression are investigated.</p>
-<pre><code>##                             %IncMSE IncNodePurity
-## DFA                        24.37247      8.759329
-## RPDE                       17.92703      4.583851
-## numPulses                  15.85702      4.885802
-## numPeriodsPulses           16.67829      4.846280
-## meanPeriodPulses           20.90125      8.061328
-## stdDevPeriodPulses         10.82226      3.896858
-## locPctJitter               13.75068      4.694355
-## locAbsJitter               16.59638      7.201734
-## rapJitter                  12.32013      3.909806
-## ppq5Jitter                 12.27778      3.836345
-## ddpJitter                  13.67458      4.997107
-## locShimmer                 14.29003      3.896620
-## locDbShimmer               14.86237      4.161193
-## apq3Shimmer                12.83604      3.550492
-## apq5Shimmer                15.06042      4.023834
-## apq11Shimmer               18.24142      5.843424
-## ddaShimmer                 11.91706      3.380505
-## meanAutoCorrHarmonicity    11.84204      3.127673
-## meanNoiseToHarmHarmonicity 11.68585      3.321339
-## meanHarmToNoiseHarmonicity 12.94914      3.699430</code></pre>
-<p><img src="PH1976_Project_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<div class="figure" style="text-align: center">
-<img src="PH1976_Project_files/figure-html/baseline.comparison-1.png" alt="\label{fig:baseline.comparison}MSE for Baseline comparison: Logistic Regression vs. Random Forest" width="672" />
+<div id="model-selection" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Model Selection<a href="dataset.html#model-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Once the important features had been determined, they can be used to inform the predictive model for each sub-group.
+For this analysis, a function was built to test each sub-group against a number of predictive models. Using the 10% “test” data of the training set, accuracy estimates were generated and used to benchmark the model’s performance against each other. The models used for analysis were:<br />
+- Multilayer Perceptron<br />
+- Logistic Regression<br />
+- SVM w/ Linear Kernel<br />
+- SVM w/ Radial Kernel<br />
+- Naive Bayes<br />
+- k- Nearest Neighbors</p>
+<p>For this analysis it required the use of the <strong>caret</strong>, <strong>randomForest</strong>, <strong>e1071</strong>, <strong>nnet</strong>, <strong>kernlab</strong>, and <strong>naivebayes</strong> libraries.</p>
+<p>The following results were found for each of the sub features. A comparative bar chart for each of the sub features is also included.</p>
+<pre><code>Best model for baseline is KNN with an accuracy of 0.75 
+Best model for intensity is Random Forest with an accuracy of 0.7307692 
+Best model for formant is Multilayer Perceptron with an accuracy of 0.6923077 
+Best model for vff is Random Forest with an accuracy of 0.7115385 
+Best model for mfcc is Multilayer Perceptron with an accuracy of 0.7884615 
+Best model for wt is Random Forest with an accuracy of 0.7884615 
+Best model for tqwt is Random Forest with an accuracy of 0.8653846 </code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-12"></span>
+<img src="figure/unnamed-chunk-12-1.png" alt="center" width="100%" height="100%" />
 <p class="caption">
-(#fig:baseline.comparison)MSE for Baseline comparison: Logistic Regression vs. Random Forest
+Figure 2.8: center
 </p>
 </div>
+<p>At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="dataset.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions for Ensemble predictions</span></span>
+<span id="cb11-2"><a href="dataset.html#cb11-2" aria-hidden="true" tabindex="-1"></a>weighted_prediction <span class="ot">&lt;-</span> <span class="cf">function</span>(best_models, test_data, chosen_features) {</span>
+<span id="cb11-3"><a href="dataset.html#cb11-3" aria-hidden="true" tabindex="-1"></a>    predictions_list <span class="ot">&lt;-</span> <span class="fu">mapply</span>(<span class="cf">function</span>(subset_name, model, test_data,</span>
+<span id="cb11-4"><a href="dataset.html#cb11-4" aria-hidden="true" tabindex="-1"></a>        chosen_features) {</span>
+<span id="cb11-5"><a href="dataset.html#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">inherits</span>(model, <span class="st">&quot;list&quot;</span>) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.null</span>(model<span class="sc">$</span>k)) {</span>
+<span id="cb11-6"><a href="dataset.html#cb11-6" aria-hidden="true" tabindex="-1"></a>            <span class="co"># KNN model</span></span>
+<span id="cb11-7"><a href="dataset.html#cb11-7" aria-hidden="true" tabindex="-1"></a>            common_columns <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">colnames</span>(test_data[[subset_name]]),</span>
+<span id="cb11-8"><a href="dataset.html#cb11-8" aria-hidden="true" tabindex="-1"></a>                <span class="fu">colnames</span>(model<span class="sc">$</span>train_data))</span>
+<span id="cb11-9"><a href="dataset.html#cb11-9" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">class</span>(model<span class="sc">$</span>finalModel) <span class="sc">==</span> <span class="st">&quot;ranger&quot;</span>) {</span>
+<span id="cb11-10"><a href="dataset.html#cb11-10" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Ranger model</span></span>
+<span id="cb11-11"><a href="dataset.html#cb11-11" aria-hidden="true" tabindex="-1"></a>            common_columns <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">colnames</span>(test_data[[subset_name]]),</span>
+<span id="cb11-12"><a href="dataset.html#cb11-12" aria-hidden="true" tabindex="-1"></a>                model<span class="sc">$</span>finalModel<span class="sc">$</span>forest<span class="sc">$</span>independent.variable.names)</span>
+<span id="cb11-13"><a href="dataset.html#cb11-13" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">inherits</span>(model, <span class="st">&quot;nn&quot;</span>)) {</span>
+<span id="cb11-14"><a href="dataset.html#cb11-14" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Neural Network model</span></span>
+<span id="cb11-15"><a href="dataset.html#cb11-15" aria-hidden="true" tabindex="-1"></a>            common_columns <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">colnames</span>(test_data[[subset_name]]),</span>
+<span id="cb11-16"><a href="dataset.html#cb11-16" aria-hidden="true" tabindex="-1"></a>                <span class="fu">colnames</span>(model<span class="sc">$</span>data))</span>
+<span id="cb11-17"><a href="dataset.html#cb11-17" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
+<span id="cb11-18"><a href="dataset.html#cb11-18" aria-hidden="true" tabindex="-1"></a>            <span class="fu">stop</span>(<span class="st">&quot;Unsupported model type&quot;</span>)</span>
+<span id="cb11-19"><a href="dataset.html#cb11-19" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb11-20"><a href="dataset.html#cb11-20" aria-hidden="true" tabindex="-1"></a>        test_subset_data <span class="ot">&lt;-</span> test_data[[subset_name]][, common_columns]</span>
+<span id="cb11-21"><a href="dataset.html#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="dataset.html#cb11-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">inherits</span>(model, <span class="st">&quot;glm&quot;</span>)) {</span>
+<span id="cb11-23"><a href="dataset.html#cb11-23" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_subset_data, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb11-24"><a href="dataset.html#cb11-24" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">class</span>(model<span class="sc">$</span>finalModel) <span class="sc">==</span> <span class="st">&quot;ranger&quot;</span>) {</span>
+<span id="cb11-25"><a href="dataset.html#cb11-25" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_subset_data, <span class="at">type =</span> <span class="st">&quot;raw&quot;</span>)</span>
+<span id="cb11-26"><a href="dataset.html#cb11-26" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">inherits</span>(model, <span class="st">&quot;svm&quot;</span>)) {</span>
+<span id="cb11-27"><a href="dataset.html#cb11-27" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_subset_data, <span class="at">probability =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>probabilities[,</span>
+<span id="cb11-28"><a href="dataset.html#cb11-28" aria-hidden="true" tabindex="-1"></a>                <span class="dv">2</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb11-29"><a href="dataset.html#cb11-29" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">inherits</span>(model, <span class="st">&quot;naiveBayes&quot;</span>)) {</span>
+<span id="cb11-30"><a href="dataset.html#cb11-30" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_subset_data, <span class="at">type =</span> <span class="st">&quot;raw&quot;</span>)[,</span>
+<span id="cb11-31"><a href="dataset.html#cb11-31" aria-hidden="true" tabindex="-1"></a>                <span class="dv">1</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb11-32"><a href="dataset.html#cb11-32" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">inherits</span>(model, <span class="st">&quot;nn&quot;</span>)) {</span>
+<span id="cb11-33"><a href="dataset.html#cb11-33" aria-hidden="true" tabindex="-1"></a>            predictions <span class="ot">&lt;-</span> <span class="fu">compute</span>(model, test_subset_data)<span class="sc">$</span>net.result</span>
+<span id="cb11-34"><a href="dataset.html#cb11-34" aria-hidden="true" tabindex="-1"></a>            threshold_func <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">ifelse</span>(x <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>,</span>
+<span id="cb11-35"><a href="dataset.html#cb11-35" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span>)</span>
+<span id="cb11-36"><a href="dataset.html#cb11-36" aria-hidden="true" tabindex="-1"></a>            factor_predictions <span class="ot">&lt;-</span> <span class="fu">sapply</span>(predictions, threshold_func)</span>
+<span id="cb11-37"><a href="dataset.html#cb11-37" aria-hidden="true" tabindex="-1"></a>            <span class="fu">as.factor</span>(factor_predictions)</span>
+<span id="cb11-38"><a href="dataset.html#cb11-38" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">inherits</span>(model, <span class="st">&quot;list&quot;</span>) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.null</span>(model<span class="sc">$</span>k)) {</span>
+<span id="cb11-39"><a href="dataset.html#cb11-39" aria-hidden="true" tabindex="-1"></a>            <span class="fu">knn</span>(<span class="at">train =</span> model<span class="sc">$</span>train_data, <span class="at">test =</span> test_subset_data,</span>
+<span id="cb11-40"><a href="dataset.html#cb11-40" aria-hidden="true" tabindex="-1"></a>                <span class="at">cl =</span> model<span class="sc">$</span>train_class, <span class="at">k =</span> model<span class="sc">$</span>k)</span>
+<span id="cb11-41"><a href="dataset.html#cb11-41" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
+<span id="cb11-42"><a href="dataset.html#cb11-42" aria-hidden="true" tabindex="-1"></a>            <span class="fu">stop</span>(<span class="st">&quot;Unsupported model type&quot;</span>)</span>
+<span id="cb11-43"><a href="dataset.html#cb11-43" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb11-44"><a href="dataset.html#cb11-44" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">subset_name =</span> <span class="fu">names</span>(best_models), <span class="at">model =</span> <span class="fu">lapply</span>(best_models,</span>
+<span id="cb11-45"><a href="dataset.html#cb11-45" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">&quot;model&quot;</span>), <span class="at">test_data =</span> <span class="fu">rep</span>(<span class="fu">list</span>(test_data), <span class="fu">length</span>(<span class="fu">names</span>(best_models))),</span>
+<span id="cb11-46"><a href="dataset.html#cb11-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">chosen_features =</span> chosen_features, <span class="at">SIMPLIFY =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-47"><a href="dataset.html#cb11-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-48"><a href="dataset.html#cb11-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert factors to numeric values</span></span>
+<span id="cb11-49"><a href="dataset.html#cb11-49" aria-hidden="true" tabindex="-1"></a>    predictions_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(predictions_list, <span class="cf">function</span>(x) <span class="fu">as.numeric</span>(x) <span class="sc">-</span></span>
+<span id="cb11-50"><a href="dataset.html#cb11-50" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span>)</span>
+<span id="cb11-51"><a href="dataset.html#cb11-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-52"><a href="dataset.html#cb11-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate normalized weights</span></span>
+<span id="cb11-53"><a href="dataset.html#cb11-53" aria-hidden="true" tabindex="-1"></a>    models_weights <span class="ot">&lt;-</span> <span class="fu">lapply</span>(best_models, <span class="cf">function</span>(x) x<span class="sc">$</span>accuracy)</span>
+<span id="cb11-54"><a href="dataset.html#cb11-54" aria-hidden="true" tabindex="-1"></a>    models_weights_normalized <span class="ot">&lt;-</span> <span class="fu">unlist</span>(models_weights)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">unlist</span>(models_weights))</span>
+<span id="cb11-55"><a href="dataset.html#cb11-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-56"><a href="dataset.html#cb11-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate weighted predictions</span></span>
+<span id="cb11-57"><a href="dataset.html#cb11-57" aria-hidden="true" tabindex="-1"></a>    combined_probs <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="st">`</span><span class="at">+</span><span class="st">`</span>, <span class="fu">mapply</span>(<span class="st">`</span><span class="at">*</span><span class="st">`</span>, predictions_list,</span>
+<span id="cb11-58"><a href="dataset.html#cb11-58" aria-hidden="true" tabindex="-1"></a>        models_weights_normalized, <span class="at">SIMPLIFY =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb11-59"><a href="dataset.html#cb11-59" aria-hidden="true" tabindex="-1"></a>    combined_predictions <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(combined_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb11-60"><a href="dataset.html#cb11-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-61"><a href="dataset.html#cb11-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(combined_predictions)</span>
+<span id="cb11-62"><a href="dataset.html#cb11-62" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="dataset.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate normalized weights</span></span>
+<span id="cb12-2"><a href="dataset.html#cb12-2" aria-hidden="true" tabindex="-1"></a>models_weights <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models_and_accuracy, <span class="cf">function</span>(x) x<span class="sc">$</span>accuracy)</span>
+<span id="cb12-3"><a href="dataset.html#cb12-3" aria-hidden="true" tabindex="-1"></a>models_weights_normalized <span class="ot">&lt;-</span> <span class="fu">unlist</span>(models_weights)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">unlist</span>(models_weights))</span>
+<span id="cb12-4"><a href="dataset.html#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="dataset.html#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare train_data and test_data for all models</span></span>
+<span id="cb12-6"><a href="dataset.html#cb12-6" aria-hidden="true" tabindex="-1"></a>train_data_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(best_models), <span class="cf">function</span>(subset_name) {</span>
+<span id="cb12-7"><a href="dataset.html#cb12-7" aria-hidden="true" tabindex="-1"></a>    train_df <span class="ot">&lt;-</span> <span class="fu">get</span>(<span class="fu">paste0</span>(<span class="st">&quot;train_df_std.&quot;</span>, subset_name, <span class="st">&quot;_train&quot;</span>))</span>
+<span id="cb12-8"><a href="dataset.html#cb12-8" aria-hidden="true" tabindex="-1"></a>    train_df[, <span class="fu">setdiff</span>(<span class="fu">names</span>(train_df), <span class="st">&quot;class&quot;</span>)]</span>
+<span id="cb12-9"><a href="dataset.html#cb12-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-10"><a href="dataset.html#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="dataset.html#cb12-11" aria-hidden="true" tabindex="-1"></a>test_data_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(best_models), <span class="cf">function</span>(subset_name) {</span>
+<span id="cb12-12"><a href="dataset.html#cb12-12" aria-hidden="true" tabindex="-1"></a>    test_df <span class="ot">&lt;-</span> <span class="fu">get</span>(<span class="fu">paste0</span>(<span class="st">&quot;train_df_std.&quot;</span>, subset_name, <span class="st">&quot;_test&quot;</span>))</span>
+<span id="cb12-13"><a href="dataset.html#cb12-13" aria-hidden="true" tabindex="-1"></a>    test_df[, <span class="fu">setdiff</span>(<span class="fu">names</span>(test_df), <span class="st">&quot;class&quot;</span>)]</span>
+<span id="cb12-14"><a href="dataset.html#cb12-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-15"><a href="dataset.html#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="dataset.html#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(test_data_list) <span class="ot">&lt;-</span> <span class="fu">names</span>(best_models)</span>
+<span id="cb12-17"><a href="dataset.html#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="dataset.html#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="dataset.html#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Make weighted ensemble predictions using the trained best</span></span>
+<span id="cb12-20"><a href="dataset.html#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># models and normalized weights</span></span>
+<span id="cb12-21"><a href="dataset.html#cb12-21" aria-hidden="true" tabindex="-1"></a>weighted_predictions <span class="ot">&lt;-</span> <span class="fu">weighted_prediction</span>(best_models, test_data_list,</span>
+<span id="cb12-22"><a href="dataset.html#cb12-22" aria-hidden="true" tabindex="-1"></a>    chosen_features)</span>
+<span id="cb12-23"><a href="dataset.html#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="dataset.html#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Make weighted ensemble predictions using the trained best</span></span>
+<span id="cb12-25"><a href="dataset.html#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># models and normalized weights</span></span>
+<span id="cb12-26"><a href="dataset.html#cb12-26" aria-hidden="true" tabindex="-1"></a>weighted_predictions <span class="ot">&lt;-</span> <span class="fu">weighted_prediction</span>(best_models, test_data_list,</span>
+<span id="cb12-27"><a href="dataset.html#cb12-27" aria-hidden="true" tabindex="-1"></a>    chosen_features)</span>
+<span id="cb12-28"><a href="dataset.html#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="dataset.html#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate ensemble accuracy</span></span>
+<span id="cb12-30"><a href="dataset.html#cb12-30" aria-hidden="true" tabindex="-1"></a>test_class <span class="ot">&lt;-</span> test_df<span class="sc">$</span>class</span>
+<span id="cb12-31"><a href="dataset.html#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="dataset.html#cb12-32" aria-hidden="true" tabindex="-1"></a>ensemble_accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(weighted_predictions <span class="sc">==</span> test_class)<span class="sc">/</span><span class="fu">length</span>(test_class)</span>
+<span id="cb12-33"><a href="dataset.html#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Ensemble model accuracy:&quot;</span>, ensemble_accuracy, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>Ensemble model accuracy: 0.7692308 </code></pre>
 </div>
 </div>
             </section>
@@ -285,8 +547,8 @@ This strategy is used frequenty in machine learning and regression applications,
           </div>
         </div>
       </div>
-<a href="introduction.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="introduction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="model-predictions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

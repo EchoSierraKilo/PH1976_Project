@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Results | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording</title>
+  <meta name="description" content="3 Results | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Results | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Results | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  
+  
+  
+
+<meta name="author" content="Erin S. King" />
+
+
+<meta name="date" content="2023-04-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="methods.html"/>
+<link rel="next" href="model-output.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#definition"><i class="fa fa-check"></i><b>1.1</b> Definition</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#study-design"><i class="fa fa-check"></i><b>1.3</b> Study Design</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#study-population"><i class="fa fa-check"></i><b>1.4</b> Study Population</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#preprocessing-and-standardization"><i class="fa fa-check"></i><b>2.1</b> Preprocessing and Standardization</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#feature-selection"><i class="fa fa-check"></i><b>3.1</b> Feature Selection</a></li>
+<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#model-selection"><i class="fa fa-check"></i><b>3.2</b> Model Selection</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="model-output.html"><a href="model-output.html"><i class="fa fa-check"></i><b>4</b> Model Output</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="results" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">3</span> Results<a href="results.html#results" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="feature-selection" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Feature Selection<a href="results.html#feature-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Per the <strong>Sakar et al</strong> paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
+1. It reduces the high dimensionality of the data set.
+2. It maximizes the joint dependency of the data set.
+This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The <strong>Boruta</strong> package in RStudio will be used for this purpose, and utilizes Random Forest to perform a top-down search on the corresponding data frame to determine relevant features.</p>
+<p>mRMR analysis yielded the following results. TQWT results are particularly dense, so the plot is not particularly informative, but the overall trend is such that:<br />
+- Red regions are categorically rejected and excluded from the included features.<br />
+- Blue regions are tentative, and are handled in a later section of code.<br />
+- Green regions are found to be imporant and thus selected as included features.</p>
+<pre><code>\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for baseline features}
+\label{fig:boruta_plot_for_baseline_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-1"></span>
+<img src="figure/unnamed-chunk-7-1.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.1: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for intensity features}
+\label{fig:boruta_plot_for_intensity_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-2"></span>
+<img src="figure/unnamed-chunk-7-2.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.2: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for formant features}
+\label{fig:boruta_plot_for_formant_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-3"></span>
+<img src="figure/unnamed-chunk-7-3.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.3: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for vff features}
+\label{fig:boruta_plot_for_vff_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-4"></span>
+<img src="figure/unnamed-chunk-7-4.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.4: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for mfcc features}
+\label{fig:boruta_plot_for_mfcc_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-5"></span>
+<img src="figure/unnamed-chunk-7-5.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.5: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for wt features}
+\label{fig:boruta_plot_for_wt_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-6"></span>
+<img src="figure/unnamed-chunk-7-6.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.6: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[ht!]
+\centering
+\caption{Boruta plot for tqwt features}
+\label{fig:boruta_plot_for_tqwt_features}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7-7"></span>
+<img src="figure/unnamed-chunk-7-7.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.7: center
+</p>
+</div>
+<pre><code>\end{figure}</code></pre>
+<p>Following this initial assessment, chosen variables are selected for regression by using <strong>getNonRejectedFormula()</strong>. This collapses any variables left as <strong>Tentative</strong> factors into either Accepted or Rejected.</p>
+<p>The following factors were found to be important to the model:</p>
+<pre><code>  [1] &quot;class&quot;                          &quot;id&quot;                            
+  [3] &quot;DFA&quot;                            &quot;RPDE&quot;                          
+  [5] &quot;numPulses&quot;                      &quot;numPeriodsPulses&quot;              
+  [7] &quot;meanPeriodPulses&quot;               &quot;stdDevPeriodPulses&quot;            
+  [9] &quot;locPctJitter&quot;                   &quot;locAbsJitter&quot;                  
+ [11] &quot;rapJitter&quot;                      &quot;ppq5Jitter&quot;                    
+ [13] &quot;ddpJitter&quot;                      &quot;locShimmer&quot;                    
+ [15] &quot;locDbShimmer&quot;                   &quot;apq3Shimmer&quot;                   
+ [17] &quot;apq5Shimmer&quot;                    &quot;apq11Shimmer&quot;                  
+ [19] &quot;ddaShimmer&quot;                     &quot;meanAutoCorrHarmonicity&quot;       
+ [21] &quot;meanNoiseToHarmHarmonicity&quot;     &quot;meanHarmToNoiseHarmonicity&quot;    
+ [23] &quot;gender&quot;                         &quot;minIntensity&quot;                  
+ [25] &quot;maxIntensity&quot;                   &quot;meanIntensity&quot;                 
+ [27] &quot;f1&quot;                             &quot;f2&quot;                            
+ [29] &quot;f3&quot;                             &quot;f4&quot;                            
+ [31] &quot;b1&quot;                             &quot;b3&quot;                            
+ [33] &quot;b4&quot;                             &quot;GQ_std_cycle_open&quot;             
+ [35] &quot;GNE_mean&quot;                       &quot;GNE_std&quot;                       
+ [37] &quot;GNE_SNR_TKEO&quot;                   &quot;GNE_SNR_SEO&quot;                   
+ [39] &quot;GNE_NSR_TKEO&quot;                   &quot;GNE_NSR_SEO&quot;                   
+ [41] &quot;VFER_mean&quot;                      &quot;VFER_std&quot;                      
+ [43] &quot;VFER_entropy&quot;                   &quot;VFER_SNR_TKEO&quot;                 
+ [45] &quot;VFER_SNR_SEO&quot;                   &quot;VFER_NSR_TKEO&quot;                 
+ [47] &quot;VFER_NSR_SEO&quot;                   &quot;IMF_SNR_SEO&quot;                   
+ [49] &quot;IMF_SNR_entropy&quot;                &quot;IMF_NSR_SEO&quot;                   
+ [51] &quot;IMF_NSR_TKEO&quot;                   &quot;IMF_NSR_entropy&quot;               
+ [53] &quot;mean_MFCC_0th_coef&quot;             &quot;mean_MFCC_1st_coef&quot;            
+ [55] &quot;mean_MFCC_2nd_coef&quot;             &quot;mean_MFCC_3rd_coef&quot;            
+ [57] &quot;mean_MFCC_4th_coef&quot;             &quot;mean_MFCC_5th_coef&quot;            
+ [59] &quot;mean_MFCC_6th_coef&quot;             &quot;mean_MFCC_7th_coef&quot;            
+ [61] &quot;mean_delta_log_energy&quot;          &quot;mean_2nd_delta&quot;                
+ [63] &quot;std_Log_energy&quot;                 &quot;std_MFCC_1st_coef&quot;             
+ [65] &quot;std_MFCC_2nd_coef&quot;              &quot;std_MFCC_3rd_coef&quot;             
+ [67] &quot;std_MFCC_4th_coef&quot;              &quot;std_MFCC_5th_coef&quot;             
+ [69] &quot;std_MFCC_6th_coef&quot;              &quot;std_MFCC_7th_coef&quot;             
+ [71] &quot;std_MFCC_8th_coef&quot;              &quot;std_MFCC_10th_coef&quot;            
+ [73] &quot;std_MFCC_11th_coef&quot;             &quot;std_delta_log_energy&quot;          
+ [75] &quot;std_1st_delta&quot;                  &quot;std_2nd_delta&quot;                 
+ [77] &quot;std_3rd_delta&quot;                  &quot;std_4th_delta&quot;                 
+ [79] &quot;std_5th_delta&quot;                  &quot;std_6th_delta&quot;                 
+ [81] &quot;std_7th_delta&quot;                  &quot;std_8th_delta&quot;                 
+ [83] &quot;std_9th_delta&quot;                  &quot;std_10th_delta&quot;                
+ [85] &quot;std_11th_delta&quot;                 &quot;std_12th_delta&quot;                
+ [87] &quot;std_delta_delta_log_energy&quot;     &quot;std_1st_delta_delta&quot;           
+ [89] &quot;std_3rd_delta_delta&quot;            &quot;std_4th_delta_delta&quot;           
+ [91] &quot;std_5th_delta_delta&quot;            &quot;std_6th_delta_delta&quot;           
+ [93] &quot;std_7th_delta_delta&quot;            &quot;std_8th_delta_delta&quot;           
+ [95] &quot;std_9th_delta_delta&quot;            &quot;std_10th_delta_delta&quot;          
+ [97] &quot;std_11th_delta_delta&quot;           &quot;std_12th_delta_delta&quot;          
+ [99] &quot;Ed_1_coef&quot;                      &quot;Ed_2_coef&quot;                     
+[101] &quot;Ed_3_coef&quot;                      &quot;det_entropy_shannon_3_coef&quot;    
+[103] &quot;det_entropy_log_1_coef&quot;         &quot;det_entropy_log_2_coef&quot;        
+[105] &quot;det_entropy_log_3_coef&quot;         &quot;det_TKEO_mean_1_coef&quot;          
+[107] &quot;det_TKEO_std_1_coef&quot;            &quot;det_TKEO_std_3_coef&quot;           
+[109] &quot;app_entropy_shannon_1_coef&quot;     &quot;app_entropy_shannon_2_coef&quot;    
+[111] &quot;app_entropy_shannon_3_coef&quot;     &quot;app_entropy_shannon_4_coef&quot;    
+[113] &quot;app_entropy_shannon_5_coef&quot;     &quot;app_entropy_shannon_9_coef&quot;    
+[115] &quot;app_entropy_log_1_coef&quot;         &quot;app_entropy_log_2_coef&quot;        
+[117] &quot;app_entropy_log_3_coef&quot;         &quot;app_entropy_log_4_coef&quot;        
+[119] &quot;app_entropy_log_5_coef&quot;         &quot;app_entropy_log_6_coef&quot;        
+[121] &quot;app_entropy_log_9_coef&quot;         &quot;app_entropy_log_10_coef&quot;       
+[123] &quot;app_det_TKEO_mean_4_coef&quot;       &quot;app_det_TKEO_mean_5_coef&quot;      
+[125] &quot;app_det_TKEO_mean_8_coef&quot;       &quot;app_det_TKEO_mean_9_coef&quot;      
+[127] &quot;app_det_TKEO_mean_10_coef&quot;      &quot;app_TKEO_std_5_coef&quot;           
+[129] &quot;app_TKEO_std_6_coef&quot;            &quot;app_TKEO_std_10_coef&quot;          
+[131] &quot;Ed2_1_coef&quot;                     &quot;Ed2_2_coef&quot;                    
+[133] &quot;Ed2_3_coef&quot;                     &quot;det_LT_entropy_shannon_1_coef&quot; 
+[135] &quot;det_LT_entropy_shannon_3_coef&quot;  &quot;det_LT_entropy_log_1_coef&quot;     
+[137] &quot;det_LT_entropy_log_3_coef&quot;      &quot;det_LT_TKEO_mean_1_coef&quot;       
+[139] &quot;det_LT_TKEO_mean_3_coef&quot;        &quot;det_LT_TKEO_std_1_coef&quot;        
+[141] &quot;det_LT_TKEO_std_2_coef&quot;         &quot;det_LT_TKEO_std_3_coef&quot;        
+[143] &quot;app_LT_entropy_shannon_1_coef&quot;  &quot;app_LT_entropy_shannon_2_coef&quot; 
+[145] &quot;app_LT_entropy_shannon_3_coef&quot;  &quot;app_LT_entropy_shannon_4_coef&quot; 
+[147] &quot;app_LT_entropy_shannon_5_coef&quot;  &quot;app_LT_entropy_shannon_6_coef&quot; 
+[149] &quot;app_LT_entropy_shannon_8_coef&quot;  &quot;app_LT_entropy_shannon_10_coef&quot;
+[151] &quot;app_LT_entropy_log_1_coef&quot;      &quot;app_LT_entropy_log_2_coef&quot;     
+[153] &quot;app_LT_entropy_log_3_coef&quot;      &quot;app_LT_entropy_log_4_coef&quot;     
+[155] &quot;app_LT_entropy_log_5_coef&quot;      &quot;app_LT_entropy_log_6_coef&quot;     
+[157] &quot;app_LT_entropy_log_8_coef&quot;      &quot;app_LT_entropy_log_9_coef&quot;     
+[159] &quot;app_LT_entropy_log_10_coef&quot;     &quot;app_LT_TKEO_mean_8_coef&quot;       
+[161] &quot;app_LT_TKEO_mean_9_coef&quot;        &quot;app_LT_TKEO_mean_10_coef&quot;      
+[163] &quot;app_LT_TKEO_std_5_coef&quot;         &quot;app_LT_TKEO_std_6_coef&quot;        
+[165] &quot;app_LT_TKEO_std_7_coef&quot;         &quot;app_LT_TKEO_std_8_coef&quot;        
+[167] &quot;app_LT_TKEO_std_9_coef&quot;         &quot;app_LT_TKEO_std_10_coef&quot;       
+[169] &quot;tqwt_energy_dec_1&quot;              &quot;tqwt_energy_dec_2&quot;             
+[171] &quot;tqwt_energy_dec_6&quot;              &quot;tqwt_energy_dec_11&quot;            
+[173] &quot;tqwt_energy_dec_12&quot;             &quot;tqwt_energy_dec_18&quot;            
+[175] &quot;tqwt_energy_dec_24&quot;             &quot;tqwt_energy_dec_25&quot;            
+[177] &quot;tqwt_energy_dec_26&quot;             &quot;tqwt_energy_dec_27&quot;            
+[179] &quot;tqwt_energy_dec_28&quot;             &quot;tqwt_energy_dec_33&quot;            
+[181] &quot;tqwt_energy_dec_34&quot;             &quot;tqwt_energy_dec_35&quot;            
+[183] &quot;tqwt_entropy_shannon_dec_1&quot;     &quot;tqwt_entropy_shannon_dec_6&quot;    
+[185] &quot;tqwt_entropy_shannon_dec_11&quot;    &quot;tqwt_entropy_shannon_dec_12&quot;   
+[187] &quot;tqwt_entropy_shannon_dec_13&quot;    &quot;tqwt_entropy_shannon_dec_14&quot;   
+[189] &quot;tqwt_entropy_shannon_dec_15&quot;    &quot;tqwt_entropy_shannon_dec_32&quot;   
+[191] &quot;tqwt_entropy_shannon_dec_33&quot;    &quot;tqwt_entropy_shannon_dec_34&quot;   
+[193] &quot;tqwt_entropy_shannon_dec_35&quot;    &quot;tqwt_entropy_shannon_dec_36&quot;   
+[195] &quot;tqwt_entropy_log_dec_1&quot;         &quot;tqwt_entropy_log_dec_12&quot;       
+[197] &quot;tqwt_entropy_log_dec_13&quot;        &quot;tqwt_entropy_log_dec_16&quot;       
+[199] &quot;tqwt_entropy_log_dec_18&quot;        &quot;tqwt_entropy_log_dec_19&quot;       
+[201] &quot;tqwt_entropy_log_dec_25&quot;        &quot;tqwt_entropy_log_dec_26&quot;       
+[203] &quot;tqwt_entropy_log_dec_27&quot;        &quot;tqwt_entropy_log_dec_28&quot;       
+[205] &quot;tqwt_entropy_log_dec_32&quot;        &quot;tqwt_entropy_log_dec_33&quot;       
+[207] &quot;tqwt_entropy_log_dec_34&quot;        &quot;tqwt_entropy_log_dec_35&quot;       
+[209] &quot;tqwt_TKEO_mean_dec_2&quot;           &quot;tqwt_TKEO_mean_dec_6&quot;          
+[211] &quot;tqwt_TKEO_mean_dec_11&quot;          &quot;tqwt_TKEO_mean_dec_12&quot;         
+[213] &quot;tqwt_TKEO_mean_dec_13&quot;          &quot;tqwt_TKEO_mean_dec_18&quot;         
+[215] &quot;tqwt_TKEO_mean_dec_19&quot;          &quot;tqwt_TKEO_mean_dec_25&quot;         
+[217] &quot;tqwt_TKEO_mean_dec_26&quot;          &quot;tqwt_TKEO_mean_dec_27&quot;         
+[219] &quot;tqwt_TKEO_mean_dec_32&quot;          &quot;tqwt_TKEO_mean_dec_33&quot;         
+[221] &quot;tqwt_TKEO_mean_dec_34&quot;          &quot;tqwt_TKEO_mean_dec_35&quot;         
+[223] &quot;tqwt_TKEO_std_dec_6&quot;            &quot;tqwt_TKEO_std_dec_8&quot;           
+[225] &quot;tqwt_TKEO_std_dec_11&quot;           &quot;tqwt_TKEO_std_dec_12&quot;          
+[227] &quot;tqwt_TKEO_std_dec_13&quot;           &quot;tqwt_TKEO_std_dec_14&quot;          
+[229] &quot;tqwt_TKEO_std_dec_17&quot;           &quot;tqwt_TKEO_std_dec_19&quot;          
+[231] &quot;tqwt_TKEO_std_dec_25&quot;           &quot;tqwt_TKEO_std_dec_26&quot;          
+[233] &quot;tqwt_TKEO_std_dec_34&quot;           &quot;tqwt_medianValue_dec_31&quot;       
+[235] &quot;tqwt_medianValue_dec_34&quot;        &quot;tqwt_meanValue_dec_34&quot;         
+[237] &quot;tqwt_meanValue_dec_36&quot;          &quot;tqwt_stdValue_dec_1&quot;           
+[239] &quot;tqwt_stdValue_dec_2&quot;            &quot;tqwt_stdValue_dec_5&quot;           
+[241] &quot;tqwt_stdValue_dec_6&quot;            &quot;tqwt_stdValue_dec_7&quot;           
+[243] &quot;tqwt_stdValue_dec_11&quot;           &quot;tqwt_stdValue_dec_12&quot;          
+[245] &quot;tqwt_stdValue_dec_13&quot;           &quot;tqwt_stdValue_dec_18&quot;          
+[247] &quot;tqwt_stdValue_dec_19&quot;           &quot;tqwt_stdValue_dec_25&quot;          
+[249] &quot;tqwt_stdValue_dec_26&quot;           &quot;tqwt_stdValue_dec_27&quot;          
+[251] &quot;tqwt_stdValue_dec_32&quot;           &quot;tqwt_stdValue_dec_33&quot;          
+[253] &quot;tqwt_stdValue_dec_34&quot;           &quot;tqwt_stdValue_dec_35&quot;          
+[255] &quot;tqwt_minValue_dec_7&quot;            &quot;tqwt_minValue_dec_11&quot;          
+[257] &quot;tqwt_minValue_dec_12&quot;           &quot;tqwt_minValue_dec_13&quot;          
+[259] &quot;tqwt_minValue_dec_14&quot;           &quot;tqwt_minValue_dec_17&quot;          
+[261] &quot;tqwt_maxValue_dec_6&quot;            &quot;tqwt_maxValue_dec_11&quot;          
+[263] &quot;tqwt_maxValue_dec_12&quot;           &quot;tqwt_maxValue_dec_13&quot;          
+[265] &quot;tqwt_maxValue_dec_14&quot;           &quot;tqwt_maxValue_dec_17&quot;          
+[267] &quot;tqwt_skewnessValue_dec_24&quot;      &quot;tqwt_skewnessValue_dec_25&quot;     
+[269] &quot;tqwt_skewnessValue_dec_26&quot;      &quot;tqwt_skewnessValue_dec_27&quot;     
+[271] &quot;tqwt_kurtosisValue_dec_12&quot;      &quot;tqwt_kurtosisValue_dec_16&quot;     
+[273] &quot;tqwt_kurtosisValue_dec_17&quot;      &quot;tqwt_kurtosisValue_dec_18&quot;     
+[275] &quot;tqwt_kurtosisValue_dec_19&quot;      &quot;tqwt_kurtosisValue_dec_20&quot;     
+[277] &quot;tqwt_kurtosisValue_dec_22&quot;      &quot;tqwt_kurtosisValue_dec_25&quot;     
+[279] &quot;tqwt_kurtosisValue_dec_26&quot;      &quot;tqwt_kurtosisValue_dec_27&quot;     
+[281] &quot;tqwt_kurtosisValue_dec_29&quot;      &quot;tqwt_kurtosisValue_dec_32&quot;     
+[283] &quot;tqwt_kurtosisValue_dec_33&quot;      &quot;tqwt_kurtosisValue_dec_34&quot;     
+[285] &quot;tqwt_kurtosisValue_dec_35&quot;     </code></pre>
+</div>
+<div id="model-selection" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Model Selection<a href="results.html#model-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Once the important features had been determined, they can be used to inform the predictive model for each sub-group.
+For this analysis, a function was built to test each sub-group against a number of predictive models. Using the 10% “test” data of the training set, accuracy estimates were generated and used to benchmark the model’s performance against each other. The models used for analysis were:<br />
+- Multilayer Perceptron<br />
+- Logistic Regression<br />
+- SVM w/ Linear Kernel<br />
+- SVM w/ Radial Kernel<br />
+- Naive Bayes<br />
+- k- Nearest Neighbors</p>
+<p>For this analysis it required the use of the <strong>caret</strong>, <strong>randomForest</strong>, <strong>e1071</strong>, <strong>nnet</strong>, <strong>kernlab</strong>, and <strong>naivebayes</strong> libraries.</p>
+<p>The following results were found for each of the sub features. A comparative bar chart for each of the sub features is also included.</p>
+<pre><code>Best model for baseline is KNN with an accuracy of 0.75 
+Best model for intensity is Random Forest with an accuracy of 0.7307692 
+Best model for formant is Multilayer Perceptron with an accuracy of 0.6923077 
+Best model for vff is Random Forest with an accuracy of 0.7115385 
+Best model for mfcc is Multilayer Perceptron with an accuracy of 0.7884615 
+Best model for wt is Random Forest with an accuracy of 0.7884615 
+Best model for tqwt is Random Forest with an accuracy of 0.8653846 </code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-12"></span>
+<img src="figure/unnamed-chunk-12-1.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 3.8: center
+</p>
+</div>
+<p>At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="methods.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="model-output.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -3,7 +3,7 @@ title: "PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voic
 author: "Erin S. King"
 date: "`r Sys.Date()`"
 output: 
-  bookdown::gitbook:
+  bookdown::html_document2:
     fig_caption: TRUE
     citation_package: biblatex
     biblio-style: apa

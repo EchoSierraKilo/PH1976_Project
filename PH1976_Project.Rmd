@@ -1,6 +1,6 @@
 ---
 title: "PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording"
-author: "Erin S. King et. al"
+author: "Erin S. King"
 date: "`r Sys.Date()`"
 output: 
   bookdown::gitbook:
@@ -10,18 +10,45 @@ output:
     split_bib: false
 bibliograpy: packages.bib
 ---
-```{r, include = FALSE}
+```{r, include=FALSE}
+#Set the working directory and get the data
+project_dir = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(project_dir)
+training_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_training set_p.csv',sep="")
+test_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_test set_p.csv',sep="")
+training_data = read.csv(training_set_path)
+test_data = read.csv(test_set_path)
+
 # Grab packages if not installed
 # Note, if RStudio is having issues w/ tidyverse, run this command in R (not Rstudio):
 # install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source")
-list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest" )
+list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble", "ggplot2")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)
+for(package in list.of.packages){
+  require(package, character.only = TRUE)
+}
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::write_bib(list.of.packages, "packages.bib",width = 60)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  tidy = TRUE,
+  cache = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  error = FALSE,
+  results = "markup",
+  fig.path = "figure/",
+  out.width = "100%",
+  out.height = "100%",
+  dpi = 72,
+  fig.cap = "center",
+  comment = "",
+  highlight = TRUE,
+  tidy.opts=list(width.cutoff=60)
+)
+knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
 ```
 
 # Introduction
@@ -48,34 +75,53 @@ The dataset includes PD patients with age ranging from 33 to 87 (65.1 ± 10.9) a
 ranging from 41 to 82 (61.1 ± 8.9). Each patient has three voice recording samples, with 7 aforementioned
 feature subsets. Each feature subset contains several features.  
 
-# Dataset
-## Preprocessing and Standardization
-```{r, include=FALSE}
-#Set the working directory and get the data
-project_dir = dirname(rstudioapi::getActiveDocumentContext()$path)
-setwd(project_dir)
-training_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_training set_p.csv',sep="")
-test_set_path = paste(project_dir,'/Project data_2023_p 2/Project data_2023_p/project_test set_p.csv',sep="")
-training_data = read.csv(training_set_path)
-test_data = read.csv(test_set_path)
-```
+# Methods
+## Preprocessing and Standardization  
+Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model. The best model for each subset will be selected based on these results.  
+
 ```{r,include=FALSE}
+# Load caret package if not already loaded
+if (!"caret" %in% rownames(installed.packages())) {
+  install.packages("caret")
+}
+library(caret)
+
+# Set seed for reproducibility
+set.seed(123)
+
 #Break the training data into feature subsets
-train_df.baseline = data.frame(training_data[c(2:3,4:24)])
-train_df.intensity = data.frame(training_data[c(2:3,25:27)])
-train_df.formant = data.frame(training_data[c(2:3,28:35)])
-train_df.vff = data.frame(training_data[c(2:3,36:57)])
-train_df.mfcc = data.frame(training_data[c(2:3,58:141)])
-train_df.wt = data.frame(training_data[c(2:3,142:323)])
-train_df.tqwt = data.frame(training_data[c(2:3,324:755)])
-#Break the test data into feature subsets
-test_df.baseline = data.frame(test_data[c(2:3,4:24)])
-test_df.intensity = data.frame(test_data[c(2:3,25:27)])
-test_df.formant = data.frame(test_data[c(2:3,28:35)])
-test_df.vff = data.frame(test_data[c(2:3,36:57)])
-test_df.mfcc = data.frame(test_data[c(2:3,58:141)])
-test_df.wt = data.frame(test_data[c(2:3,142:323)])
-test_df.tqwt = data.frame(test_data[c(2:3,324:755)])
+train_df.baseline = data.frame(training_data[c(1:24)])
+train_df.intensity = data.frame(training_data[c(1:3,25:27)])
+train_df.formant = data.frame(training_data[c(1:3,28:35)])
+train_df.vff = data.frame(training_data[c(1:3,36:57)])
+train_df.mfcc = data.frame(training_data[c(1:3,58:141)])
+train_df.wt = data.frame(training_data[c(1:3,142:323)])
+train_df.tqwt = data.frame(training_data[c(1:3,324:755)])
+
+#Partition training data
+train_indices <- createDataPartition(train_df.baseline$class, p = 0.9, list = FALSE)
+
+# Split train_df data
+train_df.baseline_train <- train_df.baseline[train_indices, ]
+train_df.baseline_test <- train_df.baseline[-train_indices, ]
+
+train_df.intensity_train <- train_df.intensity[train_indices, ]
+train_df.intensity_test <- train_df.intensity[-train_indices, ]
+
+train_df.formant_train <- train_df.formant[train_indices, ]
+train_df.formant_test <- train_df.formant[-train_indices, ]
+
+train_df.vff_train <- train_df.vff[train_indices, ]
+train_df.vff_test <- train_df.vff[-train_indices, ]
+
+train_df.mfcc_train <- train_df.mfcc[train_indices, ]
+train_df.mfcc_test <- train_df.mfcc[-train_indices, ]
+
+train_df.wt_train <- train_df.wt[train_indices, ]
+train_df.wt_test <- train_df.wt[-train_indices, ]
+
+train_df.tqwt_train <- train_df.tqwt[train_indices, ]
+train_df.tqwt_test <- train_df.tqwt[-train_indices, ]
 ```
 For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:  
 
@@ -88,6 +134,7 @@ For ease of analysis, the ensemble data set (both training and test) are broken 
 * Wavelet Transform-based Features
 * Tunable Q-Factor Wavelet Transform-based Features (TQWT)  
 
+Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set.
 ```{r, include=FALSE}
 
 # Standardizing the data for cross-comparison
@@ -96,118 +143,95 @@ require(tidyverse)
 require(broom)
 require(mosaic)
 
-# Training
-#Baseline
-train_df.baseline.std = train_df.baseline
-for(ii in 4:length(train_df.baseline.std))
-  {
-  train_df.baseline.std[,ii] = zscore(train_df.baseline.std[,ii])
+# Standardizing the data for cross-comparison
+# Training and Test Data
+subset_names <- c("baseline", "intensity", "formant", "vff", "mfcc", "wt", "tqwt")
+
+# Standardize function
+standardize_data <- function(train_df, test_df) {
+  for (ii in 4:length(train_df)) {
+    mean_val <- mean(train_df[, ii], na.rm = TRUE)
+    std_val <- sd(train_df[, ii], na.rm = TRUE)
+    
+    train_df[, ii] <- (train_df[, ii] - mean_val) / std_val
+    
+    if (!is.null(test_df)) {
+      test_df[, ii] <- (test_df[, ii] - mean_val) / std_val
+    }
   }
-#Formant
-train_df.formant.std = train_df.formant
-for(ii in 4:length(train_df.formant.std))
-  {
-  train_df.formant.std[,ii] = zscore(train_df.formant.std[,ii])
-}
-#Intensity
-train_df.intensity.std = train_df.intensity
-for(ii in 4:length(train_df.intensity.std))
-  {
-  train_df.intensity.std[,ii] = zscore(train_df.intensity.std[,ii])
-}
-#MFCC
-train_df.mfcc.std = train_df.mfcc
-for(ii in 4:length(train_df.mfcc.std))
-  {
-  train_df.mfcc.std[,ii] = zscore(train_df.mfcc.std[,ii])
-}
-#WT
-train_df.wt.std = train_df.wt
-for(ii in 4:length(train_df.wt.std))
-  {
-  train_df.wt.std[,ii] = zscore(train_df.wt.std[,ii])
-  }
-#TQWT
-train_df.tqwt.std = train_df.tqwt
-for(ii in 4:length(train_df.tqwt.std))
-  {
-  train_df.tqwt.std[,ii] = zscore(train_df.tqwt.std[,ii])
-}
-#VFF
-train_df.vff.std = train_df.vff
-for(ii in 4:length(train_df.vff.std))
-  {
-  train_df.vff.std[,ii] = zscore(train_df.vff.std[,ii])
+  return(list(train_df, test_df))
 }
 
-# Test
+# Standardize train and test datasets
+for (i in subset_names) {
+  # Standardize train_df and test_df
+  standardized_data <- standardize_data(get(paste0("train_df.", i, "_train")), get(paste0("train_df.", i, "_test")))
+  assign(paste0("train_df_std.", i, "_train"), standardized_data[[1]])
+  assign(paste0("train_df_std.", i, "_test"), standardized_data[[2]])
+}
 
-#Baseline
-test_df.baseline.std = test_df.baseline
-for(ii in 4:length(test_df.baseline.std))
-  {
-  test_df.baseline.std[,ii] = zscore(test_df.baseline.std[,ii])
-  }
-#Formant
-test_df.formant.std = test_df.formant
-for(ii in 4:length(test_df.formant.std))
-  {
-  test_df.formant.std[,ii] = zscore(test_df.formant.std[,ii])
-}
-#Intensity
-test_df.intensity.std = test_df.intensity
-for(ii in 4:length(test_df.intensity.std))
-  {
-  test_df.intensity.std[,ii] = zscore(test_df.intensity.std[,ii])
-}
-#MFCC
-test_df.mfcc.std = test_df.mfcc
-for(ii in 4:length(test_df.mfcc.std))
-  {
-  test_df.mfcc.std[,ii] = zscore(test_df.mfcc.std[,ii])
-}
-#WT
-test_df.wt.std = test_df.wt
-for(ii in 4:length(test_df.wt.std))
-  {
-  test_df.wt.std[,ii] = zscore(test_df.wt.std[,ii])
-  }
-#TQWT
-test_df.tqwt.std = test_df.tqwt
-for(ii in 4:length(test_df.tqwt.std))
-  {
-  test_df.tqwt.std[,ii] = zscore(test_df.tqwt.std[,ii])
-}
-#VFF
-test_df.vff.std = test_df.vff
-for(ii in 4:length(test_df.vff.std))
-  {
-  test_df.vff.std[,ii] = zscore(test_df.vff.std[,ii])
-}
+# Standardize test dataset
+  standardized_data <- standardize_data(get(paste0("training_data")), get(paste0("test_data")))
+  assign(paste0("test_df_std"), standardized_data[[2]])
+
 ```
 
-To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Formant** sub feature. This allows all data comparisons to be made equivalently.
+To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
 
-```{r prestd,echo=FALSE,fig.align='center',fig.cap="\\label{fig:prestd}Formant Sub-feature: Pre-standardization"}
-par(mfrow=c(2,4))
-for(ii in 1:length(train_df.formant)){
-  hist(train_df.formant[,ii],main="",xlab=colnames(train_df.formant[ii]))
+The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.
+
+```{r, echo = FALSE}
+
+plot_subfeatures <- function(subfeature_name, train_df, train_df_std) {
+  optimal_mfrow <- function(num_plots) {
+    max_cols <- floor(sqrt(num_plots))
+    num_rows <- ceiling(num_plots / max_cols)
+    return(c(num_rows, max_cols))
+  }
+
+  num_plots <- ncol(train_df) - 2
+
+  # Pre-standardization
+  cat(paste0("\\begin{figure}[h]\\centering\n"))
+  cat(paste0("\\caption{", subfeature_name, " Sub-feature: Pre-standardization}\n"))
+
+  par(mfrow = optimal_mfrow(num_plots))
+  for (ii in 3:ncol(train_df)) {
+    hist(train_df[, ii], main = "", xlab = colnames(train_df)[ii])
+  }
+  cat("\\end{figure}\n")
+
+  # Post-standardization
+  cat(paste0("\\begin{figure}[h]\\centering\n"))
+  cat(paste0("\\caption{", subfeature_name, " Sub-feature: Post-standardization}\n"))
+
+  par(mfrow = optimal_mfrow(num_plots))
+  for (ii in 3:ncol(train_df_std)) {
+    hist(train_df_std[, ii], main = "", xlab = colnames(train_df_std)[ii])
+  }
+  cat("\\end{figure}\n")
 }
+
+
 ```
+
+```{r, echo=FALSE, fig.width=10, fig.height=10}
+
+selected_subsets <- c("baseline", "intensity", "formant")
+# Generate plots using function
+for (selected_subset in selected_subsets) {
+  train_df_subset <- get(paste0("train_df.", selected_subset, "_train"))
+  train_df_std_subset <- get(paste0("train_df_std.", selected_subset, "_train"))
   
-
-```{r poststd, echo=FALSE,fig.align='center',fig.cap="\\label{fig:poststd}Formant Sub-feature: Post-standardization"}
-par(mfrow=c(2,4))
-for(ii in 1:length(train_df.formant.std)){
-  hist(train_df.formant.std[,ii],main="",xlab=colnames(train_df.formant.std[ii]))
+  plot_subfeatures(selected_subset, train_df_subset, train_df_std_subset)
 }
 ```
-  
+# Results  
 ## Feature Selection
 Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
 1. It reduces the high dimensionality of the data set.
 2. It maximizes the joint dependency of the data set.
-This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The **Boruta** package in RStudio will be used for this purpose.  
+This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The **Boruta** package in RStudio will be used for this purpose, and utilizes Random Forest to perform a top-down search on the corresponding data frame to determine relevant features.     
 
 
 
@@ -216,79 +240,359 @@ require(Boruta)
 require(mlbench)
 require(caret)
 require(randomForest)
-#Find important features in training data
-set.seed(123)
-boruta.baseline = Boruta(class ~ ., data = train_df.baseline.std, doTrace = 2)
-boruta.formant = Boruta(class ~., data = train_df.formant.std, doTrace = 2,maxRuns = 500)
-boruta.intensity = Boruta(class ~., data = train_df.intensity.std, doTrace = 2,maxRuns = 500)
-boruta.mfcc = Boruta(class ~., data = train_df.mfcc.std, doTrace = 2,maxRuns = 500)
-boruta.tqwt = Boruta(class ~., data = train_df.tqwt.std, doTrace = 2,maxRuns = 500)
-boruta.vff = Boruta(class ~., data = train_df.vff.std, doTrace = 2,maxRuns = 500)
-boruta.wt = Boruta(class ~., data = train_df.wt.std, doTrace = 2,maxRuns = 500)
+# Function to perform Boruta feature selection
+perform_boruta <- function(dataset_name, standardized_train_df, max_runs = 500) {
+  cat("Performing Boruta on", dataset_name, "\n")
+  set.seed(123)
+  boruta_result <- Boruta(class ~ ., data = standardized_train_df, doTrace = 2, maxRuns = max_runs)
+  return(boruta_result)
+}
+
+# Call the perform_boruta function for each subset. Finds important features in each subset
+boruta_results <- list()
+for (subset_name in subset_names) {
+  standardized_train_df <- get(paste0("train_df_std.", subset_name, "_train"))
+  boruta_result <- perform_boruta(subset_name, standardized_train_df)
+  boruta_results[[subset_name]] <- boruta_result
+}
 ```
-   
-mRMR analysis yields the following results:
-* Baseline
-```{r}
-print(boruta.baseline)
-```
-* Formant
-```{r}
-print(boruta.formant)
-```
-* Intensity
-```{r}
-print(boruta.intensity)
-```
-* MFCC
-```{r}
-print(boruta.mfcc)
-```
-* TQWT
-```{r}
-print(boruta.tqwt)
-```
-* VFF
-```{r}
-print(boruta.vff)
-```
-* WT
-```{r}
-print(boruta.wt)
-```
- 
- 
-```{r, boruta.baseline, echo=FALSE}
-#Generate Boruta plots
-plot(boruta.baseline, las = 2,main="Baseline mRMR")
-```
-```{r, boruta.formant, echo=FALSE}
-plot(boruta.formant, las = 2,main = "Formant mRMR")
-```
-```{r, boruta.intensity, echo=FALSE}
-plot(boruta.intensity, las = 2, main="Intensity mRMR")
-```
-```{r, boruta.mfcc, echo=FALSE}
-plot(boruta.mfcc, las = 2, main="MFCC mRMR")
-```
-```{r, boruta.tqwt, echo=FALSE}
-plot(boruta.tqwt, las = 2, main="TQWT mRMR")
-```
-```{r, boruta.vff, echo=FALSE}
-plot(boruta.vff, las = 2, main="VFF mRMR")
-```
-```{r, boruta.wt, echo=FALSE}
-plot(boruta.wt, las = 2, main="WT mRMR")
-```
-  
 
 ```{r, include=FALSE}
-#Force "Tentative" values
-chosen.baseline = getNonRejectedFormula(TentativeRoughFix(boruta.baseline))
-chosen.formant = getNonRejectedFormula(TentativeRoughFix(boruta.formant))
-chosen.intensity = getNonRejectedFormula(TentativeRoughFix(boruta.intensity))
-chosen.mfcc = getNonRejectedFormula(TentativeRoughFix(boruta.mfcc))
-chosen.tqwt = getNonRejectedFormula(TentativeRoughFix(boruta.tqwt))
-chosen.vff = getNonRejectedFormula(TentativeRoughFix(boruta.vff))
-chosen.wt = getNonRejectedFormula(TentativeRoughFix(boruta.wt))
+# Boruta plot function for multiple objects
+generate_boruta_plots <- function(boruta_list) {
+  for (name in names(boruta_list)) {
+    label <- paste0("Boruta plot for ", name, " features")
+    fig_label <- paste0("fig:", gsub(" ", "_", tolower(label)))
+    
+    cat(paste0("\\begin{figure}[ht!]\n"))
+    cat(paste0("\\centering\n"))
+    cat(paste0("\\caption{", label, "}\n"))
+    cat(paste0("\\label{", fig_label, "}\n"))
+    
+    plot(boruta_list[[name]], las = 2, main = paste0(name, " mRMR"))
+    
+    cat("\\end{figure}\n")
+  }
+}
+
 ```
+mRMR analysis yielded the following results. TQWT results are particularly dense, so the plot is not particularly informative, but the overall trend is such that:  
+- Red regions are categorically rejected and excluded from the included features.  
+- Blue regions are tentative, and are handled in a later section of code.  
+- Green regions are found to be imporant and thus selected as included features.  
+
+```{r, echo=FALSE}
+# Generate Boruta plots using the generate_boruta_plots function
+generate_boruta_plots(boruta_results)
+
+```
+  
+Following this initial assessment, chosen variables are selected for regression by using **getNonRejectedFormula()**. This collapses any variables left as **Tentative** factors into either Accepted or Rejected.
+```{r, include=FALSE}
+#Force "Tentative" values function
+get_chosen_features <- function(boruta_results) {
+  chosen_features <- list()
+  for (name in names(boruta_results)) {
+    chosen_formula <- getNonRejectedFormula(TentativeRoughFix(boruta_results[[name]]))
+    chosen_features[[name]] <- chosen_formula
+  }
+  return(chosen_features)
+}
+```
+  
+The following factors were found to be important to the model:
+```{r, echo=FALSE}
+# Get chosen features using the get_chosen_features function
+chosen_features <- suppressWarnings(get_chosen_features(boruta_results))
+chosen_variables <- lapply(chosen_features, all.vars)
+
+# Combine all variables into a single vector
+all_variables <- unlist(chosen_variables)
+
+# Find unique variables
+unique_variables <- unique(all_variables)
+
+# Print the unique variables
+print(unique_variables)
+
+```
+
+## Model Selection  
+
+Once the important features had been determined, they can be used to inform the predictive model for each sub-group.
+For this analysis, a function was built to test each sub-group against a number of predictive models. Using the 10% "test" data of the training set, accuracy estimates were generated and used to benchmark the model's performance against each other. The models used for analysis were:  
+- Multilayer Perceptron  
+- Logistic Regression  
+- SVM w/ Linear Kernel  
+- SVM w/ Radial Kernel  
+- Naive Bayes  
+- k- Nearest Neighbors  
+
+```{r, include = FALSE}
+
+#Function for Multilayer Perceptron
+train_mlp <- function(train_df, formula) {
+  library(neuralnet)
+  set.seed(123)
+  
+  threshold_func <- function(x) ifelse(x > 0.5, 1, 0)
+  train_df$class <- as.numeric(train_df$class) - 1
+  
+  mlp_model <- neuralnet(formula, data = train_df, hidden = c(5), linear.output = FALSE, act.fct = "logistic", stepmax = 1e+05)
+  return(list(model = mlp_model, threshold_func = threshold_func))
+}
+
+test_model <- function(model_obj, test_df, model_type, chosen_formula) {
+  if (model_type == "mlp") {
+    model <- model_obj$model
+    threshold_func <- model_obj$threshold_func
+    
+    test_data <- model.matrix(chosen_formula, data = test_df)[, -1]
+    predictions <- compute(model, test_data)$net.result
+    predicted_classes <- sapply(predictions, threshold_func)
+    actual_classes <- test_df$class
+    
+    accuracy <- sum(predicted_classes == actual_classes) / length(actual_classes)
+  } else {
+    predictions <- predict(model_obj, test_df)
+    
+    if (model_type %in% c("logit", "svm_linear", "svm_rbf")) {
+      predicted_classes <- ifelse(predictions > 0.5, 1, 0)
+    } else {
+      predicted_classes <- predictions
+    }
+    actual_classes <- test_df$class
+    
+    accuracy <- sum(predicted_classes == actual_classes) / length(actual_classes)
+  }
+  
+  return(accuracy)
+}
+
+```
+
+  
+For this analysis it required the use of the **caret**, **randomForest**, **e1071**, **nnet**, **kernlab**, and **naivebayes** libraries.  
+
+```{r, include = FALSE}
+
+#Modeling function
+generate_models <- function(dataset_name, train_df, test_df) {
+  library(caret)
+  library(randomForest)
+  library(e1071)
+  library(nnet)
+  library(kernlab)
+  library(naivebayes)
+  
+  set.seed(123)
+  # Create chosen_formula
+  chosen_formula <- as.formula(chosen_features[[dataset_name]])
+
+  # Convert the class variable into a factor
+  train_df$class <- as.factor(train_df$class)
+  test_df$class <- as.factor(test_df$class)
+
+  # Create chosen_formula
+  chosen_formula <- as.formula(chosen_features[[dataset_name]])
+
+  # Train/test data
+  train_data <- model.matrix(chosen_formula, data = train_df)[, -1]
+  train_class <- train_df$class
+  test_data <- model.matrix(chosen_formula, data = test_df)[, -1]
+  test_class <- test_df$class
+  # Initialize list to store models and accuracy
+  models_and_accuracy <- list()
+
+  # Logistic Regression
+  logit_model <- glm(formula = chosen_formula, family = "binomial", data = train_df)
+  logit_predictions <- predict(logit_model, newdata = test_df, type = "response")
+  logit_predicted_classes <- ifelse(logit_predictions > 0.5, 1, 0)
+  accuracy_logit <- sum(logit_predicted_classes == test_class) / length(test_class)
+
+  models_and_accuracy[["Logistic Regression"]] <- list(model = logit_model, accuracy = accuracy_logit)
+  
+  # Define the parameter grid for tuning the Random Forest
+  tuneGrid <- expand.grid(mtry = sqrt(ncol(train_df)),
+                        splitrule = "gini",
+                        min.node.size = c(1, 3, 5, 10, 15))
+
+  # Set up cross-validation
+  cvControl <- trainControl(method = "cv", number = 5, search = "grid")
+
+  # Random Forest model using cross-validation
+  rf_model <- train(chosen_formula, data = train_df,
+                  method = "ranger",
+                  trControl = cvControl,
+                  tuneGrid = tuneGrid,
+                  importance = "none",
+                  num.trees = 500)
+  
+  rf_pred <- predict(rf_model, newdata = test_df)
+  accuracy_rf <- sum(rf_pred == test_class) / length(test_class)
+
+  models_and_accuracy[["Random Forest"]] <- list(model = rf_model, accuracy = accuracy_rf)
+
+  # SVM with Linear Kernel
+  svm_linear <- svm(train_data, train_class, kernel = "linear")
+  predictions_linear <- predict(svm_linear, test_data)
+  accuracy_linear <- sum(predictions_linear == test_class) / length(test_class)
+
+  models_and_accuracy[["SVM Linear"]] <- list(model = svm_linear, accuracy = accuracy_linear)
+
+  # SVM with RBF Kernel
+  svm_rbf <- svm(train_data, train_class, kernel = "radial")
+  predictions_rbf <- predict(svm_rbf, test_data)
+  accuracy_rbf <- sum(predictions_rbf == test_class) / length(test_class)
+
+  models_and_accuracy[["SVM RBF"]] <- list(model = svm_rbf, accuracy = accuracy_rbf)
+
+   # Multilayer Perceptron
+  mlp_model <- train_mlp(train_df, chosen_formula)
+  accuracy_mlp <- test_model(mlp_model, test_df, "mlp", chosen_formula)
+
+  models_and_accuracy[["Multilayer Perceptron"]] <- list(model = mlp_model$model, accuracy = accuracy_mlp)
+
+  # Naive Bayes
+  nb_model <- naive_bayes(chosen_formula, data = train_df)
+  nb_predictions <- predict(nb_model, newdata = test_df)
+  accuracy_nb <- sum(nb_predictions == test_class) / length(test_class)
+
+  models_and_accuracy[["Naive Bayes"]] <- list(model = nb_model, accuracy = accuracy_nb)
+
+  # KNN
+  k <- 10
+  knn_predictions <- knn(train = train_data, test = test_data, cl = train_class, k = k)
+  accuracy_knn <- sum(knn_predictions == test_class) / length(test_class)
+  knn_model <- list(train_data = train_data, train_class = train_class, k = k)
+
+  models_and_accuracy[["KNN"]] <- list(model = knn_model, accuracy = accuracy_knn)
+  return(models_and_accuracy)
+}
+
+```
+  
+  
+The following results were found for each of the sub features. A comparative bar chart for each of the sub features is also included.  
+
+```{r, echo = FALSE}
+# Initialize the data frame
+model_accuracies <- data.frame()
+best_models <- list()
+# Iterate over the subsets
+for (subset_name in subset_names) {
+  train_df <- get(paste0("train_df_std.", subset_name, "_train"))
+  test_df <- get(paste0("train_df_std.", subset_name, "_test"))
+  models_and_accuracy <- suppressWarnings(generate_models(subset_name, train_df, test_df))
+
+  # Create a data frame to store model accuracies for each subset
+  subset_model_accuracies <- data.frame(model = names(models_and_accuracy), accuracy = unlist(lapply(models_and_accuracy, function(x) x$accuracy)), stringsAsFactors = FALSE)
+  subset_model_accuracies$subset_name <- subset_name
+
+  # Bind the rows to the model_accuracies data frame
+  model_accuracies <- rbind(model_accuracies, subset_model_accuracies)
+  
+  # Find the model with the highest accuracy
+  best_model <- names(which.max(sapply(models_and_accuracy, function(x) x$accuracy)))
+  cat("Best model for", subset_name, "is", best_model, "with an accuracy of", models_and_accuracy[[best_model]]$accuracy, "\n")
+
+  # Store the best model for this subset
+  best_models[[subset_name]] <- list(model = models_and_accuracy[[best_model]]$model, accuracy = models_and_accuracy[[best_model]]$accuracy)
+}
+
+# Create the ggplot bar chart
+ggplot(data = model_accuracies, aes(x = subset_name, y = accuracy, fill = model)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Model Accuracies by Subset", x = "Subset", y = "Accuracy") +
+  scale_fill_brewer(palette = "Set1")
+```
+At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.
+```{r, include = FALSE}
+
+# Functions for Ensemble predictions
+weighted_prediction <- function(best_models, test_data, chosen_features) {
+  predictions_list <- mapply(function(subset_name, model, test_data, chosen_features) {
+    if (inherits(model, "list") && !is.null(model$k)) { # KNN model
+      common_columns <- intersect(colnames(test_data[[subset_name]]), colnames(model$train_data))
+  } else if (class(model$finalModel) == "ranger") { # Ranger model
+      common_columns <- intersect(colnames(test_data[[subset_name]]), model$finalModel$forest$independent.variable.names)
+  } else if (inherits(model, "nn")) { # Neural Network model
+      common_columns <- intersect(colnames(test_data[[subset_name]]), colnames(model$data))
+  } else {
+    stop("Unsupported model type")
+  }
+    test_subset_data <- test_data[[subset_name]][, common_columns]
+    
+    if (inherits(model, "glm")) {
+      predict(model, newdata = test_subset_data, type = "response")
+    } else if (class(model$finalModel) == "ranger") {
+      predict(model, newdata = test_subset_data, type = "raw")
+    } else if (inherits(model, "svm")) {
+      predict(model, newdata = test_subset_data, probability = TRUE)$probabilities[, 2, drop = FALSE]
+    } else if (inherits(model, "naiveBayes")) {
+      predict(model, newdata = test_subset_data, type = "raw")[, 1, drop = FALSE]
+    } else if (inherits(model, "nn")) {
+      predictions <- compute(model, test_subset_data)$net.result
+      threshold_func <- function(x) ifelse(x > 0.5, 1, 0)
+      factor_predictions <- sapply(predictions, threshold_func)
+      as.factor(factor_predictions)
+    } else if (inherits(model, "list") && !is.null(model$k)) {
+      knn(train = model$train_data, test = test_subset_data, cl = model$train_class, k = model$k)
+    } else {
+      stop("Unsupported model type")
+    }
+  }, subset_name = names(best_models), model = lapply(best_models, `[[`, "model"), test_data = rep(list(test_data), length(names(best_models))), chosen_features = chosen_features, SIMPLIFY = FALSE)
+  
+  # Convert factors to numeric values
+  predictions_list <- lapply(predictions_list, function(x) as.numeric(x)-1)
+
+  # Calculate normalized weights
+  models_weights <- lapply(best_models, function(x) x$accuracy)
+  models_weights_normalized <- unlist(models_weights) / sum(unlist(models_weights))
+
+  
+  # Calculate weighted predictions
+  combined_probs <- Reduce(`+`, mapply(`*`, predictions_list, models_weights_normalized, SIMPLIFY = FALSE))
+  combined_predictions <- ifelse(combined_probs > 0.5, 1, 0)
+
+  return(combined_predictions)
+}
+```
+
+```{r, include = FALSE}
+  # Calculate normalized weights
+  models_weights <- lapply(models_and_accuracy, function(x) x$accuracy)
+  models_weights_normalized <- unlist(models_weights) / sum(unlist(models_weights))
+  
+  # Prepare train_data and test_data for all models
+  train_data_list <- lapply(names(best_models), function(subset_name) {
+    train_df <- get(paste0("train_df_std.", subset_name, "_train"))
+    train_df[, setdiff(names(train_df), "class")]
+  })
+  
+  test_data_list <- lapply(names(best_models), function(subset_name) {
+    test_df <- get(paste0("train_df_std.", subset_name, "_test"))
+    test_df[, setdiff(names(test_df), "class")]
+  })
+  
+  names(test_data_list) <- names(best_models)
+
+  
+  # Make weighted ensemble predictions using the trained best models and normalized weights
+  weighted_predictions <- weighted_prediction(best_models, test_data_list, chosen_features)
+  
+  # Make weighted ensemble predictions using the trained best models and normalized weights
+  weighted_predictions <- weighted_prediction(best_models, test_data_list, chosen_features)
+  
+  # Calculate ensemble accuracy
+  test_class <- test_df$class
+  
+  ensemble_accuracy <- sum(weighted_predictions == test_class) / length(test_class)
+  cat("Ensemble model accuracy:", ensemble_accuracy, "\n")
+
+```
+
+# Model Output
+
+Will update with the model output at a later date.

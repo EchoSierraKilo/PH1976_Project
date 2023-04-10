@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Methods | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording</title>
+  <meta name="description" content="2 Methods | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Methods | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Methods | PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording" />
+  
+  
+  
+
+<meta name="author" content="Erin S. King" />
+
+
+<meta name="date" content="2023-04-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction.html"/>
+<link rel="next" href="results.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#definition"><i class="fa fa-check"></i><b>1.1</b> Definition</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#study-design"><i class="fa fa-check"></i><b>1.3</b> Study Design</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#study-population"><i class="fa fa-check"></i><b>1.4</b> Study Population</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#preprocessing-and-standardization"><i class="fa fa-check"></i><b>2.1</b> Preprocessing and Standardization</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#feature-selection"><i class="fa fa-check"></i><b>3.1</b> Feature Selection</a></li>
+<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#model-selection"><i class="fa fa-check"></i><b>3.2</b> Model Selection</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="model-output.html"><a href="model-output.html"><i class="fa fa-check"></i><b>4</b> Model Output</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="methods" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Methods<a href="methods.html#methods" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="preprocessing-and-standardization" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Preprocessing and Standardization<a href="methods.html#preprocessing-and-standardization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model. The best model for each subset will be selected based on these results.</p>
+<p>For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:</p>
+<ul>
+<li>Baseline Features</li>
+<li>Time Frequency Features
+<ul>
+<li>Intensity based</li>
+<li>Formant and Bandwidth based</li>
+</ul></li>
+<li>Vocal Fold Features</li>
+<li>Mel Frequency Cepstral Coefficients (MFCC)</li>
+<li>Wavelet Transform-based Features</li>
+<li>Tunable Q-Factor Wavelet Transform-based Features (TQWT)</li>
+</ul>
+<p>Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set.</p>
+<p>To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the <span class="citation">[@tidyverse]</span>, <span class="citation">[@broom]</span>, and <span class="citation">[@mosaic]</span> packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the <strong>Baseline</strong>, <strong>Intensity</strong>, and <strong>Formant</strong> sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.</p>
+<p>The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.</p>
+<pre><code>\begin{figure}[h]\centering
+\caption{baseline Sub-feature: Pre-standardization}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5-1"></span>
+<img src="figure/unnamed-chunk-5-1.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 2.1: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[h]\centering
+\caption{baseline Sub-feature: Post-standardization}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5-2"></span>
+<img src="figure/unnamed-chunk-5-2.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 2.2: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[h]\centering
+\caption{intensity Sub-feature: Pre-standardization}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5-3"></span>
+<img src="figure/unnamed-chunk-5-3.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 2.3: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[h]\centering
+\caption{intensity Sub-feature: Post-standardization}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5-4"></span>
+<img src="figure/unnamed-chunk-5-4.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 2.4: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[h]\centering
+\caption{formant Sub-feature: Pre-standardization}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5-5"></span>
+<img src="figure/unnamed-chunk-5-5.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 2.5: center
+</p>
+</div>
+<pre><code>\end{figure}
+\begin{figure}[h]\centering
+\caption{formant Sub-feature: Post-standardization}</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5-6"></span>
+<img src="figure/unnamed-chunk-5-6.png" alt="center" width="100%" height="100%" />
+<p class="caption">
+Figure 2.6: center
+</p>
+</div>
+<pre><code>\end{figure}</code></pre>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="results.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

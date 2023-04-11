@@ -3,12 +3,23 @@ title: "PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voic
 author: "Erin S. King"
 date: "`r Sys.Date()`"
 output: 
-  bookdown::html_document2:
+  bookdown::pdf_book:
     fig_caption: TRUE
-    citation_package: biblatex
-    biblio-style: apa
-    split_bib: false
-bibliograpy: packages.bib
+    number_sections: FALSE
+    latex_engine: pdflatex
+    keep_tex: yes
+bookdown:
+  numbering:
+    toc: FALSE
+    depth: 1
+  output:
+    gitbook: default
+  language:
+    ui: en
+    label:
+      fig_prefix: ['Figure ']
+header-includes:
+  - \usepackage{pdflscape}
 ---
 ```{r, include=FALSE}
 #Set the working directory and get the data
@@ -22,7 +33,7 @@ test_data = read.csv(test_set_path)
 # Grab packages if not installed
 # Note, if RStudio is having issues w/ tidyverse, run this command in R (not Rstudio):
 # install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source")
-list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble", "ggplot2")
+list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble", "ggplot2", "formatR")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)
 for(package in list.of.packages){
@@ -46,29 +57,22 @@ knitr::opts_chunk$set(
   fig.cap = "center",
   comment = "",
   highlight = TRUE,
-  tidy.opts=list(width.cutoff=60)
+  tidy.opts=list(width.cutoff=80)
 )
-knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
 ```
 
 # Introduction
 The following analysis in this PH1976 project is to demonstrate the tools examined in this course for data categorization, regression, and prediction. The project's aim is to predict Parkinson’s disease (PD) using the extracted features from the voice recording of patients. For each individual, three recording samples were collected. The [data and corresponding analysis](https://doi.org/10.1016/j.asoc.2018.10.022) is provided by @Sakar in their seminal research on implementing tunable Q-factor wavelet transforms in conjunction with existing data prediction methods. The methods found in this study serve as a roadmap for this project and inform the methods chosen for categorization and prediction.  
 
 ## Definition
-Parkinson’s disease (PD) is a progressive neurodegenerative disorder. To accurately detect the disease in the
-early stage, many telediagnosis and telemonitoring systems have recently been proposed. Since vocal problem is
-one of the most important symptoms which can be seen in the earlier stage of PD patients, vocal disorders-
-based systems become popular in PD diagnosis and monitoring. In these systems, various speech signal
-processing algorithms have been used to extract clinically useful information for PD assessment, and the
-calculated features are fed to different learning algorithms to make reliable decisions. PD telemedicine studies
-showed that the choice of extracted features and learning algorithms directly influences the accuracy and
+Parkinson’s disease (PD) is a progressive neuro-degenerative disorder. To accurately detect the disease in the
+early stage, many tele-diagnosis and tele-monitoring systems have recently been proposed. Since vocal problem is one of the most important symptoms which can be seen in the earlier stage of PD patients, vocal disorders-
+based systems become popular in PD diagnosis and monitoring. In these systems, various speech signal processing algorithms have been used to extract clinically useful information for PD assessment, and the
+calculated features are fed to different learning algorithms to make reliable decisions. PD tele-medicine studies showed that the choice of extracted features and learning algorithms directly influences the accuracy and
 reliability of distinguishing PD patients.  
 
 ## Data
 In this study, Sakar et. al collected the voice recordings of 252 subjects including PD patients and healthy individuals. They gathered three recording samples from each subject and extracted seven feature subsets from the recording samples. The feature subsets were baseline features, intensity-based features, bandwidth and formant features, vocal fold features, Mel Frequency Cepstral Coefficients (MFCC), wavelet transform based features (WT) and tunable Q-factor wavelet transform based features (TQWT).  
-
-## Study Design
-Need to fill this out based on our own analysis.  
 
 ## Study Population
 The dataset includes PD patients with age ranging from 33 to 87 (65.1 ± 10.9) and healthy individuals with age
@@ -77,18 +81,15 @@ feature subsets. Each feature subset contains several features.
 
 # Methods
 ## Preprocessing and Standardization  
-Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model. The best model for each subset will be selected based on these results.  
+Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model. The best model for each subset will be selected based on these results.   
 
+  
 ```{r,include=FALSE}
-# Load caret package if not already loaded
-if (!"caret" %in% rownames(installed.packages())) {
-  install.packages("caret")
-}
-library(caret)
-
 # Set seed for reproducibility
 set.seed(123)
+```
 
+``` {r dataset, results = 'hide'}
 #Break the training data into feature subsets
 train_df.baseline = data.frame(training_data[c(1:24)])
 train_df.intensity = data.frame(training_data[c(1:3,25:27)])
@@ -123,6 +124,9 @@ train_df.wt_test <- train_df.wt[-train_indices, ]
 train_df.tqwt_train <- train_df.tqwt[train_indices, ]
 train_df.tqwt_test <- train_df.tqwt[-train_indices, ]
 ```
+
+\newpage
+
 For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:  
 
 * Baseline Features
@@ -135,7 +139,7 @@ For ease of analysis, the ensemble data set (both training and test) are broken 
 * Tunable Q-Factor Wavelet Transform-based Features (TQWT)  
 
 Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set.
-```{r, include=FALSE}
+```{r standardize, results='hide'}
 
 # Standardizing the data for cross-comparison
 
@@ -176,11 +180,13 @@ for (i in subset_names) {
 
 ```
 
+\newpage
+
 To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
 
 The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.
 
-```{r, echo = FALSE}
+```{r histograms, results='hide'}
 
 plot_subfeatures <- function(subfeature_name, train_df, train_df_std) {
   optimal_mfrow <- function(num_plots) {
@@ -192,30 +198,24 @@ plot_subfeatures <- function(subfeature_name, train_df, train_df_std) {
   num_plots <- ncol(train_df) - 2
 
   # Pre-standardization
-  cat(paste0("\\begin{figure}[h]\\centering\n"))
-  cat(paste0("\\caption{", subfeature_name, " Sub-feature: Pre-standardization}\n"))
 
   par(mfrow = optimal_mfrow(num_plots))
   for (ii in 3:ncol(train_df)) {
     hist(train_df[, ii], main = "", xlab = colnames(train_df)[ii])
   }
-  cat("\\end{figure}\n")
 
   # Post-standardization
-  cat(paste0("\\begin{figure}[h]\\centering\n"))
-  cat(paste0("\\caption{", subfeature_name, " Sub-feature: Post-standardization}\n"))
 
   par(mfrow = optimal_mfrow(num_plots))
   for (ii in 3:ncol(train_df_std)) {
     hist(train_df_std[, ii], main = "", xlab = colnames(train_df_std)[ii])
   }
-  cat("\\end{figure}\n")
 }
 
 
 ```
 
-```{r, echo=FALSE, fig.width=10, fig.height=10}
+```{r histPlots, echo=FALSE, fig.align='center',fig.cap="\\label{fig:histPlots}Pre- vs. Post-Standardization Histograms", fig.width=10, fig.height=10}
 
 selected_subsets <- c("baseline", "intensity", "formant")
 # Generate plots using function
@@ -226,6 +226,9 @@ for (selected_subset in selected_subsets) {
   plot_subfeatures(selected_subset, train_df_subset, train_df_std_subset)
 }
 ```
+
+\newpage
+
 # Results  
 ## Feature Selection
 Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
@@ -233,9 +236,7 @@ Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter
 2. It maximizes the joint dependency of the data set.
 This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The **Boruta** package in RStudio will be used for this purpose, and utilizes Random Forest to perform a top-down search on the corresponding data frame to determine relevant features.     
 
-
-
-```{r boruta, include = FALSE}
+```{r boruta, results='hide'}
 require(Boruta)
 require(mlbench)
 require(caret)
@@ -257,21 +258,14 @@ for (subset_name in subset_names) {
 }
 ```
 
-```{r, include=FALSE}
+```{r borutaFunc, echo=FALSE}
 # Boruta plot function for multiple objects
-generate_boruta_plots <- function(boruta_list) {
+generate_boruta_plots <- function(boruta_list, output_file) {
   for (name in names(boruta_list)) {
     label <- paste0("Boruta plot for ", name, " features")
     fig_label <- paste0("fig:", gsub(" ", "_", tolower(label)))
     
-    cat(paste0("\\begin{figure}[ht!]\n"))
-    cat(paste0("\\centering\n"))
-    cat(paste0("\\caption{", label, "}\n"))
-    cat(paste0("\\label{", fig_label, "}\n"))
-    
     plot(boruta_list[[name]], las = 2, main = paste0(name, " mRMR"))
-    
-    cat("\\end{figure}\n")
   }
 }
 
@@ -281,14 +275,23 @@ mRMR analysis yielded the following results. TQWT results are particularly dense
 - Blue regions are tentative, and are handled in a later section of code.  
 - Green regions are found to be imporant and thus selected as included features.  
 
-```{r, echo=FALSE}
+```{r landscape-start, echo=FALSE, results='asis'}
+cat("\\begin{landscape}")
+```
+
+```{r borutaPlot, echo=FALSE, fig.align='center', fig.cap="\\label{fig:borutaPlot}Boruta Plot"}
 # Generate Boruta plots using the generate_boruta_plots function
 generate_boruta_plots(boruta_results)
-
 ```
-  
+
+```{r landscape-end, echo=FALSE, results='asis'}
+cat("\\end{landscape}")
+```
+
+
+\newpage
 Following this initial assessment, chosen variables are selected for regression by using **getNonRejectedFormula()**. This collapses any variables left as **Tentative** factors into either Accepted or Rejected.
-```{r, include=FALSE}
+```{r, results='hide'}
 #Force "Tentative" values function
 get_chosen_features <- function(boruta_results) {
   chosen_features <- list()
@@ -316,7 +319,7 @@ unique_variables <- unique(all_variables)
 print(unique_variables)
 
 ```
-
+\newpage
 ## Model Selection  
 
 Once the important features had been determined, they can be used to inform the predictive model for each sub-group.
@@ -328,7 +331,7 @@ For this analysis, a function was built to test each sub-group against a number 
 - Naive Bayes  
 - k- Nearest Neighbors  
 
-```{r, include = FALSE}
+```{r, results='hide'}
 
 #Function for Multilayer Perceptron
 train_mlp <- function(train_df, formula) {
@@ -374,7 +377,7 @@ test_model <- function(model_obj, test_df, model_type, chosen_formula) {
   
 For this analysis it required the use of the **caret**, **randomForest**, **e1071**, **nnet**, **kernlab**, and **naivebayes** libraries.  
 
-```{r, include = FALSE}
+```{r, results='hide'}
 
 #Modeling function
 generate_models <- function(dataset_name, train_df, test_df) {
@@ -475,7 +478,7 @@ generate_models <- function(dataset_name, train_df, test_df) {
   
 The following results were found for each of the sub features. A comparative bar chart for each of the sub features is also included.  
 
-```{r, echo = FALSE}
+```{r, results='hide'}
 # Initialize the data frame
 model_accuracies <- data.frame()
 best_models <- list()
@@ -508,7 +511,7 @@ ggplot(data = model_accuracies, aes(x = subset_name, y = accuracy, fill = model)
   scale_fill_brewer(palette = "Set1")
 ```
 At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.
-```{r, include = FALSE}
+```{r, results='hide'}
 
 # Functions for Ensemble predictions
 weighted_prediction <- function(best_models, test_data, chosen_features) {

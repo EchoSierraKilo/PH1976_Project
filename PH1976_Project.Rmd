@@ -20,6 +20,8 @@ bookdown:
       fig_prefix: ['Figure ']
 header-includes:
   - \usepackage{pdflscape}
+  - \usepackage{fvextra}
+  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
 ```{r, include=FALSE}
 #Set the working directory and get the data
@@ -44,7 +46,6 @@ for(package in list.of.packages){
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
-  tidy = TRUE,
   cache = FALSE,
   message = FALSE,
   warning = FALSE,
@@ -56,8 +57,7 @@ knitr::opts_chunk$set(
   dpi = 72,
   fig.cap = "center",
   comment = "",
-  highlight = TRUE,
-  tidy.opts=list(width.cutoff=80)
+  highlight = TRUE
 )
 ```
 
@@ -79,9 +79,37 @@ The dataset includes PD patients with age ranging from 33 to 87 (65.1 ± 10.9) a
 ranging from 41 to 82 (61.1 ± 8.9). Each patient has three voice recording samples, with 7 aforementioned
 feature subsets. Each feature subset contains several features.  
 
+
+3. Perform feature selection
+- Uses Boruta library in R (Random Forest w/ importance) to determine most important features. Excludes those deemed to be unimportant
+
+4. Determine models and weights for each sub feature
+- For each of the 7, a number of models were trained using the train_df.*_train data. In each instance, the highest performing model (comparatively) was selected as the chosen model for that subfeature (i.e. KNN performed best on baseline, NN performed best on TQWT, etc.)
+- Weights were scored from 0 to 1 based on the predictive accuracy of the model (i.e. if the best model for baseline was KNN and performed at 0.79, weight_baseline was set to 0.79
+
+5. Determine overall accuracy of the ensemble
+- A weighting function of Y = sum(w_i*d_i) was used. This was chosen based on the paper provided by the project description.
+- Model accuracy can therefore be influenced by conflicting results between sub-features, while also allowing for their respective weights to shift the model based on their relative performance
+
+6. Run the model on the test data
+- Do the same thing as on the train_df_test data, but this time on the test_df (and with no feedback to establish weights).
+
 # Methods
-## Preprocessing and Standardization  
-Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model. The best model for each subset will be selected based on these results.   
+## Data Partitioning 
+Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model.  
+
+Additionally, the ensemble training set (both **train_df_train and train_df_test) are broken into the following sub feature categories:  
+
+* Baseline Features
+* Time Frequency Features 
+    + Intensity based
+    + Formant and Bandwidth based
+* Vocal Fold Features
+* Mel Frequency Cepstral Coefficients (MFCC)
+* Wavelet Transform-based Features (WT)
+* Tunable Q-Factor Wavelet Transform-based Features (TQWT)  
+
+Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set. The test set is left as full ensemble, and will use the predictions determined from training validation. The best model for each subset will be selected based on these results. Ultimately, an ensemble model consisting of the best predictor for each subset is selected, and weighting is applied based on the accuracy of that model.  
 
   
 ```{r,include=FALSE}
@@ -127,18 +155,9 @@ train_df.tqwt_test <- train_df.tqwt[-train_indices, ]
 
 \newpage
 
-For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:  
+## Standardization
+For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the train_df_train, train_df_test and the test_df datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the train_df_test or the test_df data sets.  
 
-* Baseline Features
-* Time Frequency Features 
-    + Intensity based
-    + Formant and Bandwidth based
-* Vocal Fold Features
-* Mel Frequency Cepstral Coefficients (MFCC)
-* Wavelet Transform-based Features
-* Tunable Q-Factor Wavelet Transform-based Features (TQWT)  
-
-Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set.
 ```{r standardize, results='hide'}
 
 # Standardizing the data for cross-comparison
@@ -182,7 +201,7 @@ for (i in subset_names) {
 
 \newpage
 
-To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
+This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
 
 The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.
 
@@ -229,7 +248,6 @@ for (selected_subset in selected_subsets) {
 
 \newpage
 
-# Results  
 ## Feature Selection
 Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
 1. It reduces the high dimensionality of the data set.
@@ -320,7 +338,7 @@ print(unique_variables)
 
 ```
 \newpage
-## Model Selection  
+## Model Selection and Weighting  
 
 Once the important features had been determined, they can be used to inform the predictive model for each sub-group.
 For this analysis, a function was built to test each sub-group against a number of predictive models. Using the 10% "test" data of the training set, accuracy estimates were generated and used to benchmark the model's performance against each other. The models used for analysis were:  
@@ -510,6 +528,9 @@ ggplot(data = model_accuracies, aes(x = subset_name, y = accuracy, fill = model)
   labs(title = "Model Accuracies by Subset", x = "Subset", y = "Accuracy") +
   scale_fill_brewer(palette = "Set1")
 ```
+  
+## Ensemble Accuracy Determination  
+
 At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.
 ```{r, results='hide'}
 
@@ -596,6 +617,38 @@ weighted_prediction <- function(best_models, test_data, chosen_features) {
 
 ```
 
-# Model Output
+# Results
 
-Will update with the model output at a later date.
+```{r, include = FALSE}
+  # Calculate normalized weights
+  models_weights <- lapply(models_and_accuracy, function(x) x$accuracy)
+  models_weights_normalized <- unlist(models_weights) / sum(unlist(models_weights))
+  
+  # Prepare train_data and test_data for all models
+  train_data_list <- lapply(names(best_models), function(subset_name) {
+    train_df <- get(paste0("train_df_std.", subset_name, "_train"))
+    train_df[, setdiff(names(train_df), "class")]
+  })
+  
+  test_data_list <- lapply(names(best_models), function(subset_name) {
+    test_df <- get(paste0("test_df_std"))
+    test_df[, setdiff(names(test_df), "class")]
+  })
+  
+  names(test_data_list) <- names(best_models)
+
+  
+  # Make weighted ensemble predictions using the trained best models and normalized weights
+  weighted_predictions_test <- weighted_prediction(best_models, test_data_list, chosen_features)
+  
+
+```
+  
+The results of the ensemble model on test data predictions are found below. These results are also compiled in the **test_results.csv** file.  
+```{r, echo = FALSE}
+test_data$class = weighted_predictions_test
+write.csv(test_data, "test_results.csv", row.names = TRUE)
+df_results = data.frame(ID = test_data$id,'PredictedResult' = weighted_predictions_test)
+unique_rows = !duplicated(df_results$ID)
+df_results[unique_rows,]
+```

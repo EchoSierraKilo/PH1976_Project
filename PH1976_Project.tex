@@ -34,6 +34,46 @@
 \makeatother
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -61,8 +101,9 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\usepackage{listings}
-\lstset{ basicstyle=\footnotesize\ttfamily, breaklines=true, postbreak=\mbox{\textcolor{black}{$\hookrightarrow$}\space}, }
+\usepackage{pdflscape}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -77,7 +118,7 @@
 
 \title{PH1976 Project: Predicting Parkinson's Disease for Patients Using Voice Recording}
 \author{Erin S. King}
-\date{2023-04-09}
+\date{2023-04-16}
 
 \begin{document}
 \maketitle
@@ -94,24 +135,16 @@ The following analysis in this PH1976 project is to demonstrate the tools examin
 \hypertarget{definition}{%
 \subsection{Definition}\label{definition}}
 
-Parkinson's disease (PD) is a progressive neurodegenerative disorder. To accurately detect the disease in the
-early stage, many telediagnosis and telemonitoring systems have recently been proposed. Since vocal problem is
-one of the most important symptoms which can be seen in the earlier stage of PD patients, vocal disorders-
-based systems become popular in PD diagnosis and monitoring. In these systems, various speech signal
-processing algorithms have been used to extract clinically useful information for PD assessment, and the
-calculated features are fed to different learning algorithms to make reliable decisions. PD telemedicine studies
-showed that the choice of extracted features and learning algorithms directly influences the accuracy and
+Parkinson's disease (PD) is a progressive neuro-degenerative disorder. To accurately detect the disease in the
+early stage, many tele-diagnosis and tele-monitoring systems have recently been proposed. Since vocal problem is one of the most important symptoms which can be seen in the earlier stage of PD patients, vocal disorders-
+based systems become popular in PD diagnosis and monitoring. In these systems, various speech signal processing algorithms have been used to extract clinically useful information for PD assessment, and the
+calculated features are fed to different learning algorithms to make reliable decisions. PD tele-medicine studies showed that the choice of extracted features and learning algorithms directly influences the accuracy and
 reliability of distinguishing PD patients.
 
 \hypertarget{data}{%
 \subsection{Data}\label{data}}
 
 In this study, Sakar et. al collected the voice recordings of 252 subjects including PD patients and healthy individuals. They gathered three recording samples from each subject and extracted seven feature subsets from the recording samples. The feature subsets were baseline features, intensity-based features, bandwidth and formant features, vocal fold features, Mel Frequency Cepstral Coefficients (MFCC), wavelet transform based features (WT) and tunable Q-factor wavelet transform based features (TQWT).
-
-\hypertarget{study-design}{%
-\subsection{Study Design}\label{study-design}}
-
-Need to fill this out based on our own analysis.
 
 \hypertarget{study-population}{%
 \subsection{Study Population}\label{study-population}}
@@ -120,15 +153,75 @@ The dataset includes PD patients with age ranging from 33 to 87 (65.1 ± 10.9) a
 ranging from 41 to 82 (61.1 ± 8.9). Each patient has three voice recording samples, with 7 aforementioned
 feature subsets. Each feature subset contains several features.
 
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Perform feature selection
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Uses Boruta library in R (Random Forest w/ importance) to determine most important features. Excludes those deemed to be unimportant
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Determine models and weights for each sub feature
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  For each of the 7, a number of models were trained using the train\_df.*\_train data. In each instance, the highest performing model (comparatively) was selected as the chosen model for that subfeature (i.e.~KNN performed best on baseline, NN performed best on TQWT, etc.)
+\item
+  Weights were scored from 0 to 1 based on the predictive accuracy of the model (i.e.~if the best model for baseline was KNN and performed at 0.79, weight\_baseline was set to 0.79
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Determine overall accuracy of the ensemble
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  A weighting function of Y = sum(w\_i*d\_i) was used. This was chosen based on the paper provided by the project description.
+\item
+  Model accuracy can therefore be influenced by conflicting results between sub-features, while also allowing for their respective weights to shift the model based on their relative performance
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Run the model on the test data
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Do the same thing as on the train\_df\_test data, but this time on the test\_df (and with no feedback to establish weights).
+\end{itemize}
+
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
 
-\hypertarget{preprocessing-and-standardization}{%
-\subsection{Preprocessing and Standardization}\label{preprocessing-and-standardization}}
+\hypertarget{data-partitioning}{%
+\subsection{Data Partitioning}\label{data-partitioning}}
 
-Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90\% of the data will be used to train, and 10\% of the data will be used to check accuracy of the model. The best model for each subset will be selected based on these results.
+Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90\% of the data will be used to train, and 10\% of the data will be used to check accuracy of the model.
 
-For ease of analysis, the ensemble data set (both training and test) are broken into the following sub feature categories:
+Additionally, the ensemble training set (both **train\_df\_train and train\_df\_test) are broken into the following sub feature categories:
 
 \begin{itemize}
 \tightlist
@@ -149,53 +242,183 @@ For ease of analysis, the ensemble data set (both training and test) are broken 
 \item
   Mel Frequency Cepstral Coefficients (MFCC)
 \item
-  Wavelet Transform-based Features
+  Wavelet Transform-based Features (WT)
 \item
   Tunable Q-Factor Wavelet Transform-based Features (TQWT)
 \end{itemize}
 
-Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set.
+Overall, these seven sub features were used to inform the machine learning model and perform predictions on the test set. The test set is left as full ensemble, and will use the predictions determined from training validation. The best model for each subset will be selected based on these results. Ultimately, an ensemble model consisting of the best predictor for each subset is selected, and weighting is applied based on the accuracy of that model.
 
-To start, data from all sub features are standardized such that each feature has zero mean and unit variance. This was accomplished using the {[}@tidyverse{]}, {[}@broom{]}, and {[}@mosaic{]} packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the \textbf{Baseline}, \textbf{Intensity}, and \textbf{Formant} sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Break the training data into feature subsets}
+\NormalTok{train\_df.baseline }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(training\_data[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{24}\NormalTok{)])}
+\NormalTok{train\_df.intensity }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(training\_data[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{,}\DecValTok{25}\SpecialCharTok{:}\DecValTok{27}\NormalTok{)])}
+\NormalTok{train\_df.formant }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(training\_data[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{,}\DecValTok{28}\SpecialCharTok{:}\DecValTok{35}\NormalTok{)])}
+\NormalTok{train\_df.vff }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(training\_data[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{,}\DecValTok{36}\SpecialCharTok{:}\DecValTok{57}\NormalTok{)])}
+\NormalTok{train\_df.mfcc }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(training\_data[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{,}\DecValTok{58}\SpecialCharTok{:}\DecValTok{141}\NormalTok{)])}
+\NormalTok{train\_df.wt }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(training\_data[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{,}\DecValTok{142}\SpecialCharTok{:}\DecValTok{323}\NormalTok{)])}
+\NormalTok{train\_df.tqwt }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(training\_data[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{,}\DecValTok{324}\SpecialCharTok{:}\DecValTok{755}\NormalTok{)])}
+
+\CommentTok{\#Partition training data}
+\NormalTok{train\_indices }\OtherTok{\textless{}{-}} \FunctionTok{createDataPartition}\NormalTok{(train\_df.baseline}\SpecialCharTok{$}\NormalTok{class, }\AttributeTok{p =} \FloatTok{0.9}\NormalTok{, }\AttributeTok{list =} \ConstantTok{FALSE}\NormalTok{)}
+
+\CommentTok{\# Split train\_df data}
+\NormalTok{train\_df.baseline\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.baseline[train\_indices, ]}
+\NormalTok{train\_df.baseline\_test }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.baseline[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+
+\NormalTok{train\_df.intensity\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.intensity[train\_indices, ]}
+\NormalTok{train\_df.intensity\_test }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.intensity[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+
+\NormalTok{train\_df.formant\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.formant[train\_indices, ]}
+\NormalTok{train\_df.formant\_test }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.formant[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+
+\NormalTok{train\_df.vff\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.vff[train\_indices, ]}
+\NormalTok{train\_df.vff\_test }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.vff[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+
+\NormalTok{train\_df.mfcc\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.mfcc[train\_indices, ]}
+\NormalTok{train\_df.mfcc\_test }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.mfcc[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+
+\NormalTok{train\_df.wt\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.wt[train\_indices, ]}
+\NormalTok{train\_df.wt\_test }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.wt[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+
+\NormalTok{train\_df.tqwt\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.tqwt[train\_indices, ]}
+\NormalTok{train\_df.tqwt\_test }\OtherTok{\textless{}{-}}\NormalTok{ train\_df.tqwt[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
+
+\hypertarget{standardization}{%
+\subsection{Standardization}\label{standardization}}
+
+For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the train\_df\_train, train\_df\_test and the test\_df datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the train\_df\_test or the test\_df data sets.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Standardizing the data for cross{-}comparison}
+
+\FunctionTok{require}\NormalTok{(tidyverse)}
+\FunctionTok{require}\NormalTok{(broom)}
+\FunctionTok{require}\NormalTok{(mosaic)}
+
+\CommentTok{\# Standardizing the data for cross{-}comparison}
+\CommentTok{\# Training and Test Data}
+\NormalTok{subset\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"baseline"}\NormalTok{, }\StringTok{"intensity"}\NormalTok{, }\StringTok{"formant"}\NormalTok{, }\StringTok{"vff"}\NormalTok{, }\StringTok{"mfcc"}\NormalTok{, }\StringTok{"wt"}\NormalTok{, }\StringTok{"tqwt"}\NormalTok{)}
+
+\CommentTok{\# Standardize function}
+\NormalTok{standardize\_data }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(train\_df, test\_df) \{}
+  \ControlFlowTok{for}\NormalTok{ (ii }\ControlFlowTok{in} \DecValTok{4}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(train\_df)) \{}
+\NormalTok{    mean\_val }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(train\_df[, ii], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{    std\_val }\OtherTok{\textless{}{-}} \FunctionTok{sd}\NormalTok{(train\_df[, ii], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+    
+\NormalTok{    train\_df[, ii] }\OtherTok{\textless{}{-}}\NormalTok{ (train\_df[, ii] }\SpecialCharTok{{-}}\NormalTok{ mean\_val) }\SpecialCharTok{/}\NormalTok{ std\_val}
+    
+    \ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{is.null}\NormalTok{(test\_df)) \{}
+\NormalTok{      test\_df[, ii] }\OtherTok{\textless{}{-}}\NormalTok{ (test\_df[, ii] }\SpecialCharTok{{-}}\NormalTok{ mean\_val) }\SpecialCharTok{/}\NormalTok{ std\_val}
+\NormalTok{    \}}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(train\_df, test\_df))}
+\NormalTok{\}}
+
+\CommentTok{\# Standardize train and test datasets}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in}\NormalTok{ subset\_names) \{}
+  \CommentTok{\# Standardize train\_df and test\_df}
+\NormalTok{  standardized\_data }\OtherTok{\textless{}{-}} \FunctionTok{standardize\_data}\NormalTok{(}\FunctionTok{get}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"train\_df."}\NormalTok{, i, }\StringTok{"\_train"}\NormalTok{)), }\FunctionTok{get}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"train\_df."}\NormalTok{, i, }\StringTok{"\_test"}\NormalTok{)))}
+  \FunctionTok{assign}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"train\_df\_std."}\NormalTok{, i, }\StringTok{"\_train"}\NormalTok{), standardized\_data[[}\DecValTok{1}\NormalTok{]])}
+  \FunctionTok{assign}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"train\_df\_std."}\NormalTok{, i, }\StringTok{"\_test"}\NormalTok{), standardized\_data[[}\DecValTok{2}\NormalTok{]])}
+\NormalTok{\}}
+
+\CommentTok{\# Standardize test dataset}
+\NormalTok{  standardized\_data }\OtherTok{\textless{}{-}} \FunctionTok{standardize\_data}\NormalTok{(}\FunctionTok{get}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"training\_data"}\NormalTok{)), }\FunctionTok{get}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"test\_data"}\NormalTok{)))}
+  \FunctionTok{assign}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"test\_df\_std"}\NormalTok{), standardized\_data[[}\DecValTok{2}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
+
+This was accomplished using the {[}@tidyverse{]}, {[}@broom{]}, and {[}@mosaic{]} packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the \textbf{Baseline}, \textbf{Intensity}, and \textbf{Formant} sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.
 
 The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.
 
-\begin{figure}[h]\centering
-\caption{baseline Sub-feature: Pre-standardization}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plot\_subfeatures }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(subfeature\_name, train\_df, train\_df\_std) \{}
+\NormalTok{  optimal\_mfrow }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(num\_plots) \{}
+\NormalTok{    max\_cols }\OtherTok{\textless{}{-}} \FunctionTok{floor}\NormalTok{(}\FunctionTok{sqrt}\NormalTok{(num\_plots))}
+\NormalTok{    num\_rows }\OtherTok{\textless{}{-}} \FunctionTok{ceiling}\NormalTok{(num\_plots }\SpecialCharTok{/}\NormalTok{ max\_cols)}
+    \FunctionTok{return}\NormalTok{(}\FunctionTok{c}\NormalTok{(num\_rows, max\_cols))}
+\NormalTok{  \}}
+
+\NormalTok{  num\_plots }\OtherTok{\textless{}{-}} \FunctionTok{ncol}\NormalTok{(train\_df) }\SpecialCharTok{{-}} \DecValTok{2}
+
+  \CommentTok{\# Pre{-}standardization}
+
+  \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{optimal\_mfrow}\NormalTok{(num\_plots))}
+  \ControlFlowTok{for}\NormalTok{ (ii }\ControlFlowTok{in} \DecValTok{3}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(train\_df)) \{}
+    \FunctionTok{hist}\NormalTok{(train\_df[, ii], }\AttributeTok{main =} \StringTok{""}\NormalTok{, }\AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(train\_df)[ii])}
+\NormalTok{  \}}
+
+  \CommentTok{\# Post{-}standardization}
+
+  \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{optimal\_mfrow}\NormalTok{(num\_plots))}
+  \ControlFlowTok{for}\NormalTok{ (ii }\ControlFlowTok{in} \DecValTok{3}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(train\_df\_std)) \{}
+    \FunctionTok{hist}\NormalTok{(train\_df\_std[, ii], }\AttributeTok{main =} \StringTok{""}\NormalTok{, }\AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(train\_df\_std)[ii])}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-5-1} \caption{center}\label{fig:unnamed-chunk-5-1}
+
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/histPlots-1} 
+
+}
+
+\caption{\label{fig:histPlots}Pre- vs. Post-Standardization Histograms}\label{fig:histPlots-1}
 \end{figure}
-\end{figure}
-\begin{figure}[h]\centering
-\caption{baseline Sub-feature: Post-standardization}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-5-2} \caption{center}\label{fig:unnamed-chunk-5-2}
+
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/histPlots-2} 
+
+}
+
+\caption{\label{fig:histPlots}Pre- vs. Post-Standardization Histograms}\label{fig:histPlots-2}
 \end{figure}
-\end{figure}
-\begin{figure}[h]\centering
-\caption{intensity Sub-feature: Pre-standardization}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-5-3} \caption{center}\label{fig:unnamed-chunk-5-3}
+
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/histPlots-3} 
+
+}
+
+\caption{\label{fig:histPlots}Pre- vs. Post-Standardization Histograms}\label{fig:histPlots-3}
 \end{figure}
-\end{figure}
-\begin{figure}[h]\centering
-\caption{intensity Sub-feature: Post-standardization}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-5-4} \caption{center}\label{fig:unnamed-chunk-5-4}
+
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/histPlots-4} 
+
+}
+
+\caption{\label{fig:histPlots}Pre- vs. Post-Standardization Histograms}\label{fig:histPlots-4}
 \end{figure}
-\end{figure}
-\begin{figure}[h]\centering
-\caption{formant Sub-feature: Pre-standardization}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-5-5} \caption{center}\label{fig:unnamed-chunk-5-5}
+
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/histPlots-5} 
+
+}
+
+\caption{\label{fig:histPlots}Pre- vs. Post-Standardization Histograms}\label{fig:histPlots-5}
 \end{figure}
-\end{figure}
-\begin{figure}[h]\centering
-\caption{formant Sub-feature: Post-standardization}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-5-6} \caption{center}\label{fig:unnamed-chunk-5-6}
+
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/histPlots-6} 
+
+}
+
+\caption{\label{fig:histPlots}Pre- vs. Post-Standardization Histograms}\label{fig:histPlots-6}
 \end{figure}
-\end{figure}
+
+\newpage
 
 \hypertarget{feature-selection}{%
 \subsection{Feature Selection}\label{feature-selection}}
@@ -205,99 +428,113 @@ Per the \textbf{Sakar et al} paper, minimum redundancy-maximum relevance based f
 2. It maximizes the joint dependency of the data set.
 This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The \textbf{Boruta} package in RStudio will be used for this purpose, and utilizes Random Forest to perform a top-down search on the corresponding data frame to determine relevant features.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{require}\NormalTok{(Boruta)}
+\FunctionTok{require}\NormalTok{(mlbench)}
+\FunctionTok{require}\NormalTok{(caret)}
+\FunctionTok{require}\NormalTok{(randomForest)}
+\CommentTok{\# Function to perform Boruta feature selection}
+\NormalTok{perform\_boruta }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(dataset\_name, standardized\_train\_df, }\AttributeTok{max\_runs =} \DecValTok{500}\NormalTok{) \{}
+  \FunctionTok{cat}\NormalTok{(}\StringTok{"Performing Boruta on"}\NormalTok{, dataset\_name, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+  \FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{  boruta\_result }\OtherTok{\textless{}{-}} \FunctionTok{Boruta}\NormalTok{(class }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ standardized\_train\_df, }\AttributeTok{doTrace =} \DecValTok{2}\NormalTok{, }\AttributeTok{maxRuns =}\NormalTok{ max\_runs)}
+  \FunctionTok{return}\NormalTok{(boruta\_result)}
+\NormalTok{\}}
+
+\CommentTok{\# Call the perform\_boruta function for each subset. Finds important features in each subset}
+\NormalTok{boruta\_results }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (subset\_name }\ControlFlowTok{in}\NormalTok{ subset\_names) \{}
+\NormalTok{  standardized\_train\_df }\OtherTok{\textless{}{-}} \FunctionTok{get}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"train\_df\_std."}\NormalTok{, subset\_name, }\StringTok{"\_train"}\NormalTok{))}
+\NormalTok{  boruta\_result }\OtherTok{\textless{}{-}} \FunctionTok{perform\_boruta}\NormalTok{(subset\_name, standardized\_train\_df)}
+\NormalTok{  boruta\_results[[subset\_name]] }\OtherTok{\textless{}{-}}\NormalTok{ boruta\_result}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 mRMR analysis yielded the following results. TQWT results are particularly dense, so the plot is not particularly informative, but the overall trend is such that:\\
 - Red regions are categorically rejected and excluded from the included features.\\
 - Blue regions are tentative, and are handled in a later section of code.\\
 - Green regions are found to be imporant and thus selected as included features.
 
-\begin{verbatim}
-\begin{figure}[ht!]
-\centering
-\caption{Boruta plot for baseline features}
-\label{fig:boruta_plot_for_baseline_features}
-\end{verbatim}
+\begin{landscape}
 
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-1} \caption{center}\label{fig:unnamed-chunk-7-1}
-\end{figure}
 
-\begin{verbatim}
-\end{figure}
-\begin{figure}[ht!]
-\centering
-\caption{Boruta plot for intensity features}
-\label{fig:boruta_plot_for_intensity_features}
-\end{verbatim}
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/borutaPlot-1} 
 
+}
+
+\caption{\label{fig:borutaPlot}Boruta Plot}\label{fig:borutaPlot-1}
+\end{figure}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-2} \caption{center}\label{fig:unnamed-chunk-7-2}
-\end{figure}
 
-\begin{verbatim}
-\end{figure}
-\begin{figure}[ht!]
-\centering
-\caption{Boruta plot for formant features}
-\label{fig:boruta_plot_for_formant_features}
-\end{verbatim}
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/borutaPlot-2} 
 
+}
+
+\caption{\label{fig:borutaPlot}Boruta Plot}\label{fig:borutaPlot-2}
+\end{figure}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-3} \caption{center}\label{fig:unnamed-chunk-7-3}
-\end{figure}
 
-\begin{verbatim}
-\end{figure}
-\begin{figure}[ht!]
-\centering
-\caption{Boruta plot for vff features}
-\label{fig:boruta_plot_for_vff_features}
-\end{verbatim}
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/borutaPlot-3} 
 
+}
+
+\caption{\label{fig:borutaPlot}Boruta Plot}\label{fig:borutaPlot-3}
+\end{figure}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-4} \caption{center}\label{fig:unnamed-chunk-7-4}
-\end{figure}
 
-\begin{verbatim}
-\end{figure}
-\begin{figure}[ht!]
-\centering
-\caption{Boruta plot for mfcc features}
-\label{fig:boruta_plot_for_mfcc_features}
-\end{verbatim}
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/borutaPlot-4} 
 
+}
+
+\caption{\label{fig:borutaPlot}Boruta Plot}\label{fig:borutaPlot-4}
+\end{figure}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-5} \caption{center}\label{fig:unnamed-chunk-7-5}
-\end{figure}
 
-\begin{verbatim}
-\end{figure}
-\begin{figure}[ht!]
-\centering
-\caption{Boruta plot for wt features}
-\label{fig:boruta_plot_for_wt_features}
-\end{verbatim}
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/borutaPlot-5} 
 
+}
+
+\caption{\label{fig:borutaPlot}Boruta Plot}\label{fig:borutaPlot-5}
+\end{figure}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-6} \caption{center}\label{fig:unnamed-chunk-7-6}
-\end{figure}
 
-\begin{verbatim}
-\end{figure}
-\begin{figure}[ht!]
-\centering
-\caption{Boruta plot for tqwt features}
-\label{fig:boruta_plot_for_tqwt_features}
-\end{verbatim}
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/borutaPlot-6} 
 
+}
+
+\caption{\label{fig:borutaPlot}Boruta Plot}\label{fig:borutaPlot-6}
+\end{figure}
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-7} \caption{center}\label{fig:unnamed-chunk-7-7}
+
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{figure/borutaPlot-7} 
+
+}
+
+\caption{\label{fig:borutaPlot}Boruta Plot}\label{fig:borutaPlot-7}
 \end{figure}
 
-\begin{verbatim}
-\end{figure}
-\end{verbatim}
+\end{landscape}
+
+\newpage
 
 Following this initial assessment, chosen variables are selected for regression by using \textbf{getNonRejectedFormula()}. This collapses any variables left as \textbf{Tentative} factors into either Accepted or Rejected.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Force "Tentative" values function}
+\NormalTok{get\_chosen\_features }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(boruta\_results) \{}
+\NormalTok{  chosen\_features }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (name }\ControlFlowTok{in} \FunctionTok{names}\NormalTok{(boruta\_results)) \{}
+\NormalTok{    chosen\_formula }\OtherTok{\textless{}{-}} \FunctionTok{getNonRejectedFormula}\NormalTok{(}\FunctionTok{TentativeRoughFix}\NormalTok{(boruta\_results[[name]]))}
+\NormalTok{    chosen\_features[[name]] }\OtherTok{\textless{}{-}}\NormalTok{ chosen\_formula}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(chosen\_features)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 The following factors were found to be important to the model:
 
@@ -447,8 +684,10 @@ The following factors were found to be important to the model:
 [285] "tqwt_kurtosisValue_dec_35"     
 \end{verbatim}
 
-\hypertarget{model-selection}{%
-\subsection{Model Selection}\label{model-selection}}
+\newpage
+
+\hypertarget{model-selection-and-weighting}{%
+\subsection{Model Selection and Weighting}\label{model-selection-and-weighting}}
 
 Once the important features had been determined, they can be used to inform the predictive model for each sub-group.
 For this analysis, a function was built to test each sub-group against a number of predictive models. Using the 10\% ``test'' data of the training set, accuracy estimates were generated and used to benchmark the model's performance against each other. The models used for analysis were:\\
@@ -459,33 +698,331 @@ For this analysis, a function was built to test each sub-group against a number 
 - Naive Bayes\\
 - k- Nearest Neighbors
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Function for Multilayer Perceptron}
+\NormalTok{train\_mlp }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(train\_df, formula) \{}
+  \FunctionTok{library}\NormalTok{(neuralnet)}
+  \FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+  
+\NormalTok{  threshold\_func }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{ifelse}\NormalTok{(x }\SpecialCharTok{\textgreater{}} \FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  train\_df}\SpecialCharTok{$}\NormalTok{class }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(train\_df}\SpecialCharTok{$}\NormalTok{class) }\SpecialCharTok{{-}} \DecValTok{1}
+  
+\NormalTok{  mlp\_model }\OtherTok{\textless{}{-}} \FunctionTok{neuralnet}\NormalTok{(formula, }\AttributeTok{data =}\NormalTok{ train\_df, }\AttributeTok{hidden =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{), }\AttributeTok{linear.output =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{act.fct =} \StringTok{"logistic"}\NormalTok{, }\AttributeTok{stepmax =} \FloatTok{1e+05}\NormalTok{)}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ mlp\_model, }\AttributeTok{threshold\_func =}\NormalTok{ threshold\_func))}
+\NormalTok{\}}
+
+\NormalTok{test\_model }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model\_obj, test\_df, model\_type, chosen\_formula) \{}
+  \ControlFlowTok{if}\NormalTok{ (model\_type }\SpecialCharTok{==} \StringTok{"mlp"}\NormalTok{) \{}
+\NormalTok{    model }\OtherTok{\textless{}{-}}\NormalTok{ model\_obj}\SpecialCharTok{$}\NormalTok{model}
+\NormalTok{    threshold\_func }\OtherTok{\textless{}{-}}\NormalTok{ model\_obj}\SpecialCharTok{$}\NormalTok{threshold\_func}
+    
+\NormalTok{    test\_data }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(chosen\_formula, }\AttributeTok{data =}\NormalTok{ test\_df)[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{    predictions }\OtherTok{\textless{}{-}} \FunctionTok{compute}\NormalTok{(model, test\_data)}\SpecialCharTok{$}\NormalTok{net.result}
+\NormalTok{    predicted\_classes }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(predictions, threshold\_func)}
+\NormalTok{    actual\_classes }\OtherTok{\textless{}{-}}\NormalTok{ test\_df}\SpecialCharTok{$}\NormalTok{class}
+    
+\NormalTok{    accuracy }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(predicted\_classes }\SpecialCharTok{==}\NormalTok{ actual\_classes) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(actual\_classes)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{    predictions }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model\_obj, test\_df)}
+    
+    \ControlFlowTok{if}\NormalTok{ (model\_type }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"logit"}\NormalTok{, }\StringTok{"svm\_linear"}\NormalTok{, }\StringTok{"svm\_rbf"}\NormalTok{)) \{}
+\NormalTok{      predicted\_classes }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(predictions }\SpecialCharTok{\textgreater{}} \FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{      predicted\_classes }\OtherTok{\textless{}{-}}\NormalTok{ predictions}
+\NormalTok{    \}}
+\NormalTok{    actual\_classes }\OtherTok{\textless{}{-}}\NormalTok{ test\_df}\SpecialCharTok{$}\NormalTok{class}
+    
+\NormalTok{    accuracy }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(predicted\_classes }\SpecialCharTok{==}\NormalTok{ actual\_classes) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(actual\_classes)}
+\NormalTok{  \}}
+  
+  \FunctionTok{return}\NormalTok{(accuracy)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 For this analysis it required the use of the \textbf{caret}, \textbf{randomForest}, \textbf{e1071}, \textbf{nnet}, \textbf{kernlab}, and \textbf{naivebayes} libraries.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Modeling function}
+\NormalTok{generate\_models }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(dataset\_name, train\_df, test\_df) \{}
+  \FunctionTok{library}\NormalTok{(caret)}
+  \FunctionTok{library}\NormalTok{(randomForest)}
+  \FunctionTok{library}\NormalTok{(e1071)}
+  \FunctionTok{library}\NormalTok{(nnet)}
+  \FunctionTok{library}\NormalTok{(kernlab)}
+  \FunctionTok{library}\NormalTok{(naivebayes)}
+  
+  \FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+  \CommentTok{\# Create chosen\_formula}
+\NormalTok{  chosen\_formula }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(chosen\_features[[dataset\_name]])}
+
+  \CommentTok{\# Convert the class variable into a factor}
+\NormalTok{  train\_df}\SpecialCharTok{$}\NormalTok{class }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(train\_df}\SpecialCharTok{$}\NormalTok{class)}
+\NormalTok{  test\_df}\SpecialCharTok{$}\NormalTok{class }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(test\_df}\SpecialCharTok{$}\NormalTok{class)}
+
+  \CommentTok{\# Create chosen\_formula}
+\NormalTok{  chosen\_formula }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(chosen\_features[[dataset\_name]])}
+
+  \CommentTok{\# Train/test data}
+\NormalTok{  train\_data }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(chosen\_formula, }\AttributeTok{data =}\NormalTok{ train\_df)[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{  train\_class }\OtherTok{\textless{}{-}}\NormalTok{ train\_df}\SpecialCharTok{$}\NormalTok{class}
+\NormalTok{  test\_data }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(chosen\_formula, }\AttributeTok{data =}\NormalTok{ test\_df)[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{  test\_class }\OtherTok{\textless{}{-}}\NormalTok{ test\_df}\SpecialCharTok{$}\NormalTok{class}
+  \CommentTok{\# Initialize list to store models and accuracy}
+\NormalTok{  models\_and\_accuracy }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+
+  \CommentTok{\# Logistic Regression}
+\NormalTok{  logit\_model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ chosen\_formula, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ train\_df)}
+\NormalTok{  logit\_predictions }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(logit\_model, }\AttributeTok{newdata =}\NormalTok{ test\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{  logit\_predicted\_classes }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(logit\_predictions }\SpecialCharTok{\textgreater{}} \FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  accuracy\_logit }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(logit\_predicted\_classes }\SpecialCharTok{==}\NormalTok{ test\_class) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(test\_class)}
+
+\NormalTok{  models\_and\_accuracy[[}\StringTok{"Logistic Regression"}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ logit\_model, }\AttributeTok{accuracy =}\NormalTok{ accuracy\_logit)}
+  
+  \CommentTok{\# Define the parameter grid for tuning the Random Forest}
+\NormalTok{  tuneGrid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}\AttributeTok{mtry =} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{ncol}\NormalTok{(train\_df)),}
+                        \AttributeTok{splitrule =} \StringTok{"gini"}\NormalTok{,}
+                        \AttributeTok{min.node.size =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{15}\NormalTok{))}
+
+  \CommentTok{\# Set up cross{-}validation}
+\NormalTok{  cvControl }\OtherTok{\textless{}{-}} \FunctionTok{trainControl}\NormalTok{(}\AttributeTok{method =} \StringTok{"cv"}\NormalTok{, }\AttributeTok{number =} \DecValTok{5}\NormalTok{, }\AttributeTok{search =} \StringTok{"grid"}\NormalTok{)}
+
+  \CommentTok{\# Random Forest model using cross{-}validation}
+\NormalTok{  rf\_model }\OtherTok{\textless{}{-}} \FunctionTok{train}\NormalTok{(chosen\_formula, }\AttributeTok{data =}\NormalTok{ train\_df,}
+                  \AttributeTok{method =} \StringTok{"ranger"}\NormalTok{,}
+                  \AttributeTok{trControl =}\NormalTok{ cvControl,}
+                  \AttributeTok{tuneGrid =}\NormalTok{ tuneGrid,}
+                  \AttributeTok{importance =} \StringTok{"none"}\NormalTok{,}
+                  \AttributeTok{num.trees =} \DecValTok{500}\NormalTok{)}
+  
+\NormalTok{  rf\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(rf\_model, }\AttributeTok{newdata =}\NormalTok{ test\_df)}
+\NormalTok{  accuracy\_rf }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(rf\_pred }\SpecialCharTok{==}\NormalTok{ test\_class) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(test\_class)}
+
+\NormalTok{  models\_and\_accuracy[[}\StringTok{"Random Forest"}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ rf\_model, }\AttributeTok{accuracy =}\NormalTok{ accuracy\_rf)}
+
+  \CommentTok{\# SVM with Linear Kernel}
+\NormalTok{  svm\_linear }\OtherTok{\textless{}{-}} \FunctionTok{svm}\NormalTok{(train\_data, train\_class, }\AttributeTok{kernel =} \StringTok{"linear"}\NormalTok{)}
+\NormalTok{  predictions\_linear }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(svm\_linear, test\_data)}
+\NormalTok{  accuracy\_linear }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(predictions\_linear }\SpecialCharTok{==}\NormalTok{ test\_class) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(test\_class)}
+
+\NormalTok{  models\_and\_accuracy[[}\StringTok{"SVM Linear"}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ svm\_linear, }\AttributeTok{accuracy =}\NormalTok{ accuracy\_linear)}
+
+  \CommentTok{\# SVM with RBF Kernel}
+\NormalTok{  svm\_rbf }\OtherTok{\textless{}{-}} \FunctionTok{svm}\NormalTok{(train\_data, train\_class, }\AttributeTok{kernel =} \StringTok{"radial"}\NormalTok{)}
+\NormalTok{  predictions\_rbf }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(svm\_rbf, test\_data)}
+\NormalTok{  accuracy\_rbf }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(predictions\_rbf }\SpecialCharTok{==}\NormalTok{ test\_class) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(test\_class)}
+
+\NormalTok{  models\_and\_accuracy[[}\StringTok{"SVM RBF"}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ svm\_rbf, }\AttributeTok{accuracy =}\NormalTok{ accuracy\_rbf)}
+
+   \CommentTok{\# Multilayer Perceptron}
+\NormalTok{  mlp\_model }\OtherTok{\textless{}{-}} \FunctionTok{train\_mlp}\NormalTok{(train\_df, chosen\_formula)}
+\NormalTok{  accuracy\_mlp }\OtherTok{\textless{}{-}} \FunctionTok{test\_model}\NormalTok{(mlp\_model, test\_df, }\StringTok{"mlp"}\NormalTok{, chosen\_formula)}
+
+\NormalTok{  models\_and\_accuracy[[}\StringTok{"Multilayer Perceptron"}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ mlp\_model}\SpecialCharTok{$}\NormalTok{model, }\AttributeTok{accuracy =}\NormalTok{ accuracy\_mlp)}
+
+  \CommentTok{\# Naive Bayes}
+\NormalTok{  nb\_model }\OtherTok{\textless{}{-}} \FunctionTok{naive\_bayes}\NormalTok{(chosen\_formula, }\AttributeTok{data =}\NormalTok{ train\_df)}
+\NormalTok{  nb\_predictions }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(nb\_model, }\AttributeTok{newdata =}\NormalTok{ test\_df)}
+\NormalTok{  accuracy\_nb }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(nb\_predictions }\SpecialCharTok{==}\NormalTok{ test\_class) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(test\_class)}
+
+\NormalTok{  models\_and\_accuracy[[}\StringTok{"Naive Bayes"}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ nb\_model, }\AttributeTok{accuracy =}\NormalTok{ accuracy\_nb)}
+
+  \CommentTok{\# KNN}
+\NormalTok{  k }\OtherTok{\textless{}{-}} \DecValTok{10}
+\NormalTok{  knn\_predictions }\OtherTok{\textless{}{-}} \FunctionTok{knn}\NormalTok{(}\AttributeTok{train =}\NormalTok{ train\_data, }\AttributeTok{test =}\NormalTok{ test\_data, }\AttributeTok{cl =}\NormalTok{ train\_class, }\AttributeTok{k =}\NormalTok{ k)}
+\NormalTok{  accuracy\_knn }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(knn\_predictions }\SpecialCharTok{==}\NormalTok{ test\_class) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(test\_class)}
+\NormalTok{  knn\_model }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{train\_data =}\NormalTok{ train\_data, }\AttributeTok{train\_class =}\NormalTok{ train\_class, }\AttributeTok{k =}\NormalTok{ k)}
+
+\NormalTok{  models\_and\_accuracy[[}\StringTok{"KNN"}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ knn\_model, }\AttributeTok{accuracy =}\NormalTok{ accuracy\_knn)}
+  \FunctionTok{return}\NormalTok{(models\_and\_accuracy)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 The following results were found for each of the sub features. A comparative bar chart for each of the sub features is also included.
 
-\begin{verbatim}
-Best model for baseline is KNN with an accuracy of 0.75 
-Best model for intensity is Random Forest with an accuracy of 0.7307692 
-Best model for formant is Multilayer Perceptron with an accuracy of 0.6923077 
-Best model for vff is Random Forest with an accuracy of 0.7115385 
-Best model for mfcc is Multilayer Perceptron with an accuracy of 0.7884615 
-Best model for wt is Random Forest with an accuracy of 0.7884615 
-Best model for tqwt is Random Forest with an accuracy of 0.8653846 
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Initialize the data frame}
+\NormalTok{model\_accuracies }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{()}
+\NormalTok{best\_models }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+\CommentTok{\# Iterate over the subsets}
+\ControlFlowTok{for}\NormalTok{ (subset\_name }\ControlFlowTok{in}\NormalTok{ subset\_names) \{}
+\NormalTok{  train\_df }\OtherTok{\textless{}{-}} \FunctionTok{get}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"train\_df\_std."}\NormalTok{, subset\_name, }\StringTok{"\_train"}\NormalTok{))}
+\NormalTok{  test\_df }\OtherTok{\textless{}{-}} \FunctionTok{get}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"train\_df\_std."}\NormalTok{, subset\_name, }\StringTok{"\_test"}\NormalTok{))}
+\NormalTok{  models\_and\_accuracy }\OtherTok{\textless{}{-}} \FunctionTok{suppressWarnings}\NormalTok{(}\FunctionTok{generate\_models}\NormalTok{(subset\_name, train\_df, test\_df))}
+
+  \CommentTok{\# Create a data frame to store model accuracies for each subset}
+\NormalTok{  subset\_model\_accuracies }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{model =} \FunctionTok{names}\NormalTok{(models\_and\_accuracy), }\AttributeTok{accuracy =} \FunctionTok{unlist}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(models\_and\_accuracy, }\ControlFlowTok{function}\NormalTok{(x) x}\SpecialCharTok{$}\NormalTok{accuracy)), }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  subset\_model\_accuracies}\SpecialCharTok{$}\NormalTok{subset\_name }\OtherTok{\textless{}{-}}\NormalTok{ subset\_name}
+
+  \CommentTok{\# Bind the rows to the model\_accuracies data frame}
+\NormalTok{  model\_accuracies }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(model\_accuracies, subset\_model\_accuracies)}
+  
+  \CommentTok{\# Find the model with the highest accuracy}
+\NormalTok{  best\_model }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(}\FunctionTok{which.max}\NormalTok{(}\FunctionTok{sapply}\NormalTok{(models\_and\_accuracy, }\ControlFlowTok{function}\NormalTok{(x) x}\SpecialCharTok{$}\NormalTok{accuracy)))}
+  \FunctionTok{cat}\NormalTok{(}\StringTok{"Best model for"}\NormalTok{, subset\_name, }\StringTok{"is"}\NormalTok{, best\_model, }\StringTok{"with an accuracy of"}\NormalTok{, models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{accuracy, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+  \CommentTok{\# Store the best model for this subset}
+\NormalTok{  best\_models[[subset\_name]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{model, }\AttributeTok{accuracy =}\NormalTok{ models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{accuracy)}
+\NormalTok{\}}
+
+\CommentTok{\# Create the ggplot bar chart}
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ model\_accuracies, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ subset\_name, }\AttributeTok{y =}\NormalTok{ accuracy, }\AttributeTok{fill =}\NormalTok{ model)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{position =} \StringTok{"dodge"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Model Accuracies by Subset"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Subset"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Accuracy"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set1"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-12-1} \caption{center}\label{fig:unnamed-chunk-12}
+\includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-1} \caption{center}\label{fig:unnamed-chunk-7}
 \end{figure}
+
+\hypertarget{ensemble-accuracy-determination}{%
+\subsection{Ensemble Accuracy Determination}\label{ensemble-accuracy-determination}}
 
 At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.
 
-\begin{verbatim}
-Ensemble model accuracy: 0.7692308 
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Functions for Ensemble predictions}
+\NormalTok{weighted\_prediction }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(best\_models, test\_data, chosen\_features) \{}
+\NormalTok{  predictions\_list }\OtherTok{\textless{}{-}} \FunctionTok{mapply}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(subset\_name, model, test\_data, chosen\_features) \{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(model, }\StringTok{"list"}\NormalTok{) }\SpecialCharTok{\&\&} \SpecialCharTok{!}\FunctionTok{is.null}\NormalTok{(model}\SpecialCharTok{$}\NormalTok{k)) \{ }\CommentTok{\# KNN model}
+\NormalTok{      common\_columns }\OtherTok{\textless{}{-}} \FunctionTok{intersect}\NormalTok{(}\FunctionTok{colnames}\NormalTok{(test\_data[[subset\_name]]), }\FunctionTok{colnames}\NormalTok{(model}\SpecialCharTok{$}\NormalTok{train\_data))}
+\NormalTok{  \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{class}\NormalTok{(model}\SpecialCharTok{$}\NormalTok{finalModel) }\SpecialCharTok{==} \StringTok{"ranger"}\NormalTok{) \{ }\CommentTok{\# Ranger model}
+\NormalTok{      common\_columns }\OtherTok{\textless{}{-}} \FunctionTok{intersect}\NormalTok{(}\FunctionTok{colnames}\NormalTok{(test\_data[[subset\_name]]), model}\SpecialCharTok{$}\NormalTok{finalModel}\SpecialCharTok{$}\NormalTok{forest}\SpecialCharTok{$}\NormalTok{independent.variable.names)}
+\NormalTok{  \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(model, }\StringTok{"nn"}\NormalTok{)) \{ }\CommentTok{\# Neural Network model}
+\NormalTok{      common\_columns }\OtherTok{\textless{}{-}} \FunctionTok{intersect}\NormalTok{(}\FunctionTok{colnames}\NormalTok{(test\_data[[subset\_name]]), }\FunctionTok{colnames}\NormalTok{(model}\SpecialCharTok{$}\NormalTok{data))}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{stop}\NormalTok{(}\StringTok{"Unsupported model type"}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{    test\_subset\_data }\OtherTok{\textless{}{-}}\NormalTok{ test\_data[[subset\_name]][, common\_columns]}
+    
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(model, }\StringTok{"glm"}\NormalTok{)) \{}
+      \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ test\_subset\_data, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{class}\NormalTok{(model}\SpecialCharTok{$}\NormalTok{finalModel) }\SpecialCharTok{==} \StringTok{"ranger"}\NormalTok{) \{}
+      \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ test\_subset\_data, }\AttributeTok{type =} \StringTok{"raw"}\NormalTok{)}
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(model, }\StringTok{"svm"}\NormalTok{)) \{}
+      \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ test\_subset\_data, }\AttributeTok{probability =} \ConstantTok{TRUE}\NormalTok{)}\SpecialCharTok{$}\NormalTok{probabilities[, }\DecValTok{2}\NormalTok{, drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(model, }\StringTok{"naiveBayes"}\NormalTok{)) \{}
+      \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ test\_subset\_data, }\AttributeTok{type =} \StringTok{"raw"}\NormalTok{)[, }\DecValTok{1}\NormalTok{, drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(model, }\StringTok{"nn"}\NormalTok{)) \{}
+\NormalTok{      predictions }\OtherTok{\textless{}{-}} \FunctionTok{compute}\NormalTok{(model, test\_subset\_data)}\SpecialCharTok{$}\NormalTok{net.result}
+\NormalTok{      threshold\_func }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{ifelse}\NormalTok{(x }\SpecialCharTok{\textgreater{}} \FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{      factor\_predictions }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(predictions, threshold\_func)}
+      \FunctionTok{as.factor}\NormalTok{(factor\_predictions)}
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(model, }\StringTok{"list"}\NormalTok{) }\SpecialCharTok{\&\&} \SpecialCharTok{!}\FunctionTok{is.null}\NormalTok{(model}\SpecialCharTok{$}\NormalTok{k)) \{}
+      \FunctionTok{knn}\NormalTok{(}\AttributeTok{train =}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{train\_data, }\AttributeTok{test =}\NormalTok{ test\_subset\_data, }\AttributeTok{cl =}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{train\_class, }\AttributeTok{k =}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{k)}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+      \FunctionTok{stop}\NormalTok{(}\StringTok{"Unsupported model type"}\NormalTok{)}
+\NormalTok{    \}}
+\NormalTok{  \}, }\AttributeTok{subset\_name =} \FunctionTok{names}\NormalTok{(best\_models), }\AttributeTok{model =} \FunctionTok{lapply}\NormalTok{(best\_models, }\StringTok{\textasciigrave{}}\AttributeTok{[[}\StringTok{\textasciigrave{}}\NormalTok{, }\StringTok{"model"}\NormalTok{), }\AttributeTok{test\_data =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{list}\NormalTok{(test\_data), }\FunctionTok{length}\NormalTok{(}\FunctionTok{names}\NormalTok{(best\_models))), }\AttributeTok{chosen\_features =}\NormalTok{ chosen\_features, }\AttributeTok{SIMPLIFY =} \ConstantTok{FALSE}\NormalTok{)}
+  
+  \CommentTok{\# Convert factors to numeric values}
+\NormalTok{  predictions\_list }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(predictions\_list, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{as.numeric}\NormalTok{(x)}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}
+
+  \CommentTok{\# Calculate normalized weights}
+\NormalTok{  models\_weights }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(best\_models, }\ControlFlowTok{function}\NormalTok{(x) x}\SpecialCharTok{$}\NormalTok{accuracy)}
+\NormalTok{  models\_weights\_normalized }\OtherTok{\textless{}{-}} \FunctionTok{unlist}\NormalTok{(models\_weights) }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(models\_weights))}
+
+  
+  \CommentTok{\# Calculate weighted predictions}
+\NormalTok{  combined\_probs }\OtherTok{\textless{}{-}} \FunctionTok{Reduce}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{+}\StringTok{\textasciigrave{}}\NormalTok{, }\FunctionTok{mapply}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{*}\StringTok{\textasciigrave{}}\NormalTok{, predictions\_list, models\_weights\_normalized, }\AttributeTok{SIMPLIFY =} \ConstantTok{FALSE}\NormalTok{))}
+\NormalTok{  combined\_predictions }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(combined\_probs }\SpecialCharTok{\textgreater{}} \FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+
+  \FunctionTok{return}\NormalTok{(combined\_predictions)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
 
-Will update with the model output at a later date.
+The results of the ensemble model on test data predictions are found below. These results are also compiled in the \textbf{test\_results.csv} file.
+
+\begin{verbatim}
+    ID PredictedResult
+1   63               1
+4   44               1
+7   29               1
+10   9               1
+13  38               1
+16  59               1
+19   4               1
+22  28               1
+25  62               1
+28  65               1
+31  69               1
+34  39               1
+37   1               1
+40  11               1
+43  40               1
+46  41               1
+49  12               0
+52  64               1
+55   5               1
+58  61               1
+61  10               1
+64  37               1
+67  57               1
+70   8               1
+73  52               1
+76  58               1
+79  31               1
+82  13               1
+85  47               1
+88  36               1
+91  56               1
+94  54               1
+97  70               1
+100 16               1
+103 45               1
+106 24               1
+109 14               0
+112 42               1
+115 67               1
+118 68               0
+121 30               1
+124 15               1
+127 18               1
+130 46               1
+133 19               1
+136 23               1
+139 76               1
+142 43               1
+145 22               1
+148 53               1
+151 27               1
+154 75               1
+157 21               1
+160 71               0
+163  7               1
+166 66               1
+169 49               1
+172 73               1
+175 25               1
+178 48               1
+181 74               1
+184 50               1
+187 33               1
+190 26               1
+193 20               1
+196 72               1
+199 32               1
+202  3               0
+205 51               1
+208 60               1
+211 35               1
+214 34               1
+217 17               1
+220 55               1
+223  2               1
+226  6               1
+\end{verbatim}
 
 \end{document}

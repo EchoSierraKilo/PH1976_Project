@@ -1,6 +1,12 @@
 ---
-title: "PH1976 Project: Predicting Parkinson’s Disease for Patients Using Voice Recording"
-author: "Erin S. King"
+title: "PH1976 Project: Machine Learning Model for PPD Predictions"
+subtitle: "Formatted RMarkdown Document"
+author: |
+  Erin S. King,
+  Jackie Aguilar,
+  Sara Butt,
+  Safa Zia,
+  Lakshmi Kanikkannan
 date: "`r Sys.Date()`"
 output: 
   bookdown::pdf_book:
@@ -35,7 +41,7 @@ test_data = read.csv(test_set_path)
 # Grab packages if not installed
 # Note, if RStudio is having issues w/ tidyverse, run this command in R (not Rstudio):
 # install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source")
-list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble", "ggplot2", "formatR")
+list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble", "ggplot2", "formatR","kableExtra")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)
 for(package in list.of.packages){
@@ -79,26 +85,13 @@ The dataset includes PD patients with age ranging from 33 to 87 (65.1 ± 10.9) a
 ranging from 41 to 82 (61.1 ± 8.9). Each patient has three voice recording samples, with 7 aforementioned
 feature subsets. Each feature subset contains several features.  
 
-
-3. Perform feature selection
-- Uses Boruta library in R (Random Forest w/ importance) to determine most important features. Excludes those deemed to be unimportant
-
-4. Determine models and weights for each sub feature
-- For each of the 7, a number of models were trained using the train_df.*_train data. In each instance, the highest performing model (comparatively) was selected as the chosen model for that subfeature (i.e. KNN performed best on baseline, NN performed best on TQWT, etc.)
-- Weights were scored from 0 to 1 based on the predictive accuracy of the model (i.e. if the best model for baseline was KNN and performed at 0.79, weight_baseline was set to 0.79
-
-5. Determine overall accuracy of the ensemble
-- A weighting function of Y = sum(w_i*d_i) was used. This was chosen based on the paper provided by the project description.
-- Model accuracy can therefore be influenced by conflicting results between sub-features, while also allowing for their respective weights to shift the model based on their relative performance
-
-6. Run the model on the test data
-- Do the same thing as on the train_df_test data, but this time on the test_df (and with no feedback to establish weights).
+\newpage
 
 # Methods
 ## Data Partitioning 
 Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model.  
 
-Additionally, the ensemble training set (both **train_df_train and train_df_test) are broken into the following sub feature categories:  
+Additionally, the ensemble training set (both **train_df.<subfeature>_train** and **train_df.<subfeature>_test**) are broken into the following sub feature categories:  
 
 * Baseline Features
 * Time Frequency Features 
@@ -156,7 +149,7 @@ train_df.tqwt_test <- train_df.tqwt[-train_indices, ]
 \newpage
 
 ## Standardization
-For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the train_df_train, train_df_test and the test_df datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the train_df_test or the test_df data sets.  
+For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the **train_df.<subfeature>_train**, **train_df.<subfeature>_test** and the **test_df** datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the **train_df.<subfeature>_test** or the **test_df** data sets.  
 
 ```{r standardize, results='hide'}
 
@@ -199,9 +192,7 @@ for (i in subset_names) {
 
 ```
 
-\newpage
-
-This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
+This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. Transforming the data allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
 
 The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.
 
@@ -334,7 +325,8 @@ all_variables <- unlist(chosen_variables)
 unique_variables <- unique(all_variables)
 
 # Print the unique variables
-print(unique_variables)
+kable(unique_variables,format="latex",booktabs=TRUE)%>%
+  kable_styling(position = "center")
 
 ```
 \newpage
@@ -529,9 +521,20 @@ ggplot(data = model_accuracies, aes(x = subset_name, y = accuracy, fill = model)
   scale_fill_brewer(palette = "Set1")
 ```
   
+\newpage
+
 ## Ensemble Accuracy Determination  
 
-At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.
+At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each sub-feature can be used. We used a similar method as the **Sakar et. al** paper, where a combination of weights and predictions are used to develop the ensemble model $Y$:
+
+\begin{equation}
+Y = w_i \cdot d_i
+\label{eq:weighted_sum}
+\end{equation}
+
+\begin{equation}
+w_i = \frac{\text{individual model weight}}{\text{sum of all model weights}}
+\end{equation}
 ```{r, results='hide'}
 
 # Functions for Ensemble predictions
@@ -616,6 +619,16 @@ weighted_prediction <- function(best_models, test_data, chosen_features) {
   cat("Ensemble model accuracy:", ensemble_accuracy, "\n")
 
 ```
+
+Weights, as shown in Equation \ref{eq:weighted_sum}, are as follows:
+```{r,echo=FALSE}
+weighted.frame = data.frame(Subfeature = names(best_models),Weights=models_weights_normalized)
+
+kable(weighted.frame,format="latex",booktabs=TRUE, caption = "Weighted Results and Selected Models per Sub-Feature")%>%
+  kable_styling(position = "center")
+```
+
+\newpage
 
 # Results
 

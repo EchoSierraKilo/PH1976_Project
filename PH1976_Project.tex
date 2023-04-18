@@ -104,6 +104,20 @@
 \usepackage{pdflscape}
 \usepackage{fvextra}
 \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -111,14 +125,24 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={PH1976 Project: Predicting Parkinson's Disease for Patients Using Voice Recording},
-  pdfauthor={Erin S. King},
+  pdftitle={PH1976 Project: Machine Learning Model for PPD Predictions},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
-\title{PH1976 Project: Predicting Parkinson's Disease for Patients Using Voice Recording}
-\author{Erin S. King}
-\date{2023-04-16}
+\title{PH1976 Project: Machine Learning Model for PPD Predictions}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Formatted RMarkdown Document}
+\author{Erin S. King,
+Jackie Aguilar,
+Sara Butt,
+Safa Zia,
+Lakshmi Kanikkannan}
+\date{2023-04-17}
 
 \begin{document}
 \maketitle
@@ -153,65 +177,7 @@ The dataset includes PD patients with age ranging from 33 to 87 (65.1 ± 10.9) a
 ranging from 41 to 82 (61.1 ± 8.9). Each patient has three voice recording samples, with 7 aforementioned
 feature subsets. Each feature subset contains several features.
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  Perform feature selection
-\end{enumerate}
-
-\begin{itemize}
-\tightlist
-\item
-  Uses Boruta library in R (Random Forest w/ importance) to determine most important features. Excludes those deemed to be unimportant
-\end{itemize}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
-\tightlist
-\item
-  Determine models and weights for each sub feature
-\end{enumerate}
-
-\begin{itemize}
-\tightlist
-\item
-  For each of the 7, a number of models were trained using the train\_df.*\_train data. In each instance, the highest performing model (comparatively) was selected as the chosen model for that subfeature (i.e.~KNN performed best on baseline, NN performed best on TQWT, etc.)
-\item
-  Weights were scored from 0 to 1 based on the predictive accuracy of the model (i.e.~if the best model for baseline was KNN and performed at 0.79, weight\_baseline was set to 0.79
-\end{itemize}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{4}
-\tightlist
-\item
-  Determine overall accuracy of the ensemble
-\end{enumerate}
-
-\begin{itemize}
-\tightlist
-\item
-  A weighting function of Y = sum(w\_i*d\_i) was used. This was chosen based on the paper provided by the project description.
-\item
-  Model accuracy can therefore be influenced by conflicting results between sub-features, while also allowing for their respective weights to shift the model based on their relative performance
-\end{itemize}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{5}
-\tightlist
-\item
-  Run the model on the test data
-\end{enumerate}
-
-\begin{itemize}
-\tightlist
-\item
-  Do the same thing as on the train\_df\_test data, but this time on the test\_df (and with no feedback to establish weights).
-\end{itemize}
+\newpage
 
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
@@ -221,7 +187,7 @@ feature subsets. Each feature subset contains several features.
 
 Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90\% of the data will be used to train, and 10\% of the data will be used to check accuracy of the model.
 
-Additionally, the ensemble training set (both **train\_df\_train and train\_df\_test) are broken into the following sub feature categories:
+Additionally, the ensemble training set (both **train\_df.\_train** and **train\_df.\_test**) are broken into the following sub feature categories:
 
 \begin{itemize}
 \tightlist
@@ -292,7 +258,7 @@ Overall, these seven sub features were used to inform the machine learning model
 \hypertarget{standardization}{%
 \subsection{Standardization}\label{standardization}}
 
-For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the train\_df\_train, train\_df\_test and the test\_df datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the train\_df\_test or the test\_df data sets.
+For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the **train\_df.\_train\textbf{, }train\_df.\_test** and the \textbf{test\_df} datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the **train\_df.\_test** or the \textbf{test\_df} data sets.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -335,9 +301,7 @@ For each feature, the mean and standard deviation of the training set are used t
 \end{Highlighting}
 \end{Shaded}
 
-\newpage
-
-This was accomplished using the {[}@tidyverse{]}, {[}@broom{]}, and {[}@mosaic{]} packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the \textbf{Baseline}, \textbf{Intensity}, and \textbf{Formant} sub features. This allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.
+This was accomplished using the {[}@tidyverse{]}, {[}@broom{]}, and {[}@mosaic{]} packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the \textbf{Baseline}, \textbf{Intensity}, and \textbf{Formant} sub features. Transforming the data allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.
 
 The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.
 
@@ -538,152 +502,356 @@ Following this initial assessment, chosen variables are selected for regression 
 
 The following factors were found to be important to the model:
 
-\begin{verbatim}
-  [1] "class"                          "id"                            
-  [3] "DFA"                            "RPDE"                          
-  [5] "numPulses"                      "numPeriodsPulses"              
-  [7] "meanPeriodPulses"               "stdDevPeriodPulses"            
-  [9] "locPctJitter"                   "locAbsJitter"                  
- [11] "rapJitter"                      "ppq5Jitter"                    
- [13] "ddpJitter"                      "locShimmer"                    
- [15] "locDbShimmer"                   "apq3Shimmer"                   
- [17] "apq5Shimmer"                    "apq11Shimmer"                  
- [19] "ddaShimmer"                     "meanAutoCorrHarmonicity"       
- [21] "meanNoiseToHarmHarmonicity"     "meanHarmToNoiseHarmonicity"    
- [23] "gender"                         "minIntensity"                  
- [25] "maxIntensity"                   "meanIntensity"                 
- [27] "f1"                             "f2"                            
- [29] "f3"                             "f4"                            
- [31] "b1"                             "b3"                            
- [33] "b4"                             "GQ_std_cycle_open"             
- [35] "GNE_mean"                       "GNE_std"                       
- [37] "GNE_SNR_TKEO"                   "GNE_SNR_SEO"                   
- [39] "GNE_NSR_TKEO"                   "GNE_NSR_SEO"                   
- [41] "VFER_mean"                      "VFER_std"                      
- [43] "VFER_entropy"                   "VFER_SNR_TKEO"                 
- [45] "VFER_SNR_SEO"                   "VFER_NSR_TKEO"                 
- [47] "VFER_NSR_SEO"                   "IMF_SNR_SEO"                   
- [49] "IMF_SNR_entropy"                "IMF_NSR_SEO"                   
- [51] "IMF_NSR_TKEO"                   "IMF_NSR_entropy"               
- [53] "mean_MFCC_0th_coef"             "mean_MFCC_1st_coef"            
- [55] "mean_MFCC_2nd_coef"             "mean_MFCC_3rd_coef"            
- [57] "mean_MFCC_4th_coef"             "mean_MFCC_5th_coef"            
- [59] "mean_MFCC_6th_coef"             "mean_MFCC_7th_coef"            
- [61] "mean_delta_log_energy"          "mean_2nd_delta"                
- [63] "std_Log_energy"                 "std_MFCC_1st_coef"             
- [65] "std_MFCC_2nd_coef"              "std_MFCC_3rd_coef"             
- [67] "std_MFCC_4th_coef"              "std_MFCC_5th_coef"             
- [69] "std_MFCC_6th_coef"              "std_MFCC_7th_coef"             
- [71] "std_MFCC_8th_coef"              "std_MFCC_10th_coef"            
- [73] "std_MFCC_11th_coef"             "std_delta_log_energy"          
- [75] "std_1st_delta"                  "std_2nd_delta"                 
- [77] "std_3rd_delta"                  "std_4th_delta"                 
- [79] "std_5th_delta"                  "std_6th_delta"                 
- [81] "std_7th_delta"                  "std_8th_delta"                 
- [83] "std_9th_delta"                  "std_10th_delta"                
- [85] "std_11th_delta"                 "std_12th_delta"                
- [87] "std_delta_delta_log_energy"     "std_1st_delta_delta"           
- [89] "std_3rd_delta_delta"            "std_4th_delta_delta"           
- [91] "std_5th_delta_delta"            "std_6th_delta_delta"           
- [93] "std_7th_delta_delta"            "std_8th_delta_delta"           
- [95] "std_9th_delta_delta"            "std_10th_delta_delta"          
- [97] "std_11th_delta_delta"           "std_12th_delta_delta"          
- [99] "Ed_1_coef"                      "Ed_2_coef"                     
-[101] "Ed_3_coef"                      "det_entropy_shannon_3_coef"    
-[103] "det_entropy_log_1_coef"         "det_entropy_log_2_coef"        
-[105] "det_entropy_log_3_coef"         "det_TKEO_mean_1_coef"          
-[107] "det_TKEO_std_1_coef"            "det_TKEO_std_3_coef"           
-[109] "app_entropy_shannon_1_coef"     "app_entropy_shannon_2_coef"    
-[111] "app_entropy_shannon_3_coef"     "app_entropy_shannon_4_coef"    
-[113] "app_entropy_shannon_5_coef"     "app_entropy_shannon_9_coef"    
-[115] "app_entropy_log_1_coef"         "app_entropy_log_2_coef"        
-[117] "app_entropy_log_3_coef"         "app_entropy_log_4_coef"        
-[119] "app_entropy_log_5_coef"         "app_entropy_log_6_coef"        
-[121] "app_entropy_log_9_coef"         "app_entropy_log_10_coef"       
-[123] "app_det_TKEO_mean_4_coef"       "app_det_TKEO_mean_5_coef"      
-[125] "app_det_TKEO_mean_8_coef"       "app_det_TKEO_mean_9_coef"      
-[127] "app_det_TKEO_mean_10_coef"      "app_TKEO_std_5_coef"           
-[129] "app_TKEO_std_6_coef"            "app_TKEO_std_10_coef"          
-[131] "Ed2_1_coef"                     "Ed2_2_coef"                    
-[133] "Ed2_3_coef"                     "det_LT_entropy_shannon_1_coef" 
-[135] "det_LT_entropy_shannon_3_coef"  "det_LT_entropy_log_1_coef"     
-[137] "det_LT_entropy_log_3_coef"      "det_LT_TKEO_mean_1_coef"       
-[139] "det_LT_TKEO_mean_3_coef"        "det_LT_TKEO_std_1_coef"        
-[141] "det_LT_TKEO_std_2_coef"         "det_LT_TKEO_std_3_coef"        
-[143] "app_LT_entropy_shannon_1_coef"  "app_LT_entropy_shannon_2_coef" 
-[145] "app_LT_entropy_shannon_3_coef"  "app_LT_entropy_shannon_4_coef" 
-[147] "app_LT_entropy_shannon_5_coef"  "app_LT_entropy_shannon_6_coef" 
-[149] "app_LT_entropy_shannon_8_coef"  "app_LT_entropy_shannon_10_coef"
-[151] "app_LT_entropy_log_1_coef"      "app_LT_entropy_log_2_coef"     
-[153] "app_LT_entropy_log_3_coef"      "app_LT_entropy_log_4_coef"     
-[155] "app_LT_entropy_log_5_coef"      "app_LT_entropy_log_6_coef"     
-[157] "app_LT_entropy_log_8_coef"      "app_LT_entropy_log_9_coef"     
-[159] "app_LT_entropy_log_10_coef"     "app_LT_TKEO_mean_8_coef"       
-[161] "app_LT_TKEO_mean_9_coef"        "app_LT_TKEO_mean_10_coef"      
-[163] "app_LT_TKEO_std_5_coef"         "app_LT_TKEO_std_6_coef"        
-[165] "app_LT_TKEO_std_7_coef"         "app_LT_TKEO_std_8_coef"        
-[167] "app_LT_TKEO_std_9_coef"         "app_LT_TKEO_std_10_coef"       
-[169] "tqwt_energy_dec_1"              "tqwt_energy_dec_2"             
-[171] "tqwt_energy_dec_6"              "tqwt_energy_dec_11"            
-[173] "tqwt_energy_dec_12"             "tqwt_energy_dec_18"            
-[175] "tqwt_energy_dec_24"             "tqwt_energy_dec_25"            
-[177] "tqwt_energy_dec_26"             "tqwt_energy_dec_27"            
-[179] "tqwt_energy_dec_28"             "tqwt_energy_dec_33"            
-[181] "tqwt_energy_dec_34"             "tqwt_energy_dec_35"            
-[183] "tqwt_entropy_shannon_dec_1"     "tqwt_entropy_shannon_dec_6"    
-[185] "tqwt_entropy_shannon_dec_11"    "tqwt_entropy_shannon_dec_12"   
-[187] "tqwt_entropy_shannon_dec_13"    "tqwt_entropy_shannon_dec_14"   
-[189] "tqwt_entropy_shannon_dec_15"    "tqwt_entropy_shannon_dec_32"   
-[191] "tqwt_entropy_shannon_dec_33"    "tqwt_entropy_shannon_dec_34"   
-[193] "tqwt_entropy_shannon_dec_35"    "tqwt_entropy_shannon_dec_36"   
-[195] "tqwt_entropy_log_dec_1"         "tqwt_entropy_log_dec_12"       
-[197] "tqwt_entropy_log_dec_13"        "tqwt_entropy_log_dec_16"       
-[199] "tqwt_entropy_log_dec_18"        "tqwt_entropy_log_dec_19"       
-[201] "tqwt_entropy_log_dec_25"        "tqwt_entropy_log_dec_26"       
-[203] "tqwt_entropy_log_dec_27"        "tqwt_entropy_log_dec_28"       
-[205] "tqwt_entropy_log_dec_32"        "tqwt_entropy_log_dec_33"       
-[207] "tqwt_entropy_log_dec_34"        "tqwt_entropy_log_dec_35"       
-[209] "tqwt_TKEO_mean_dec_2"           "tqwt_TKEO_mean_dec_6"          
-[211] "tqwt_TKEO_mean_dec_11"          "tqwt_TKEO_mean_dec_12"         
-[213] "tqwt_TKEO_mean_dec_13"          "tqwt_TKEO_mean_dec_18"         
-[215] "tqwt_TKEO_mean_dec_19"          "tqwt_TKEO_mean_dec_25"         
-[217] "tqwt_TKEO_mean_dec_26"          "tqwt_TKEO_mean_dec_27"         
-[219] "tqwt_TKEO_mean_dec_32"          "tqwt_TKEO_mean_dec_33"         
-[221] "tqwt_TKEO_mean_dec_34"          "tqwt_TKEO_mean_dec_35"         
-[223] "tqwt_TKEO_std_dec_6"            "tqwt_TKEO_std_dec_8"           
-[225] "tqwt_TKEO_std_dec_11"           "tqwt_TKEO_std_dec_12"          
-[227] "tqwt_TKEO_std_dec_13"           "tqwt_TKEO_std_dec_14"          
-[229] "tqwt_TKEO_std_dec_17"           "tqwt_TKEO_std_dec_19"          
-[231] "tqwt_TKEO_std_dec_25"           "tqwt_TKEO_std_dec_26"          
-[233] "tqwt_TKEO_std_dec_34"           "tqwt_medianValue_dec_31"       
-[235] "tqwt_medianValue_dec_34"        "tqwt_meanValue_dec_34"         
-[237] "tqwt_meanValue_dec_36"          "tqwt_stdValue_dec_1"           
-[239] "tqwt_stdValue_dec_2"            "tqwt_stdValue_dec_5"           
-[241] "tqwt_stdValue_dec_6"            "tqwt_stdValue_dec_7"           
-[243] "tqwt_stdValue_dec_11"           "tqwt_stdValue_dec_12"          
-[245] "tqwt_stdValue_dec_13"           "tqwt_stdValue_dec_18"          
-[247] "tqwt_stdValue_dec_19"           "tqwt_stdValue_dec_25"          
-[249] "tqwt_stdValue_dec_26"           "tqwt_stdValue_dec_27"          
-[251] "tqwt_stdValue_dec_32"           "tqwt_stdValue_dec_33"          
-[253] "tqwt_stdValue_dec_34"           "tqwt_stdValue_dec_35"          
-[255] "tqwt_minValue_dec_7"            "tqwt_minValue_dec_11"          
-[257] "tqwt_minValue_dec_12"           "tqwt_minValue_dec_13"          
-[259] "tqwt_minValue_dec_14"           "tqwt_minValue_dec_17"          
-[261] "tqwt_maxValue_dec_6"            "tqwt_maxValue_dec_11"          
-[263] "tqwt_maxValue_dec_12"           "tqwt_maxValue_dec_13"          
-[265] "tqwt_maxValue_dec_14"           "tqwt_maxValue_dec_17"          
-[267] "tqwt_skewnessValue_dec_24"      "tqwt_skewnessValue_dec_25"     
-[269] "tqwt_skewnessValue_dec_26"      "tqwt_skewnessValue_dec_27"     
-[271] "tqwt_kurtosisValue_dec_12"      "tqwt_kurtosisValue_dec_16"     
-[273] "tqwt_kurtosisValue_dec_17"      "tqwt_kurtosisValue_dec_18"     
-[275] "tqwt_kurtosisValue_dec_19"      "tqwt_kurtosisValue_dec_20"     
-[277] "tqwt_kurtosisValue_dec_22"      "tqwt_kurtosisValue_dec_25"     
-[279] "tqwt_kurtosisValue_dec_26"      "tqwt_kurtosisValue_dec_27"     
-[281] "tqwt_kurtosisValue_dec_29"      "tqwt_kurtosisValue_dec_32"     
-[283] "tqwt_kurtosisValue_dec_33"      "tqwt_kurtosisValue_dec_34"     
-[285] "tqwt_kurtosisValue_dec_35"     
-\end{verbatim}
-
+\begin{table}
+\centering
+\begin{tabular}{l}
+\toprule
+x\\
+\midrule
+class\\
+id\\
+DFA\\
+RPDE\\
+numPulses\\
+\addlinespace
+numPeriodsPulses\\
+meanPeriodPulses\\
+stdDevPeriodPulses\\
+locPctJitter\\
+locAbsJitter\\
+\addlinespace
+rapJitter\\
+ppq5Jitter\\
+ddpJitter\\
+locShimmer\\
+locDbShimmer\\
+\addlinespace
+apq3Shimmer\\
+apq5Shimmer\\
+apq11Shimmer\\
+ddaShimmer\\
+meanAutoCorrHarmonicity\\
+\addlinespace
+meanNoiseToHarmHarmonicity\\
+meanHarmToNoiseHarmonicity\\
+gender\\
+minIntensity\\
+maxIntensity\\
+\addlinespace
+meanIntensity\\
+f1\\
+f2\\
+f3\\
+f4\\
+\addlinespace
+b1\\
+b3\\
+b4\\
+GQ\_std\_cycle\_open\\
+GNE\_mean\\
+\addlinespace
+GNE\_std\\
+GNE\_SNR\_TKEO\\
+GNE\_SNR\_SEO\\
+GNE\_NSR\_TKEO\\
+GNE\_NSR\_SEO\\
+\addlinespace
+VFER\_mean\\
+VFER\_std\\
+VFER\_entropy\\
+VFER\_SNR\_TKEO\\
+VFER\_SNR\_SEO\\
+\addlinespace
+VFER\_NSR\_TKEO\\
+VFER\_NSR\_SEO\\
+IMF\_SNR\_SEO\\
+IMF\_SNR\_entropy\\
+IMF\_NSR\_SEO\\
+\addlinespace
+IMF\_NSR\_TKEO\\
+IMF\_NSR\_entropy\\
+mean\_MFCC\_0th\_coef\\
+mean\_MFCC\_1st\_coef\\
+mean\_MFCC\_2nd\_coef\\
+\addlinespace
+mean\_MFCC\_3rd\_coef\\
+mean\_MFCC\_4th\_coef\\
+mean\_MFCC\_5th\_coef\\
+mean\_MFCC\_6th\_coef\\
+mean\_MFCC\_7th\_coef\\
+\addlinespace
+mean\_delta\_log\_energy\\
+mean\_2nd\_delta\\
+std\_Log\_energy\\
+std\_MFCC\_1st\_coef\\
+std\_MFCC\_2nd\_coef\\
+\addlinespace
+std\_MFCC\_3rd\_coef\\
+std\_MFCC\_4th\_coef\\
+std\_MFCC\_5th\_coef\\
+std\_MFCC\_6th\_coef\\
+std\_MFCC\_7th\_coef\\
+\addlinespace
+std\_MFCC\_8th\_coef\\
+std\_MFCC\_10th\_coef\\
+std\_MFCC\_11th\_coef\\
+std\_delta\_log\_energy\\
+std\_1st\_delta\\
+\addlinespace
+std\_2nd\_delta\\
+std\_3rd\_delta\\
+std\_4th\_delta\\
+std\_5th\_delta\\
+std\_6th\_delta\\
+\addlinespace
+std\_7th\_delta\\
+std\_8th\_delta\\
+std\_9th\_delta\\
+std\_10th\_delta\\
+std\_11th\_delta\\
+\addlinespace
+std\_12th\_delta\\
+std\_delta\_delta\_log\_energy\\
+std\_1st\_delta\_delta\\
+std\_3rd\_delta\_delta\\
+std\_4th\_delta\_delta\\
+\addlinespace
+std\_5th\_delta\_delta\\
+std\_6th\_delta\_delta\\
+std\_7th\_delta\_delta\\
+std\_8th\_delta\_delta\\
+std\_9th\_delta\_delta\\
+\addlinespace
+std\_10th\_delta\_delta\\
+std\_11th\_delta\_delta\\
+std\_12th\_delta\_delta\\
+Ed\_1\_coef\\
+Ed\_2\_coef\\
+\addlinespace
+Ed\_3\_coef\\
+det\_entropy\_shannon\_3\_coef\\
+det\_entropy\_log\_1\_coef\\
+det\_entropy\_log\_2\_coef\\
+det\_entropy\_log\_3\_coef\\
+\addlinespace
+det\_TKEO\_mean\_1\_coef\\
+det\_TKEO\_std\_1\_coef\\
+det\_TKEO\_std\_3\_coef\\
+app\_entropy\_shannon\_1\_coef\\
+app\_entropy\_shannon\_2\_coef\\
+\addlinespace
+app\_entropy\_shannon\_3\_coef\\
+app\_entropy\_shannon\_4\_coef\\
+app\_entropy\_shannon\_5\_coef\\
+app\_entropy\_shannon\_9\_coef\\
+app\_entropy\_log\_1\_coef\\
+\addlinespace
+app\_entropy\_log\_2\_coef\\
+app\_entropy\_log\_3\_coef\\
+app\_entropy\_log\_4\_coef\\
+app\_entropy\_log\_5\_coef\\
+app\_entropy\_log\_6\_coef\\
+\addlinespace
+app\_entropy\_log\_9\_coef\\
+app\_entropy\_log\_10\_coef\\
+app\_det\_TKEO\_mean\_4\_coef\\
+app\_det\_TKEO\_mean\_5\_coef\\
+app\_det\_TKEO\_mean\_8\_coef\\
+\addlinespace
+app\_det\_TKEO\_mean\_9\_coef\\
+app\_det\_TKEO\_mean\_10\_coef\\
+app\_TKEO\_std\_5\_coef\\
+app\_TKEO\_std\_6\_coef\\
+app\_TKEO\_std\_10\_coef\\
+\addlinespace
+Ed2\_1\_coef\\
+Ed2\_2\_coef\\
+Ed2\_3\_coef\\
+det\_LT\_entropy\_shannon\_1\_coef\\
+det\_LT\_entropy\_shannon\_3\_coef\\
+\addlinespace
+det\_LT\_entropy\_log\_1\_coef\\
+det\_LT\_entropy\_log\_3\_coef\\
+det\_LT\_TKEO\_mean\_1\_coef\\
+det\_LT\_TKEO\_mean\_3\_coef\\
+det\_LT\_TKEO\_std\_1\_coef\\
+\addlinespace
+det\_LT\_TKEO\_std\_2\_coef\\
+det\_LT\_TKEO\_std\_3\_coef\\
+app\_LT\_entropy\_shannon\_1\_coef\\
+app\_LT\_entropy\_shannon\_2\_coef\\
+app\_LT\_entropy\_shannon\_3\_coef\\
+\addlinespace
+app\_LT\_entropy\_shannon\_4\_coef\\
+app\_LT\_entropy\_shannon\_5\_coef\\
+app\_LT\_entropy\_shannon\_6\_coef\\
+app\_LT\_entropy\_shannon\_8\_coef\\
+app\_LT\_entropy\_shannon\_10\_coef\\
+\addlinespace
+app\_LT\_entropy\_log\_1\_coef\\
+app\_LT\_entropy\_log\_2\_coef\\
+app\_LT\_entropy\_log\_3\_coef\\
+app\_LT\_entropy\_log\_4\_coef\\
+app\_LT\_entropy\_log\_5\_coef\\
+\addlinespace
+app\_LT\_entropy\_log\_6\_coef\\
+app\_LT\_entropy\_log\_8\_coef\\
+app\_LT\_entropy\_log\_9\_coef\\
+app\_LT\_entropy\_log\_10\_coef\\
+app\_LT\_TKEO\_mean\_8\_coef\\
+\addlinespace
+app\_LT\_TKEO\_mean\_9\_coef\\
+app\_LT\_TKEO\_mean\_10\_coef\\
+app\_LT\_TKEO\_std\_5\_coef\\
+app\_LT\_TKEO\_std\_6\_coef\\
+app\_LT\_TKEO\_std\_7\_coef\\
+\addlinespace
+app\_LT\_TKEO\_std\_8\_coef\\
+app\_LT\_TKEO\_std\_9\_coef\\
+app\_LT\_TKEO\_std\_10\_coef\\
+tqwt\_energy\_dec\_1\\
+tqwt\_energy\_dec\_2\\
+\addlinespace
+tqwt\_energy\_dec\_6\\
+tqwt\_energy\_dec\_11\\
+tqwt\_energy\_dec\_12\\
+tqwt\_energy\_dec\_18\\
+tqwt\_energy\_dec\_24\\
+\addlinespace
+tqwt\_energy\_dec\_25\\
+tqwt\_energy\_dec\_26\\
+tqwt\_energy\_dec\_27\\
+tqwt\_energy\_dec\_28\\
+tqwt\_energy\_dec\_33\\
+\addlinespace
+tqwt\_energy\_dec\_34\\
+tqwt\_energy\_dec\_35\\
+tqwt\_entropy\_shannon\_dec\_1\\
+tqwt\_entropy\_shannon\_dec\_6\\
+tqwt\_entropy\_shannon\_dec\_11\\
+\addlinespace
+tqwt\_entropy\_shannon\_dec\_12\\
+tqwt\_entropy\_shannon\_dec\_13\\
+tqwt\_entropy\_shannon\_dec\_14\\
+tqwt\_entropy\_shannon\_dec\_15\\
+tqwt\_entropy\_shannon\_dec\_32\\
+\addlinespace
+tqwt\_entropy\_shannon\_dec\_33\\
+tqwt\_entropy\_shannon\_dec\_34\\
+tqwt\_entropy\_shannon\_dec\_35\\
+tqwt\_entropy\_shannon\_dec\_36\\
+tqwt\_entropy\_log\_dec\_1\\
+\addlinespace
+tqwt\_entropy\_log\_dec\_12\\
+tqwt\_entropy\_log\_dec\_13\\
+tqwt\_entropy\_log\_dec\_16\\
+tqwt\_entropy\_log\_dec\_18\\
+tqwt\_entropy\_log\_dec\_19\\
+\addlinespace
+tqwt\_entropy\_log\_dec\_25\\
+tqwt\_entropy\_log\_dec\_26\\
+tqwt\_entropy\_log\_dec\_27\\
+tqwt\_entropy\_log\_dec\_28\\
+tqwt\_entropy\_log\_dec\_32\\
+\addlinespace
+tqwt\_entropy\_log\_dec\_33\\
+tqwt\_entropy\_log\_dec\_34\\
+tqwt\_entropy\_log\_dec\_35\\
+tqwt\_TKEO\_mean\_dec\_2\\
+tqwt\_TKEO\_mean\_dec\_6\\
+\addlinespace
+tqwt\_TKEO\_mean\_dec\_11\\
+tqwt\_TKEO\_mean\_dec\_12\\
+tqwt\_TKEO\_mean\_dec\_13\\
+tqwt\_TKEO\_mean\_dec\_18\\
+tqwt\_TKEO\_mean\_dec\_19\\
+\addlinespace
+tqwt\_TKEO\_mean\_dec\_25\\
+tqwt\_TKEO\_mean\_dec\_26\\
+tqwt\_TKEO\_mean\_dec\_27\\
+tqwt\_TKEO\_mean\_dec\_32\\
+tqwt\_TKEO\_mean\_dec\_33\\
+\addlinespace
+tqwt\_TKEO\_mean\_dec\_34\\
+tqwt\_TKEO\_mean\_dec\_35\\
+tqwt\_TKEO\_std\_dec\_6\\
+tqwt\_TKEO\_std\_dec\_8\\
+tqwt\_TKEO\_std\_dec\_11\\
+\addlinespace
+tqwt\_TKEO\_std\_dec\_12\\
+tqwt\_TKEO\_std\_dec\_13\\
+tqwt\_TKEO\_std\_dec\_14\\
+tqwt\_TKEO\_std\_dec\_17\\
+tqwt\_TKEO\_std\_dec\_19\\
+\addlinespace
+tqwt\_TKEO\_std\_dec\_25\\
+tqwt\_TKEO\_std\_dec\_26\\
+tqwt\_TKEO\_std\_dec\_34\\
+tqwt\_medianValue\_dec\_31\\
+tqwt\_medianValue\_dec\_34\\
+\addlinespace
+tqwt\_meanValue\_dec\_34\\
+tqwt\_meanValue\_dec\_36\\
+tqwt\_stdValue\_dec\_1\\
+tqwt\_stdValue\_dec\_2\\
+tqwt\_stdValue\_dec\_5\\
+\addlinespace
+tqwt\_stdValue\_dec\_6\\
+tqwt\_stdValue\_dec\_7\\
+tqwt\_stdValue\_dec\_11\\
+tqwt\_stdValue\_dec\_12\\
+tqwt\_stdValue\_dec\_13\\
+\addlinespace
+tqwt\_stdValue\_dec\_18\\
+tqwt\_stdValue\_dec\_19\\
+tqwt\_stdValue\_dec\_25\\
+tqwt\_stdValue\_dec\_26\\
+tqwt\_stdValue\_dec\_27\\
+\addlinespace
+tqwt\_stdValue\_dec\_32\\
+tqwt\_stdValue\_dec\_33\\
+tqwt\_stdValue\_dec\_34\\
+tqwt\_stdValue\_dec\_35\\
+tqwt\_minValue\_dec\_7\\
+\addlinespace
+tqwt\_minValue\_dec\_11\\
+tqwt\_minValue\_dec\_12\\
+tqwt\_minValue\_dec\_13\\
+tqwt\_minValue\_dec\_14\\
+tqwt\_minValue\_dec\_17\\
+\addlinespace
+tqwt\_maxValue\_dec\_6\\
+tqwt\_maxValue\_dec\_11\\
+tqwt\_maxValue\_dec\_12\\
+tqwt\_maxValue\_dec\_13\\
+tqwt\_maxValue\_dec\_14\\
+\addlinespace
+tqwt\_maxValue\_dec\_17\\
+tqwt\_skewnessValue\_dec\_24\\
+tqwt\_skewnessValue\_dec\_25\\
+tqwt\_skewnessValue\_dec\_26\\
+tqwt\_skewnessValue\_dec\_27\\
+\addlinespace
+tqwt\_kurtosisValue\_dec\_12\\
+tqwt\_kurtosisValue\_dec\_16\\
+tqwt\_kurtosisValue\_dec\_17\\
+tqwt\_kurtosisValue\_dec\_18\\
+tqwt\_kurtosisValue\_dec\_19\\
+\addlinespace
+tqwt\_kurtosisValue\_dec\_20\\
+tqwt\_kurtosisValue\_dec\_22\\
+tqwt\_kurtosisValue\_dec\_25\\
+tqwt\_kurtosisValue\_dec\_26\\
+tqwt\_kurtosisValue\_dec\_27\\
+\addlinespace
+tqwt\_kurtosisValue\_dec\_29\\
+tqwt\_kurtosisValue\_dec\_32\\
+tqwt\_kurtosisValue\_dec\_33\\
+tqwt\_kurtosisValue\_dec\_34\\
+tqwt\_kurtosisValue\_dec\_35\\
+\bottomrule
+\end{tabular}
+\end{table}
 \newpage
 
 \hypertarget{model-selection-and-weighting}{%
@@ -882,10 +1050,21 @@ The following results were found for each of the sub features. A comparative bar
 \includegraphics[width=1\linewidth,height=1\textheight]{figure/unnamed-chunk-7-1} \caption{center}\label{fig:unnamed-chunk-7}
 \end{figure}
 
+\newpage
+
 \hypertarget{ensemble-accuracy-determination}{%
 \subsection{Ensemble Accuracy Determination}\label{ensemble-accuracy-determination}}
 
-At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each subfeature can be used.
+At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each sub-feature can be used. We used a similar method as the \textbf{Sakar et. al} paper, where a combination of weights and predictions are used to develop the ensemble model \(Y\):
+
+\begin{equation}
+Y = w_i \cdot d_i
+\label{eq:weighted_sum}
+\end{equation}
+
+\begin{equation}
+w_i = \frac{\text{individual model weight}}{\text{sum of all model weights}}
+\end{equation}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -939,6 +1118,30 @@ At this point, we have enough data to make an ensemble predictive model, such th
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
+
+Weights, as shown in Equation \ref{eq:weighted_sum}, are as follows:
+
+\begin{table}
+
+\caption{\label{tab:unnamed-chunk-10}Weighted Results and Selected Models per Sub-Feature}
+\centering
+\begin{tabular}[t]{llr}
+\toprule
+  & Subfeature & Weights\\
+\midrule
+Logistic Regression & baseline & 0.1347518\\
+Random Forest & intensity & 0.1595745\\
+SVM Linear & formant & 0.1453901\\
+SVM RBF & vff & 0.1453901\\
+Multilayer Perceptron & mfcc & 0.1560284\\
+\addlinespace
+Naive Bayes & wt & 0.1312057\\
+KNN & tqwt & 0.1276596\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
 
 \hypertarget{results}{%
 \section{Results}\label{results}}

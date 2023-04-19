@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.4.10)  17 APR 2023 18:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.4.10)  18 APR 2023 20:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -740,40 +740,43 @@ LaTeX Warning: Label `fig:borutaPlot' multiply defined.
 
 LaTeX Warning: Label `fig:borutaPlot' multiply defined.
 
+
+LaTeX Warning: Label `fig:subfeatureresults' multiply defined.
+
 )
 \openout1 = `PH1976_Project.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 147.
-LaTeX Font Info:    ... okay on input line 147.
-LaTeX Info: Redefining \microtypecontext on input line 147.
-Package microtype Info: Applying patch `item' on input line 147.
-Package microtype Info: Applying patch `toc' on input line 147.
-Package microtype Info: Applying patch `eqnum' on input line 147.
-Package microtype Info: Applying patch `footnote' on input line 147.
-Package microtype Info: Applying patch `verbatim' on input line 147.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 148.
+LaTeX Font Info:    ... okay on input line 148.
+LaTeX Info: Redefining \microtypecontext on input line 148.
+Package microtype Info: Applying patch `item' on input line 148.
+Package microtype Info: Applying patch `toc' on input line 148.
+Package microtype Info: Applying patch `eqnum' on input line 148.
+Package microtype Info: Applying patch `footnote' on input line 148.
+Package microtype Info: Applying patch `verbatim' on input line 148.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 147.
+LaTeX Info: Redefining \showhyphens on input line 148.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -842,34 +845,34 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 147.
+Package hyperref Info: Link coloring OFF on input line 148.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-49.
+50.
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-49.
+50.
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-149.
+150.
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-149.
+150.
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 149.
+(Font)              <12> on input line 150.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 149.
+(Font)              <8> on input line 150.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 149.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 149
+(Font)              <6> on input line 150.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 150
 .
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -878,7 +881,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 149
+LaTeX Font Info:    Trying to load font information for U+msb on input line 150
 .
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -901,47 +904,47 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 {C:/Users/andrew.king/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-76.
+77.
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [2]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 2
-19.
+20.
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [3] [4]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 276.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 277.
 [5]
 <figure/histPlots-1.pdf, id=66, 722.7pt x 722.7pt>
 File: figure/histPlots-1.pdf Graphic file (type pdf)
 <use figure/histPlots-1.pdf>
-Package pdftex.def Info: figure/histPlots-1.pdf  used on input line 338.
+Package pdftex.def Info: figure/histPlots-1.pdf  used on input line 339.
 (pdftex.def)             Requested size: 469.76045pt x 469.76045pt.
 <figure/histPlots-2.pdf, id=67, 722.7pt x 722.7pt>
 File: figure/histPlots-2.pdf Graphic file (type pdf)
 <use figure/histPlots-2.pdf>
-Package pdftex.def Info: figure/histPlots-2.pdf  used on input line 346.
+Package pdftex.def Info: figure/histPlots-2.pdf  used on input line 347.
 (pdftex.def)             Requested size: 469.76045pt x 469.76045pt.
 <figure/histPlots-3.pdf, id=68, 722.7pt x 722.7pt>
 File: figure/histPlots-3.pdf Graphic file (type pdf)
 <use figure/histPlots-3.pdf>
-Package pdftex.def Info: figure/histPlots-3.pdf  used on input line 354.
+Package pdftex.def Info: figure/histPlots-3.pdf  used on input line 355.
 (pdftex.def)             Requested size: 469.76045pt x 469.76045pt.
 <figure/histPlots-4.pdf, id=69, 722.7pt x 722.7pt>
 File: figure/histPlots-4.pdf Graphic file (type pdf)
 <use figure/histPlots-4.pdf>
-Package pdftex.def Info: figure/histPlots-4.pdf  used on input line 362.
+Package pdftex.def Info: figure/histPlots-4.pdf  used on input line 363.
 (pdftex.def)             Requested size: 469.76045pt x 469.76045pt.
 <figure/histPlots-5.pdf, id=70, 722.7pt x 722.7pt>
 File: figure/histPlots-5.pdf Graphic file (type pdf)
 <use figure/histPlots-5.pdf>
-Package pdftex.def Info: figure/histPlots-5.pdf  used on input line 370.
+Package pdftex.def Info: figure/histPlots-5.pdf  used on input line 371.
 (pdftex.def)             Requested size: 469.76045pt x 469.76045pt.
 <figure/histPlots-6.pdf, id=71, 722.7pt x 722.7pt>
 File: figure/histPlots-6.pdf Graphic file (type pdf)
 <use figure/histPlots-6.pdf>
-Package pdftex.def Info: figure/histPlots-6.pdf  used on input line 378.
+Package pdftex.def Info: figure/histPlots-6.pdf  used on input line 379.
 (pdftex.def)             Requested size: 469.76045pt x 469.76045pt.
 [6] [7 <./figure/histPlots-1.pdf>] [8 <./figure/histPlots-2.pdf>] [9 <./figure/
 histPlots-3.pdf>] [10 <./figure/histPlots-4.pdf>] [11 <./figure/histPlots-5.pdf
@@ -949,128 +952,158 @@ histPlots-3.pdf>] [10 <./figure/histPlots-4.pdf>] [11 <./figure/histPlots-5.pdf
 <figure/borutaPlot-1.pdf, id=143, 469.755pt x 325.215pt>
 File: figure/borutaPlot-1.pdf Graphic file (type pdf)
 <use figure/borutaPlot-1.pdf>
-Package pdftex.def Info: figure/borutaPlot-1.pdf  used on input line 428.
+Package pdftex.def Info: figure/borutaPlot-1.pdf  used on input line 432.
 (pdftex.def)             Requested size: 650.43448pt x 450.30078pt.
 
-LaTeX Warning: Float too large for page by 4.49019pt on input line 433.
+LaTeX Warning: Float too large for page by 4.49019pt on input line 437.
 
 <figure/borutaPlot-2.pdf, id=144, 469.755pt x 325.215pt>
 File: figure/borutaPlot-2.pdf Graphic file (type pdf)
 <use figure/borutaPlot-2.pdf>
-Package pdftex.def Info: figure/borutaPlot-2.pdf  used on input line 436.
+Package pdftex.def Info: figure/borutaPlot-2.pdf  used on input line 440.
 (pdftex.def)             Requested size: 650.43448pt x 450.30078pt.
 
-LaTeX Warning: Float too large for page by 4.49019pt on input line 441.
+LaTeX Warning: Float too large for page by 4.49019pt on input line 445.
 
 <figure/borutaPlot-3.pdf, id=145, 469.755pt x 325.215pt>
 File: figure/borutaPlot-3.pdf Graphic file (type pdf)
 <use figure/borutaPlot-3.pdf>
-Package pdftex.def Info: figure/borutaPlot-3.pdf  used on input line 444.
+Package pdftex.def Info: figure/borutaPlot-3.pdf  used on input line 448.
 (pdftex.def)             Requested size: 650.43448pt x 450.30078pt.
 
-LaTeX Warning: Float too large for page by 4.49019pt on input line 449.
+LaTeX Warning: Float too large for page by 4.49019pt on input line 453.
 
 <figure/borutaPlot-4.pdf, id=146, 469.755pt x 325.215pt>
 File: figure/borutaPlot-4.pdf Graphic file (type pdf)
 <use figure/borutaPlot-4.pdf>
-Package pdftex.def Info: figure/borutaPlot-4.pdf  used on input line 452.
+Package pdftex.def Info: figure/borutaPlot-4.pdf  used on input line 456.
 (pdftex.def)             Requested size: 650.43448pt x 450.30078pt.
 
-LaTeX Warning: Float too large for page by 4.49019pt on input line 457.
+LaTeX Warning: Float too large for page by 4.49019pt on input line 461.
 
 <figure/borutaPlot-5.pdf, id=147, 469.755pt x 325.215pt>
 File: figure/borutaPlot-5.pdf Graphic file (type pdf)
 <use figure/borutaPlot-5.pdf>
-Package pdftex.def Info: figure/borutaPlot-5.pdf  used on input line 460.
+Package pdftex.def Info: figure/borutaPlot-5.pdf  used on input line 464.
 (pdftex.def)             Requested size: 650.43448pt x 450.30078pt.
 
-LaTeX Warning: Float too large for page by 4.49019pt on input line 465.
+LaTeX Warning: Float too large for page by 4.49019pt on input line 469.
 
 <figure/borutaPlot-6.pdf, id=148, 469.755pt x 325.215pt>
 File: figure/borutaPlot-6.pdf Graphic file (type pdf)
 <use figure/borutaPlot-6.pdf>
-Package pdftex.def Info: figure/borutaPlot-6.pdf  used on input line 468.
+Package pdftex.def Info: figure/borutaPlot-6.pdf  used on input line 472.
 (pdftex.def)             Requested size: 650.43448pt x 450.30078pt.
 
-LaTeX Warning: Float too large for page by 4.49019pt on input line 473.
+LaTeX Warning: Float too large for page by 4.49019pt on input line 477.
 
 <figure/borutaPlot-7.pdf, id=149, 469.755pt x 325.215pt>
 File: figure/borutaPlot-7.pdf Graphic file (type pdf)
 <use figure/borutaPlot-7.pdf>
-Package pdftex.def Info: figure/borutaPlot-7.pdf  used on input line 476.
+Package pdftex.def Info: figure/borutaPlot-7.pdf  used on input line 480.
 (pdftex.def)             Requested size: 650.43448pt x 450.30078pt.
 
-LaTeX Warning: Float too large for page by 4.49019pt on input line 481.
+LaTeX Warning: Float too large for page by 4.49019pt on input line 485.
 
 [14 <./figure/borutaPlot-1.pdf>] [15 <./figure/borutaPlot-2.pdf>] [16 <./figure
 /borutaPlot-3.pdf>] [17 <./figure/borutaPlot-4.pdf>] [18 <./figure/borutaPlot-5
 .pdf>] [19 <./figure/borutaPlot-6.pdf>] [20 <./figure/borutaPlot-7.pdf>]
-
-LaTeX Warning: Float too large for page by 3072.71147pt on input line 854.
+Overfull \hbox (6.74228pt too wide) in paragraph at lines 512--605
+ [][] 
+ []
 
 [21
 
 
-] [22] [23]
-Underfull \vbox (badness 10000) detected at line 1010
+] [22]
+Underfull \hbox (badness 10000) in paragraph at lines 617--619
+
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1010
+Underfull \hbox (badness 10000) in paragraph at lines 619--621
+
  []
 
-[24]
-Overfull \vbox (1.56999pt too high) detected at line 1047
+
+Underfull \hbox (badness 10000) in paragraph at lines 621--623
+
  []
 
-[25]
-<figure/unnamed-chunk-7-1.pdf, id=250, 469.755pt x 325.215pt>
-File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
-<use figure/unnamed-chunk-7-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 1050.
 
+Underfull \hbox (badness 10000) in paragraph at lines 623--625
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 627--629
+
+ []
+
+
+Underfull \vbox (badness 1852) detected at line 673
+ []
+
+[23]
+Overfull \vbox (1.56999pt too high) detected at line 773
+ []
+
+[24] [25]
+<figure/subfeatureresults-1.pdf, id=251, 469.755pt x 325.215pt>
+File: figure/subfeatureresults-1.pdf Graphic file (type pdf)
+<use figure/subfeatureresults-1.pdf>
+Package pdftex.def Info: figure/subfeatureresults-1.pdf  used on input line 816
+.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[26] [27 <./figure/unnamed-chunk-7-1.pdf>]
+[26] [27 <./figure/subfeatureresults-1.pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
-1103.
+877.
 (C:\Users\andrew.king\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [28] [29] [30] [31] (PH1976_Project.aux)
+) [28] [29] [30]
+Underfull \hbox (badness 10000) in paragraph at lines 925--926
+
+ []
+
+[31] (PH1976_Project.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 17098 strings out of 476326
- 282720 string characters out of 5784890
- 1889660 words of memory out of 5000000
+ 17107 strings out of 476326
+ 282837 string characters out of 5784890
+ 1888660 words of memory out of 5000000
  37008 multiletter control sequences out of 15000+600000
- 570728 words of font info for 140 fonts, out of 8000000 for 9000
+ 571093 words of font info for 144 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 77i,10n,81p,1013b,744s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 77i,10n,81p,1013b,519s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1
 .enc}{C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-
 mathsy.enc}{C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/
 lm/lm-mathit.enc}{C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/enc/
-dvips/lm/lm-rm.enc}{C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/en
-c/dvips/lm/lm-ec.enc}<C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/lm/lmbx10.pfb><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/
-fonts/type1/public/lm/lmbx12.pfb><C:/Users/andrew.king/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/andrew.king/AppData/Local/Prog
-rams/MiKTeX/fonts/type1/public/lm/lmmi5.pfb><C:/Users/andrew.king/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/lm/lmmi7.pfb><C:/Users/andrew.king/AppData/
-Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/andrew.king/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/andrew.kin
-g/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/andre
-w.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users
-/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy5.pfb><C:/
-Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtk10.pf
-b><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmt
-t10.pfb><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-lm/lmtti10.pfb>
-Output written on PH1976_Project.pdf (31 pages, 553964 bytes).
+dvips/lm/lm-mathex.enc}{C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/font
+s/enc/dvips/lm/lm-rm.enc}{C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fo
+nts/enc/dvips/lm/lm-ec.enc}<C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/
+fonts/type1/public/lm/lmbx10.pfb><C:/Users/andrew.king/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/andrew.king/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/lm/lmex10.pfb><C:/Users/andrew.king/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/andrew.king/AppDat
+a/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi5.pfb><C:/Users/andrew.king/A
+ppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi7.pfb><C:/Users/andrew.k
+ing/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/and
+rew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/User
+s/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:
+/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr5.pfb
+><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy
+10.pfb><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/public/l
+m/lmsy5.pfb><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/lm/lmtk10.pfb><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fonts/typ
+e1/public/lm/lmtt10.pfb><C:/Users/andrew.king/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/lm/lmtti10.pfb>
+Output written on PH1976_Project.pdf (31 pages, 594573 bytes).
 PDF statistics:
- 408 PDF objects out of 1000 (max. 8388607)
- 72 named destinations out of 1000 (max. 500000)
+ 422 PDF objects out of 1000 (max. 8388607)
+ 73 named destinations out of 1000 (max. 500000)
  32927 words of extra memory for PDF output out of 35830 (max. 10000000)
 

@@ -27,6 +27,7 @@ bookdown:
 header-includes:
   - \usepackage{pdflscape}
   - \usepackage{fvextra}
+  - \usepackage{longtable}
   - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
 ```{r, include=FALSE}
@@ -41,7 +42,7 @@ test_data = read.csv(test_set_path)
 # Grab packages if not installed
 # Note, if RStudio is having issues w/ tidyverse, run this command in R (not Rstudio):
 # install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source")
-list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble", "ggplot2", "formatR","kableExtra")
+list.of.packages <- c("tidyverse", "broom", "mosaic","ggplot2", "bookdown", "Boruta","mlbench","caret","randomForest", "neuralnet","e1071","kernlab","naivebayes", "class", "caretEnsemble", "ggplot2", "formatR","kableExtra", "purrr")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)
 for(package in list.of.packages){
@@ -91,7 +92,7 @@ feature subsets. Each feature subset contains several features.
 ## Data Partitioning 
 Instead of using the LOOCV method outlined in the paper, we have decided to break the training dataset into a 90/10 split, where 90% of the data will be used to train, and 10% of the data will be used to check accuracy of the model.  
 
-Additionally, the ensemble training set (both **train_df.<subfeature>_train** and **train_df.<subfeature>_test**) are broken into the following sub feature categories:  
+Additionally, the ensemble training set (both **train_df._train** and **train_df._test**) are broken into the following sub feature categories:  
 
 * Baseline Features
 * Time Frequency Features 
@@ -149,7 +150,7 @@ train_df.tqwt_test <- train_df.tqwt[-train_indices, ]
 \newpage
 
 ## Standardization
-For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the **train_df.<subfeature>_train**, **train_df.<subfeature>_test** and the **test_df** datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the **train_df.<subfeature>_test** or the **test_df** data sets.  
+For each feature, the mean and standard deviation of the training set are used to standardize the data, per a traditional Z-score method. This standardization is applied to the **train_df._train**, **train_df._test** and the **test_df** datasets, resulting in data that is normalized with a mean at zero and standard deviation of unity. Using the mean and standard deviation from the training data set ensures that no information leakage occurs from the **train_df._test** or the **test_df** data sets.  
 
 ```{r standardize, results='hide'}
 
@@ -192,7 +193,7 @@ for (i in subset_names) {
 
 ```
 
-This was accomplished using the [@tidyverse], [@broom], and [@mosaic] packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. Transforming the data allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
+This was accomplished using the **tidyverse**, **broom**, and **mosaic** packages in RStudio. The histograms below shows an example transformation of the original training data set to the standardized form from the **Baseline**, **Intensity**, and **Formant** sub features. Transforming the data allows all data comparisons to be made equivalently. To ensure that training and test data are all benchmarked equivalently, mean and standard deviation is calculated using the training data, and is applied to standardize both the training and test data. This way, no information leakage will occur and the models will be provided standardized data that is unbiased.  
 
 The authors considered using PCA analysis to perform data reduction and to minimize multi-colinearity, but this ultimately was decided against for clarity. Due to the inherent complexity that comes along with transforming the data set with PCA, the authors opted to use the standardization method above, and implement a subsequent Random Forest (Boruta) factor selection method following the standardization.
 
@@ -240,11 +241,13 @@ for (selected_subset in selected_subsets) {
 \newpage
 
 ## Feature Selection
-Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:
+Per the **Sakar et al** paper, minimum redundancy-maximum relevance based filter feature selection methods are ideal for determining effective features. The advantage of this is two-fold:  
 1. It reduces the high dimensionality of the data set.
 2. It maximizes the joint dependency of the data set.
 This strategy is used frequenty in machine learning and regression applications, and as such, will be used in this analysis. The **Boruta** package in RStudio will be used for this purpose, and utilizes Random Forest to perform a top-down search on the corresponding data frame to determine relevant features.     
 
+**NOTE**
+The Boruta algorithm takes anywhere from 7 to 30 minutes to run, depending on computing power. Please allow the model time to finish.
 ```{r boruta, results='hide'}
 require(Boruta)
 require(mlbench)
@@ -279,10 +282,10 @@ generate_boruta_plots <- function(boruta_list, output_file) {
 }
 
 ```
-mRMR analysis yielded the following results. TQWT results are particularly dense, so the plot is not particularly informative, but the overall trend is such that:  
+mRMR analysis yielded the following results. TQWT results are particularly dense and the plot is somewhat difficult to interpret; however, the overall trend is such that:  
 - Red regions are categorically rejected and excluded from the included features.  
-- Blue regions are tentative, and are handled in a later section of code.  
-- Green regions are found to be imporant and thus selected as included features.  
+- Yellow regions are tentative, and are handled in a later section of code.  
+- Green regions are found to be important and thus selected as included features.  
 
 ```{r landscape-start, echo=FALSE, results='asis'}
 cat("\\begin{landscape}")
@@ -324,23 +327,31 @@ all_variables <- unlist(chosen_variables)
 # Find unique variables
 unique_variables <- unique(all_variables)
 
-# Print the unique variables
-kable(unique_variables,format="latex",booktabs=TRUE)%>%
-  kable_styling(position = "center")
+# Split the long vector into 5 columns
+column_count <- 4
+row_count <- ceiling(length(unique_variables) / column_count)
+padded_vector <- c(unique_variables, rep(NA, row_count * column_count - length(unique_variables)))
+matrix_long_vector <- matrix(padded_vector, nrow = row_count, byrow = TRUE)
 
+# Create a table with 5 columns
+kable(matrix_long_vector, format = "latex", booktabs = TRUE, align = "c", col.names = paste("Column", 1:column_count)) %>%
+  kable_styling(font_size = 5, position = "center")
 ```
 \newpage
 ## Model Selection and Weighting  
 
 Once the important features had been determined, they can be used to inform the predictive model for each sub-group.
 For this analysis, a function was built to test each sub-group against a number of predictive models. Using the 10% "test" data of the training set, accuracy estimates were generated and used to benchmark the model's performance against each other. The models used for analysis were:  
+
 - Multilayer Perceptron  
 - Logistic Regression  
+- Random Forest  
 - SVM w/ Linear Kernel  
-- SVM w/ Radial Kernel  
+- SVM w/ Radial Kernel 
 - Naive Bayes  
 - k- Nearest Neighbors  
-
+  
+  
 ```{r, results='hide'}
 
 #Function for Multilayer Perceptron
@@ -485,10 +496,11 @@ generate_models <- function(dataset_name, train_df, test_df) {
 
 ```
   
-  
+\newpage
+
 The following results were found for each of the sub features. A comparative bar chart for each of the sub features is also included.  
 
-```{r, results='hide'}
+```{r subfeatureresults, results='hide', fig.align='center', fig.cap="\\label{fig:subfeatureresults}Sub-Feature Results by Algorithm "}
 # Initialize the data frame
 model_accuracies <- data.frame()
 best_models <- list()
@@ -525,15 +537,19 @@ ggplot(data = model_accuracies, aes(x = subset_name, y = accuracy, fill = model)
 
 ## Ensemble Accuracy Determination  
 
-At this point, we have enough data to make an ensemble predictive model, such that the best performing model for each sub-feature can be used. We used a similar method as the **Sakar et. al** paper, where a combination of weights and predictions are used to develop the ensemble model $Y$:
+At this point, we have enough data to make an ensemble predictive model, such that the best performing akgorithm for each sub-feature can be used. We used a similar method as the **Sakar et. al** paper, where a combination of weights and predictions are used to develop the ensemble model $Y$:
 
 \begin{equation}
-Y = w_i \cdot d_i
+Y = \sum w_i \cdot d_i
 \label{eq:weighted_sum}
 \end{equation}
 
 \begin{equation}
 w_i = \frac{\text{individual model weight}}{\text{sum of all model weights}}
+\end{equation}
+
+\begin{equation}
+d_i = prediction_algorithm
 \end{equation}
 ```{r, results='hide'}
 
@@ -620,6 +636,8 @@ weighted_prediction <- function(best_models, test_data, chosen_features) {
 
 ```
 
+\newpage
+
 Weights, as shown in Equation \ref{eq:weighted_sum}, are as follows:
 ```{r,echo=FALSE}
 weighted.frame = data.frame(Subfeature = names(best_models),Weights=models_weights_normalized)
@@ -661,7 +679,40 @@ The results of the ensemble model on test data predictions are found below. Thes
 ```{r, echo = FALSE}
 test_data$class = weighted_predictions_test
 write.csv(test_data, "test_results.csv", row.names = TRUE)
-df_results = data.frame(ID = test_data$id,'PredictedResult' = weighted_predictions_test)
+df_results = data.frame(ID = test_data$id, 'Result' = weighted_predictions_test)
 unique_rows = !duplicated(df_results$ID)
-df_results[unique_rows,]
+unique_results = df_results[unique_rows,]
+
+# Function to create a table with a fixed number of columns
+split_table_fixed_columns <- function(df, ncols) {
+  nrows <- ceiling(nrow(df) / ncols)
+  dfs <- lapply(seq_len(ncols), function(i) {
+    start_row <- (i - 1) * nrows + 1
+    end_row <- min(i * nrows, nrow(df))
+    df[start_row:end_row, ]
+  })
+  
+  max_rows <- max(sapply(dfs, nrow))
+  # Pad the data frames with empty rows
+  dfs_padded <- lapply(dfs, function(x) {
+    pad_rows <- max_rows - nrow(x)
+    if (pad_rows > 0) {
+      x <- rbind(x, matrix(NA, nrow = pad_rows, ncol = ncol(x)))
+      rownames(x) <- NULL
+    }
+    return(x)
+  })
+  
+  return(dfs_padded)
+}
+
+# Split the table into 5 columns
+split_long_data_frame <- split_table_fixed_columns(unique_results, 4)
+
+# Combine the tables into a single data frame
+combined_data_frame <- bind_cols(split_long_data_frame)
+
+# Create the table with 5 columns
+kable(combined_data_frame, format = "latex", booktabs = TRUE, align = "c") %>%
+  kable_styling(font_size = 10)
 ```

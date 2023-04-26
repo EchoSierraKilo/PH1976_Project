@@ -522,7 +522,7 @@ for (subset_name in subset_names) {
   cat("Best model for", subset_name, "is", best_model, "with an accuracy of", models_and_accuracy[[best_model]]$accuracy, "\n")
 
   # Store the best model for this subset
-  best_models[[subset_name]] <- list(model = models_and_accuracy[[best_model]]$model, accuracy = models_and_accuracy[[best_model]]$accuracy)
+  best_models[[subset_name]] <- list(name = best_model, model = models_and_accuracy[[best_model]]$model, accuracy = models_and_accuracy[[best_model]]$accuracy)
 }
 
 # Create the ggplot bar chart
@@ -605,7 +605,7 @@ weighted_prediction <- function(best_models, test_data, chosen_features) {
 
 ```{r, include = FALSE}
   # Calculate normalized weights
-  models_weights <- lapply(models_and_accuracy, function(x) x$accuracy)
+  models_weights <- lapply(best_models, function(x) x$accuracy)
   models_weights_normalized <- unlist(models_weights) / sum(unlist(models_weights))
   
   # Prepare train_data and test_data for all models
@@ -640,7 +640,8 @@ weighted_prediction <- function(best_models, test_data, chosen_features) {
 
 Weights, as shown in Equation \ref{eq:weighted_sum}, are as follows:
 ```{r,echo=FALSE}
-weighted.frame = data.frame(Subfeature = names(best_models),Weights=models_weights_normalized)
+best_model_names = unlist(lapply(best_models, function(x) x$name))
+weighted.frame = data.frame(Model = best_model_names,Weights=unlist(models_weights_normalized))
 
 kable(weighted.frame,format="latex",booktabs=TRUE, caption = "Weighted Results and Selected Models per Sub-Feature")%>%
   kable_styling(position = "center")

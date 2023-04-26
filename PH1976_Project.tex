@@ -143,7 +143,7 @@ Jackie Aguilar,
 Sara Butt,
 Safa Zia,
 Lakshmi Kanikkannan}
-\date{2023-04-18}
+\date{2023-04-25}
 
 \begin{document}
 \maketitle
@@ -799,7 +799,7 @@ The following results were found for each of the sub features. A comparative bar
   \FunctionTok{cat}\NormalTok{(}\StringTok{"Best model for"}\NormalTok{, subset\_name, }\StringTok{"is"}\NormalTok{, best\_model, }\StringTok{"with an accuracy of"}\NormalTok{, models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{accuracy, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
 
   \CommentTok{\# Store the best model for this subset}
-\NormalTok{  best\_models[[subset\_name]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{model =}\NormalTok{ models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{model, }\AttributeTok{accuracy =}\NormalTok{ models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{accuracy)}
+\NormalTok{  best\_models[[subset\_name]] }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{name =}\NormalTok{ best\_model, }\AttributeTok{model =}\NormalTok{ models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{model, }\AttributeTok{accuracy =}\NormalTok{ models\_and\_accuracy[[best\_model]]}\SpecialCharTok{$}\NormalTok{accuracy)}
 \NormalTok{\}}
 
 \CommentTok{\# Create the ggplot bar chart}
@@ -903,16 +903,16 @@ Weights, as shown in Equation \ref{eq:weighted_sum}, are as follows:
 \centering
 \begin{tabular}[t]{llr}
 \toprule
-  & Subfeature & Weights\\
+  & Model & Weights\\
 \midrule
-Logistic Regression & baseline & 0.1347518\\
-Random Forest & intensity & 0.1595745\\
-SVM Linear & formant & 0.1453901\\
-SVM RBF & vff & 0.1453901\\
-Multilayer Perceptron & mfcc & 0.1560284\\
+baseline & KNN & 0.1407942\\
+intensity & Random Forest & 0.1371841\\
+formant & Multilayer Perceptron & 0.1299639\\
+vff & Random Forest & 0.1335740\\
+mfcc & Multilayer Perceptron & 0.1480144\\
 \addlinespace
-Naive Bayes & wt & 0.1312057\\
-KNN & tqwt & 0.1276596\\
+wt & Random Forest & 0.1480144\\
+tqwt & Random Forest & 0.1624549\\
 \bottomrule
 \end{tabular}
 \end{table}
